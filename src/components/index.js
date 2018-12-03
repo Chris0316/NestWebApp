@@ -14,7 +14,6 @@ import NestTabItem from './commons/NestTabItem'
 import NestTabContainer from './commons/NestTabContainer'
 import NestTabContainerItem from './commons/NestTabContainerItem'
 import NestScroll from './commons/NestScroll'
-import NestListView from './commons/NestListView.vue'
 
 import NestHeader from './public/NestHeader'
 import NestNav from './public/NestNav'
@@ -27,7 +26,6 @@ let components = {
   NestModal,
   NestCheck,
   NestRadio,
-  NestListView,
   NestRange,
   NestSelect,
   NestUpload,
