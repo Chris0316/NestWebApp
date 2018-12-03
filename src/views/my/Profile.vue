@@ -2,15 +2,15 @@
   <div class="profile">
     <div class="header">
       <div class="back" @click="$router.go(-1);"></div>
-      <div class="right">编辑</div>
+      <div class="right" @click="$router.push({ name: 'MyEdit' })">编辑</div>
     </div>
     <div class="personal-info">
       <div>
-        <div class="name">阿尔萨斯</div>
-        <div class="account">Arthas</div>
+        <div class="name">{{ name }}</div>
+        <div class="account">{{ account }}</div>
       </div>
-      <div class="portrait">
-        <div class="country"></div>
+      <div class="portrait" :style="{ backgroundImage: 'url(' + portrait + ')'}">
+        <div class="country" :style="{ backgroundImage: 'url(' + country + ')'}"></div>
       </div>
     </div>
     <div class="signature border-bottom">My son. The day you were born, the very forests of Lordaeron whispered the name, Arthas.</div>
@@ -45,8 +45,33 @@
 </template>
 
 <script>
+  import UserService from '../../services/UserService';
+  import CountryDict from '../../configs/dict/Country';
+
   export default {
-    name: "Profile"
+    name: "Profile",
+    data() {
+      return {
+        name: '',
+        account: '',
+        country: '',
+        portrait: '',
+        signature: '',
+        gender: '',
+        languages: [],
+        contact: '',
+        email: '',
+        regDate: ''
+      }
+    },
+    mounted() {
+      UserService.getUserInfo(res => {
+        this.name = res.data.local_name;
+        this.account = res.data.name;
+        this.portrait = res.data.avatar;
+        this.country = CountryDict(res.data.nation) ? CountryDict(res.data.nation).icon : '';
+      })
+    }
   }
 </script>
 
@@ -96,6 +121,7 @@
       height: 1.2rem;
       border-radius: 1.2rem;
       background-color: #e6e6e6;
+      background-repeat: no-repeat;
       background-size: 100% 100%;
       .country {
         position: absolute;
@@ -106,6 +132,8 @@
         border-radius: .44rem;
         border: 1px solid #fff;
         background-color: #a1a1a1;
+        background-repeat: no-repeat;
+        background-size: .44rem .44rem;
         box-sizing: border-box;
       }
     }

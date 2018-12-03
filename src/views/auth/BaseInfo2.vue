@@ -25,6 +25,7 @@
 
 <script>
   import UserService from '../../services/UserService';
+  import GenderDict from '../../configs/dict/Gender';
 
   export default {
     name: "BaseInfo2",
@@ -33,16 +34,7 @@
         btnDisabled: true,
         languageShow: false,
         gender: '',
-        sexTypeOpts: [{
-          label: '先生',
-          value: '1'
-        }, {
-          label: '女士',
-          value: '2'
-        }, {
-          label: '其他',
-          value: '3'
-        }],
+        sexTypeOpts: GenderDict(),
         languages: [],
         email: ''
       }
