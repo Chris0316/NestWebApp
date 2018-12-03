@@ -89,7 +89,7 @@
     },
     created() {
       if (this.isLogin) {
-        UserService.getUserInfo((res) => {
+        UserService.getUserInfo(res => {
           this.name = res.data.local_name;
           this.account = res.data.name;
           this.signature = res.data.introduction || '什么也没有，说点什么吧';

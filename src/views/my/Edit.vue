@@ -51,7 +51,7 @@
     name: "Edit",
     data() {
       return {
-        email: '1231231@123.com'
+        email: ''
       }
     }
   }
@@ -100,7 +100,8 @@
         bottom: .2rem;
         width: .42rem;
         height: .34rem;
-        background-color: #f99c91;
+        background: url('../../assets/images/icon-photo.png') no-repeat;
+        background-size: 100% 100%;
       }
     }
     .details {

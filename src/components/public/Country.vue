@@ -13,13 +13,7 @@
 </template>
 
 <script>
-  import ChinaFlag from '../../assets/images/flags/China.png';
-  import JapanFlag from '../../assets/images/flags/Japan.png';
-  import KoreaFlag from '../../assets/images/flags/Korea.png';
-  import PhilippineFlag from '../../assets/images/flags/Philippine.png';
-  import USAFlag from '../../assets/images/flags/USA.png';
-  import EuropeFlag from '../../assets/images/flags/Europe.png';
-  import EarthFlag from '../../assets/images/flags/Earth.png';
+  import CountryDict from '../../configs/dict/Country';
 
   export default {
     name: "Country",
@@ -38,35 +32,7 @@
       return {
         selectedVal: this.value,
         selectedObj: null,
-        options: [{
-          label: '中国',
-          value: '0086',
-          icon: ChinaFlag
-        }, {
-          label: '菲律宾',
-          value: '0063',
-          icon: PhilippineFlag
-        }, {
-          label: '日本',
-          value: '0081',
-          icon: JapanFlag
-        }, {
-          label: '韩国',
-          value: '0082',
-          icon: KoreaFlag
-        }, {
-          label: '美国',
-          value: '0001',
-          icon: USAFlag
-        }, {
-          label: '欧洲',
-          value: 'euro',
-          icon: EuropeFlag
-        }, {
-          label: '其他',
-          value: 'others',
-          icon: EarthFlag
-        }]
+        options: CountryDict()
       }
     },
     watch: {
@@ -75,12 +41,16 @@
       },
       selectedVal: {
         handler(val) {
-          let arr = this.options.filter(item => {
-            return val === item.value;
-          });
-          this.selectedObj = arr[0];
-          this.$emit('input', arr[0].value);
-          this.$emit('countryClose', this.selectedObj);
+          if (val) {
+            let arr = this.options.filter(item => {
+              return val === item.value;
+            });
+            if (arr.length > 0) {
+              this.selectedObj = arr[0];
+              this.$emit('input', this.selectedObj.value);
+              this.$emit('countryClose', this.selectedObj);
+            }
+          }
         },
         immediate: true
       }
