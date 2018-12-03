@@ -1,0 +1,28 @@
+#build过程
+ build:
+   stage: build
+   image: node:9.4.0
+   cache:
+     paths:
+     - node_modules/
+   script:
+   - npm install
+   - npm run build
+   artifacts:
+     paths:
+     - dist
+   only:
+   - master
+
+ #发布过程
+ pages:
+   stage: deploy
+   image: alpine:latest
+   script:
+   - mkdir public
+   - mv dist/* public
+   artifacts:
+     paths:
+     - public
+   only:
+   - master
