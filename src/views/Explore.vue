@@ -66,7 +66,36 @@
             </nest-tab-bar>
           </div>
         </div>
-        <nest-list-view double/>
+        <!--<nest-list-view double/>-->
+
+        <div class="list-wrap">
+          <div class="unit" v-for="(recommend,index) in recommends">
+            <div class="unit-img"></div>
+            <div class="unit-place">{{recommend.roomplace}}</div>
+            <div class="unit-size" v-if="recommend.roomsizes.constructor === Array">
+              <div class="left" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
+            </div>
+            <div class="unit-size" v-else="!recommend.roomsizes.constructor === Array">
+              <div class="left-str">{{recommend.roomsizes}}</div>
+            </div>
+            <div class="price-m" v-if="proprent">
+              <div class="num">{{recommend.pricem}}</div>
+              <div class="month">P/月</div>
+            </div>
+            <div class="price-m" v-if="propnew">
+              <div class="num">{{recommend.pricem}}</div>
+              <div class="month">P/㎡</div>
+              <div class="size">28.00-100.55 ㎡</div>
+            </div>
+            <div class="price-m" v-if="propsecond">
+              <div class="num">{{recommend.pricem}}</div>
+              <div class="month">万</div>
+              <div class="size">210,000 P/平</div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </nest-scroll>
     <nest-nav page="explore"></nest-nav>
@@ -77,9 +106,76 @@
   import BScroll from 'better-scroll';
 
   export default {
+    props: {
+      rent:{
+        type: Boolean,
+        default: true
+      },
+      second:{
+        type: Boolean,
+        default: false
+      },
+      new:{
+        type: Boolean,
+        default: false
+      },
+      parking:{
+        type: Boolean,
+        default: false
+      },
+      recommends: {
+        type: Array,
+        default: function () {
+          return [
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
+              pricem: 23000,
+              rentsize: '28.00-100.55 ㎡'
+            },
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型',
+              roomsizes: "新房旧房Makati, 1207 Metro Manila",
+              pricem: 23000,
+              rentsize: '28.00-100.55 ㎡'
+            },
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+              roomsizes: "车位Makati, 1207 Metro Manila",
+              pricem: 23000
+            },
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+              roomsizes: ['10F', '100.55 ㎡'],
+              pricem: 23000
+            },
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+              roomsizes: ['10F', '100.55 ㎡'],
+              pricem: 23000
+            },
+            {
+              roomimg: '',
+              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+              roomsizes: ['10F', '100.55 ㎡'],
+              pricem: 23000
+            }
+          ];
+        }
+      }
+    },
     data() {
       return {
-        tabSelected: 'rent'
+        tabSelected: 'rent',
+        proprent: this.rent,
+        propsecond: this.second,
+        propnew: this.new,
+        propparking: this.parking
       }
     },
     methods: {
@@ -241,6 +337,83 @@
         .on {
           color: #0f9183;
           border-bottom: 0.04rem solid #0f9183;
+        }
+      }
+    }
+    .list-wrap {
+      margin-left: 0.28rem;
+      display: flex;
+      flex-wrap: wrap;
+      .unit {
+        margin-right: 0.34rem;
+        margin-bottom: 0.45rem;
+        display: flex;
+        flex-direction: column;
+        width: 3.3rem;
+        &:nth-of-type(even) {
+          margin-right: 0rem;
+        }
+      }
+      .unit-img {
+        width: 3.3rem;
+        height: 2.36rem;
+        border-radius: 0.1rem;
+        background-color: #e8e8ea;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+      .unit-place {
+        word-break: break-all;
+        margin-top: 0.2rem;
+        margin-bottom: 0.2rem;
+        height: .64rem;
+        line-height: .32rem;
+        font-size: 0.28rem;
+        color: #333333;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .unit-size {
+        display: flex;
+        margin-bottom: 0.2rem;
+        .left {
+          margin-right: 0.1rem;
+          padding: 0.06rem 0.12rem;
+          background: #fbf8f3;
+          color: #d5be88;
+          font-size: 0.24rem;
+          border-radius: 0.1rem;
+          line-height: 1;
+        }
+        .left-str {
+          color: #808080;
+          font-size: 0.24rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+        }
+      }
+      .price-m {
+        display: flex;
+        align-items: flex-end;
+        font-size: 0.28rem;
+        color: #0f9183;
+        .num {
+          font-weight: bold;
+        }
+        .month {
+          margin-left: 0.1rem;
+          margin-right: 0.1rem;
+          font-size: 0.24rem;
+        }
+        .size {
+          font-size: 0.22rem;
+          color: #B2B2B2;
         }
       }
     }
