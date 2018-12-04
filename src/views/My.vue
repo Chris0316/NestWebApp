@@ -9,7 +9,7 @@
           </div>
           <div class="portrait" :style="{ backgroundImage: 'url(' + portrait + ')'}"></div>
         </div>
-        <div class="personal-sign arrow-right" v-if="isLogin">{{ signature }}</div>
+        <div class="personal-sign arrow-right" v-if="isLogin" @click="login">{{ signature }}</div>
         <div class="menu-panel">
           <div class="menu-item">
             <div class="item-icon icon1"></div>
@@ -100,6 +100,8 @@
       login() {
         if (!this.isLogin) {
           this.$router.push({ name: 'AuthLogin' });
+        } else {
+          this.$router.push({ name: 'MyProfile' });
         }
       }
     }

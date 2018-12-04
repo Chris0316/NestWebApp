@@ -16,7 +16,7 @@
            @blur="hasFocused = false"
            @change="$emit('change', currentVal)"
            @input="handleInput" />
-    <textarea class="nest-textarea" v-else
+    <textarea class="nest-textarea" :style="areaStyle" v-else
               :placeholder="placeholder"
               v-model="currentVal"
               :rows="rows"
@@ -52,6 +52,7 @@
         type: String,
         default: 'left'
       },
+      areaStyle: Object,
       rows: String,
       disabled: Boolean,
       readonly: Boolean,
@@ -77,7 +78,6 @@
 <style lang="scss" scoped>
   .nest-field {
     position: relative;
-    /*display: flex;*/
     flex: 1;
     .indicator {
       position: absolute;
@@ -113,7 +113,7 @@
     }
     .nest-textarea {
       width: 100%;
-      height: 3.4rem;
+      height: 100%;
       border: none;
       padding: 0;
       resize: none;

@@ -171,6 +171,7 @@
     }
     .form-textarea {
       padding-top: .36rem;
+      height: 3.4rem;
       display: flex;
     }
     .split {

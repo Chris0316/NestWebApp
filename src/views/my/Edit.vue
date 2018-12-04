@@ -12,7 +12,7 @@
     <div class="details border-top">
       <div class="form-group auto-height border-bottom">
         <div class="label">个性签名</div>
-        <div class="value pr85">个性签名的个性签名的个性签名的的个性签名的</div>
+        <nest-field type="textarea" class="textarea" v-model="signature" :area-style="areaStyle"></nest-field>
         <span class="num">12</span>
       </div>
       <div class="form-group border-bottom arrow-right">
@@ -51,6 +51,10 @@
     name: "Edit",
     data() {
       return {
+        areaStyle: {
+          lineHeight: .42 + 'rem'
+        },
+        signature: '个性签名的个性签名的个性签名的的个性签名的',
         email: ''
       }
     }
@@ -134,8 +138,9 @@
         color: #b3b3b3;
         line-height: 1;
       }
-      .pr85 {
-        padding-right: .85rem
+      .textarea {
+        padding-right: .85rem;
+        height: .84rem;
       }
       &.auto-height {
         height: auto;
