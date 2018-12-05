@@ -46,7 +46,7 @@
 
 <script>
   import UserService from '../../services/UserService';
-  import CountryDict from '../../configs/dict/Country';
+  import DICT, { getSelectedObj } from '../../configs/DICT';
 
   export default {
     name: "Profile",
@@ -69,7 +69,7 @@
         this.name = res.data.local_name;
         this.account = res.data.name;
         this.portrait = res.data.avatar;
-        this.country = CountryDict(res.data.nation) ? CountryDict(res.data.nation).icon : '';
+        this.country = getSelectedObj(DICT.country, res.data.nation).icon;
       })
     }
   }

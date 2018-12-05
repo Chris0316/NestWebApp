@@ -25,7 +25,7 @@
 
 <script>
   import UserService from '../../services/UserService';
-  import GenderDict from '../../configs/dict/Gender';
+  import dict from '../../configs/DICT.js';
 
   export default {
     name: "BaseInfo2",
@@ -34,7 +34,7 @@
         btnDisabled: true,
         languageShow: false,
         gender: '',
-        sexTypeOpts: GenderDict(),
+        sexTypeOpts: dict.user.gender,
         languages: [],
         email: ''
       }

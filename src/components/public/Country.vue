@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import CountryDict from '../../configs/dict/Country';
+  import DICT from '../../configs/DICT';
 
   export default {
     name: "Country",
@@ -32,7 +32,7 @@
       return {
         selectedVal: this.value,
         selectedObj: null,
-        options: CountryDict()
+        options: DICT.country
       }
     },
     watch: {
