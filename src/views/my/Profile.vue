@@ -13,17 +13,15 @@
         <div class="country" :style="{ backgroundImage: 'url(' + country + ')'}"></div>
       </div>
     </div>
-    <div class="signature border-bottom">My son. The day you were born, the very forests of Lordaeron whispered the name, Arthas.</div>
+    <div class="signature border-bottom">{{ signature }}</div>
     <div class="form-group border-bottom">
       <div class="label">性别</div>
-      <div>先生</div>
+      <div>{{ gender }}</div>
     </div>
     <div class="form-group border-bottom">
       <div class="label">语言能力</div>
       <div class="value">
-        <span>汉语</span>
-        <span>English</span>
-        <span>にほんご</span>
+        <span v-for="item in languages">{{ item }}</span>
       </div>
     </div>
     <div class="form-group auto-height border-bottom">
@@ -35,18 +33,18 @@
     </div>
     <div class="form-group border-bottom">
       <div class="label">邮箱</div>
-      <div>1231231@123.com</div>
+      <div class="value">{{ email }}</div>
     </div>
     <div class="form-group border-bottom">
       <div class="label">注册时间</div>
-      <div>2018-10-10</div>
+      <div>{{ regDate }}</div>
     </div>
   </div>
 </template>
 
 <script>
   import UserService from '../../services/UserService';
-  import DICT, { getSelectedObj } from '../../configs/DICT';
+  import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
     name: "Profile",
@@ -69,7 +67,12 @@
         this.name = res.data.local_name;
         this.account = res.data.name;
         this.portrait = res.data.avatar;
-        this.country = getSelectedObj(DICT.country, res.data.nation).icon;
+        this.country = getSelecteds(DICT.country, res.data.nation)[0].icon;
+        this.signature = res.data.introduction;
+        this.gender = getSelecteds(DICT.user.gender, res.data.gender)[0].label;
+        this.languages = getSelecteds(DICT.languages, res.data.languages);
+        this.email = res.data.email;
+        this.regDate = res.data.created_at;
       })
     }
   }
@@ -133,7 +136,8 @@
         border: 1px solid #fff;
         background-color: #a1a1a1;
         background-repeat: no-repeat;
-        background-size: .44rem .44rem;
+        background-position: left center;
+        background-size: .7rem .46rem;
         box-sizing: border-box;
       }
     }
@@ -154,7 +158,11 @@
         width: 1.9rem;
       }
       .value {
+        flex: 1;
         line-height: .42rem;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         span {
           margin-right: .4rem;
         }

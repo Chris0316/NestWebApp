@@ -92,7 +92,7 @@
         UserService.getUserInfo(res => {
           this.name = res.data.local_name;
           this.account = res.data.name;
-          this.signature = res.data.introduction || '什么也没有，说点什么吧';
+          this.signature = res.data.introduction;
         });
       }
     },
@@ -148,6 +148,7 @@
     .personal-sign {
       margin-top: .4rem;
       padding-right: .78rem;
+      height: .35rem;
       line-height: .35rem;
       font-size: .28rem;
       color: #999;

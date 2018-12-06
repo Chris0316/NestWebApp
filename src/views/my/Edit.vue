@@ -5,10 +5,11 @@
       <div class="title">编辑信息</div>
       <div class="right">保存</div>
     </div>
-    <div class="uploader">
+    <label class="uploader">
       <div class="portrait"></div>
       <div class="camera"></div>
-    </div>
+      <input type="file" accept="image/*" class="hidden" />
+    </label>
     <div class="details border-top">
       <div class="form-group auto-height border-bottom">
         <div class="label">个性签名</div>
@@ -47,6 +48,8 @@
 </template>
 
 <script>
+  import UserService from '../../services/UserService';
+
   export default {
     name: "Edit",
     data() {
@@ -54,9 +57,15 @@
         areaStyle: {
           lineHeight: .42 + 'rem'
         },
-        signature: '个性签名的个性签名的个性签名的的个性签名的',
+        signature: '',
         email: ''
       }
+    },
+    mounted() {
+      UserService.getUserInfo(res => {
+        this.signature = res.data.introduction;
+        this.email = res.data.email;
+      })
     }
   }
 </script>
@@ -90,6 +99,7 @@
       }
     }
     .uploader {
+      display: block;
       position: relative;
       background: linear-gradient(0deg, rgba(242, 242, 242, 1), rgba(255, 255, 255, 1));
       .portrait {

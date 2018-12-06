@@ -14,6 +14,8 @@
 </template>
 
 <script>
+  import DICT from '../../configs/DICT';
+
   export default {
     name: "Language",
     props: {
@@ -27,7 +29,7 @@
       return {
         currentVal: this.value,
         btnDisabled: true,
-        languageOpts: ['中文', '한국어', 'にほんご', 'English']
+        languageOpts: DICT.languages
       }
     },
     watch: {

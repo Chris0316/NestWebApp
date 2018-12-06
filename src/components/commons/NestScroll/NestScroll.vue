@@ -112,6 +112,13 @@
       },
       refreshTxt () {
         return this.pullDownRefresh && this.pullDownRefresh.txt || '刷新成功'
+      },
+      mouseWheel() {
+        if (this.direction === DIRECTION_V) {
+          return true;
+        } else {
+          return false;
+        }
       }
     },
     created () {
@@ -136,7 +143,8 @@
           pullDownRefresh: this.pullDownRefresh,
           pullUpLoad: this.pullUpLoad,
           startY: this.startY,
-          freeScroll: this.freeScroll
+          freeScroll: this.freeScroll,
+          mouseWheel: this.mouseWheel
         }
         this.scroll = new BScroll(this.$refs.wrapper, options)
         if (this.listenScroll) {

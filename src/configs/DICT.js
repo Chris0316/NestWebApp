@@ -125,10 +125,10 @@ const DICT = {
   },
   "user": {
     "gender": [{
-      "label": "男",
+      "label": "先生",
       "value": "1"
     }, {
-      "label": "女",
+      "label": "女士",
       "value": "2"
     }, {
       "label": "其他",
@@ -163,19 +163,21 @@ const DICT = {
     "label": "其他",
     "value": "others",
     "icon": EarthFlag
-  }]
+  }],
+  "languages": ['中文', '한국어', 'にほんご', 'English']
 };
 
-let getSelectedObj = (array, value) => {
+let getSelecteds = (array, values) => {
   let arr = array.filter(item => {
-    return value === item.value;
+    let temp = item.value || item;
+    if (values instanceof Array) {
+      return values.indexOf(item) > -1;
+    } else {
+      return values == temp;
+    }
   });
-  if (arr.length > 0) {
-    return arr[0]
-  } else {
-    return null;
-  }
+  return arr;
 };
 
 export default DICT;
-export { getSelectedObj };
+export {getSelecteds};
