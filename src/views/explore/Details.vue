@@ -280,6 +280,13 @@
       <a href="javascript:;" class="msg-btn">短信咨询</a>
       <a href="javascript:;" class="phone-btn">电话咨询</a>
     </div>
+    <div class="foot-end" v-if="editShow">
+      <div class="end-item">
+        <img class="share-icon" src="../../assets/images/share.png" alt="">
+      </div>
+      <div class="end-item center">编辑</div>
+      <div class="end-item last">删除</div>
+    </div>
   </div>
 </template>
 
@@ -305,6 +312,10 @@
         type: Boolean,
         default: false
       },
+      editShow:{
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
@@ -697,6 +708,36 @@
       padding: 0rem 0rem 0.6rem 0rem;
       .title-spe {
         margin-left: 0.28rem;
+      }
+    }
+    .foot-end{
+      position: fixed;
+      left: 0rem;
+      right: 0rem;
+      bottom: 0rem;
+      display: flex;
+      z-index: 2;
+      .end-item{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        height: 1rem;
+        background: #fff;
+        .share-icon{
+          width: 0.38rem;
+          height: 0.38rem;
+        }
+      }
+      .center{
+        font-size: 0.28rem;
+        color: #fff;
+        background: #0F9183;
+      }
+      .last{
+        font-size: 0.28rem;
+        color: #fff;
+        background: #F54545;
       }
     }
   }
