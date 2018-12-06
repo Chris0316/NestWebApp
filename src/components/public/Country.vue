@@ -39,20 +39,8 @@
       value(val) {
         this.selectedVal = val;
       },
-      selectedVal: {
-        handler(val) {
-          if (val) {
-            let arr = this.options.filter(item => {
-              return val === item.value;
-            });
-            if (arr.length > 0) {
-              this.selectedObj = arr[0];
-              this.$emit('input', this.selectedObj.value);
-              this.$emit('countryClose', this.selectedObj);
-            }
-          }
-        },
-        immediate: true
+      selectedVal(val) {
+        this.$emit('input', val);
       }
     },
     computed: {

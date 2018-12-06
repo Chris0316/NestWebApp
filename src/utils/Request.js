@@ -10,7 +10,7 @@ let base_url = {
 
 let instance = axios.create({
   baseURL: base_url.dev,
-  timeout: 1000 * 3
+  timeout: 1000 * 10
 });
 
 instance.interceptors.request.use(

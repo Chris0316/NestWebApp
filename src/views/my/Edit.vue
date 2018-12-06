@@ -16,15 +16,15 @@
         <nest-field type="textarea" class="textarea" v-model="signature" :area-style="areaStyle"></nest-field>
         <span class="num">12</span>
       </div>
-      <div class="form-group border-bottom arrow-right">
+      <div class="form-group border-bottom arrow-right" @click="countryShow = true">
         <div class="label">国籍</div>
-        <div class="value">中国</div>
+        <div class="value">{{ countryName }}</div>
       </div>
-      <div class="form-group border-bottom arrow-right">
+      <div class="form-group border-bottom arrow-right" @click="genderShow = true">
         <div class="label">性别</div>
-        <div class="value">先生</div>
+        <div class="value">{{ genderLabel }}</div>
       </div>
-      <div class="form-group border-bottom arrow-right">
+      <div class="form-group border-bottom arrow-right" @click="languageShow = true">
         <div class="label">语言能力</div>
         <div class="value">
           <span>汉语</span>
@@ -44,28 +44,57 @@
         <nest-field v-model="email"></nest-field>
       </div>
     </div>
+    <country :show="countryShow" v-model="country"></country>
+    <nest-modal title="性别" :has-clear="false" :has-footer="false" @modalClose="genderShow = false" :status="genderShow">
+      <nest-radio v-model="gender" :options="genderOpts" :count-in-row="1"></nest-radio>
+    </nest-modal>
+    <language :show="languageShow" v-model="languages" @languageClose="languageShow = false"></language>
   </div>
 </template>
 
 <script>
   import UserService from '../../services/UserService';
+  import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
     name: "Edit",
     data() {
       return {
+        countryShow: false,
         areaStyle: {
           lineHeight: .42 + 'rem'
         },
         signature: '',
+        country: '',
+        genderShow: false,
+        genderOpts: DICT.user.gender,
+        gender: '',
+        languageShow: false,
+        languages: [],
         email: ''
+      }
+    },
+    computed: {
+      genderLabel() {
+        return getSelecteds(DICT.user.gender, this.gender)[0] ? getSelecteds(DICT.user.gender, this.gender)[0].label : ''
+      },
+      countryName() {
+        return getSelecteds(DICT.country, this.country)[0] ? getSelecteds(DICT.country, this.country)[0].label : ''
+      }
+    },
+    watch: {
+      gender() {
+        this.genderShow = false;
       }
     },
     mounted() {
       UserService.getUserInfo(res => {
         this.signature = res.data.introduction;
+        this.country = res.data.nation;
+        this.gender = res.data.gender;
+        this.languages = res.data.languages;
         this.email = res.data.email;
-      })
+      });
     }
   }
 </script>

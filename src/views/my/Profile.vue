@@ -67,7 +67,7 @@
         this.name = res.data.local_name;
         this.account = res.data.name;
         this.portrait = res.data.avatar;
-        this.country = getSelecteds(DICT.country, res.data.nation)[0].icon;
+        this.country = getSelecteds(DICT.country, res.data.nation)[0].icon2;
         this.signature = res.data.introduction;
         this.gender = getSelecteds(DICT.user.gender, res.data.gender)[0].label;
         this.languages = getSelecteds(DICT.languages, res.data.languages);
@@ -136,8 +136,8 @@
         border: 1px solid #fff;
         background-color: #a1a1a1;
         background-repeat: no-repeat;
-        background-position: left center;
-        background-size: .7rem .46rem;
+        background-position: center center;
+        background-size: .44rem .44rem;
         box-sizing: border-box;
       }
     }

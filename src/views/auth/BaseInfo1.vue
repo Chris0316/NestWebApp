@@ -23,12 +23,13 @@
       <div class="form-tip">姓名和昵称是平台上的唯一标识，一旦设定不可修改</div>
       <nest-button class="mt90" type="primary" size="full" :disabled="btnDisabled" @click="next">下一步</nest-button>
     </div>
-    <country :show="countryShow" v-model="country" @countryClose="countryClose"></country>
+    <country :show="countryShow" v-model="country"></country>
   </div>
 </template>
 
 <script>
   import UserService from '../../services/UserService';
+  import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
     name: "BaseInfo1",
@@ -44,10 +45,14 @@
           value: '1'
         }],
         country: '',
-        countryName: '',
         name: '',
         account: '',
         btnDisabled: true
+      }
+    },
+    computed: {
+      countryName() {
+        return getSelecteds(DICT.country, this.country)[0] ? getSelecteds(DICT.country, this.country)[0].label : ''
       }
     },
     mounted() {
@@ -63,6 +68,7 @@
         this.lightenBtn();
       },
       country() {
+        this.countryShow = false;
         this.lightenBtn();
       },
       name() {
@@ -73,10 +79,6 @@
       }
     },
     methods: {
-      countryClose(obj) {
-        this.countryName = obj.label;
-        this.countryShow = false;
-      },
       lightenBtn() {
         if (this.userType && this.country && this.name && this.account) {
           this.btnDisabled = false;

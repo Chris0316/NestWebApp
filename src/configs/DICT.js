@@ -1,10 +1,17 @@
 import ChinaFlag from "../assets/images/flags/China.png";
+import ChinaFlag2 from "../assets/images/flags/China-r.png";
 import PhilippineFlag from "../assets/images/flags/Philippine.png";
+import PhilippineFlag2 from "../assets/images/flags/Philippine-r.png";
 import JapanFlag from "../assets/images/flags/Japan.png";
+import JapanFlag2 from "../assets/images/flags/Japan-r.png";
 import KoreaFlag from "../assets/images/flags/Korea.png";
+import KoreaFlag2 from "../assets/images/flags/Korea-r.png";
 import USAFlag from "../assets/images/flags/USA.png";
+import USAFlag2 from "../assets/images/flags/USA-r.png";
 import EuropeFlag from "../assets/images/flags/Europe.png";
+import EuropeFlag2 from "../assets/images/flags/Europe-r.png";
 import EarthFlag from "../assets/images/flags/Earth.png";
+import EarthFlag2 from "../assets/images/flags/Earth-r.png";
 
 const DICT = {
   "house": {
@@ -138,31 +145,38 @@ const DICT = {
   "country": [{
     "label": "中国",
     "value": "0086",
-    "icon": ChinaFlag
+    "icon": ChinaFlag,
+    "icon2": ChinaFlag2
   }, {
     "label": "菲律宾",
     "value": "0063",
-    "icon": PhilippineFlag
+    "icon": PhilippineFlag,
+    "icon2": PhilippineFlag2
   }, {
     "label": "日本",
     "value": "0081",
-    "icon": JapanFlag
+    "icon": JapanFlag,
+    "icon2": JapanFlag2
   }, {
     "label": "韩国",
     "value": "0082",
-    "icon": KoreaFlag
+    "icon": KoreaFlag,
+    "icon2": KoreaFlag2
   }, {
     "label": "美国",
     "value": "0001",
-    "icon": USAFlag
+    "icon": USAFlag,
+    "icon2": USAFlag2
   }, {
     "label": "欧洲",
     "value": "euro",
-    "icon": EuropeFlag
+    "icon": EuropeFlag,
+    "icon2": EuropeFlag2
   }, {
     "label": "其他",
     "value": "others",
-    "icon": EarthFlag
+    "icon": EarthFlag,
+    "icon2": EarthFlag2
   }],
   "languages": ['中文', '한국어', 'にほんご', 'English']
 };

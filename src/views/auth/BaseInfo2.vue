@@ -7,7 +7,7 @@
       <div class="title">基本信息设置</div>
       <div class="title-tip">设置基本信息，更智能的使用鸟巢</div>
       <div class="radio-tit">性别</div>
-      <nest-radio class="radio-spacing border-bottom" v-model="gender" :options="sexTypeOpts" :count-in-row="3"></nest-radio>
+      <nest-radio class="radio-spacing border-bottom" v-model="gender" :options="genderOpts" :count-in-row="3"></nest-radio>
       <div class="form-group border-bottom arrow-right" @click="languageShow = !languageShow">
         <div class="label">语言</div>
         <div class="group-right">{{ languages.join(', ') }}</div>
@@ -19,7 +19,7 @@
       <div class="form-tip">设置邮箱，更好的使用帮住功能</div>
       <nest-button class="mt90" type="primary" size="full" :disabled="btnDisabled" @click="handleSave">完成</nest-button>
     </div>
-    <language :show="languageShow" v-model="languages" @languageClose="languageClose"></language>
+    <language :show="languageShow" v-model="languages" @languageClose="languageShow = false"></language>
   </div>
 </template>
 
@@ -34,7 +34,7 @@
         btnDisabled: true,
         languageShow: false,
         gender: '',
-        sexTypeOpts: dict.user.gender,
+        genderOpts: dict.user.gender,
         languages: [],
         email: ''
       }
@@ -58,9 +58,6 @@
       }
     },
     methods: {
-      languageClose() {
-        this.languageShow = false;
-      },
       lightenBtn() {
         if (this.gender && this.languages.length > 0 && this.email) {
           this.btnDisabled = false;
