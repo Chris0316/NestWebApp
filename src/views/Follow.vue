@@ -13,9 +13,9 @@
     <nest-tab-container v-model="tabSelected">
       <nest-tab-container-item id="houseres">
         <div class="control-wrap">
-          <div class="control-btn">类型</div>
-          <div class="control-btn active">分类</div>
-          <div class="control-btn">关注时间</div>
+          <div class="control-btn" @click="typeModalFun">类型</div>
+          <div class="control-btn active" @click="classifyModalFun">分类</div>
+          <div class="control-btn" @click="followtimeModalFun">关注时间</div>
         </div>
       </nest-tab-container-item>
       <nest-tab-container-item id="econman">

@@ -127,7 +127,7 @@
       border-radius: 0.1rem;
       box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
       box-sizing: border-box;
-      z-index: 0;
+      z-index: 1;
       &::before {
         position: absolute;
         content: "";
