@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="country" v-show="show">
       <div class="header">
-        <div class="back" @click="$emit('countryClose', selectedObj)"></div>
+        <div class="back" @click="$emit('countryClose')"></div>
       </div>
       <div class="content">
         <div class="title">{{ title }}</div>
@@ -31,7 +31,6 @@
     data() {
       return {
         selectedVal: this.value,
-        selectedObj: null,
         options: DICT.country
       }
     },
