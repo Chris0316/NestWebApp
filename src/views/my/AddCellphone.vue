@@ -5,28 +5,105 @@
     </div>
     <div class="title">添加手机号</div>
     <div class="form border-top">
+      <div class="form-group border-bottom arrow-right" @click="countryShow = true">
+        <div class="label">区号</div>
+        <div>{{ country }}</div>
+      </div>
       <div class="form-group border-bottom">
         <div class="label">手机号</div>
-        <nest-field type="tel"></nest-field>
+        <nest-field type="tel" v-model="phone" max-length="11"></nest-field>
       </div>
       <div class="form-group border-bottom">
         <div class="label">验证码</div>
-        <nest-field></nest-field>
-        <div class="verify-link" :class="{ 'disabled': sent }">获取验证码</div>
+        <nest-field v-model="sms" max-length="6"></nest-field>
+        <div class="verify-link" :class="{ 'disabled': sent }" @click="getSms">{{ smsBtnTxt }}</div>
       </div>
     </div>
     <div class="btn-wrapper">
-      <nest-button type="primary" size="full">确定</nest-button>
+      <nest-button type="primary" size="full" :disabled="btnDisabled" @click="confirm">确定</nest-button>
     </div>
+    <country type="number" :show="countryShow" v-model="country" @close="countryShow = false"></country>
   </div>
 </template>
 
 <script>
+  import AuthService from '../../services/AuthService';
+  import UserService from '../../services/UserService';
+
   export default {
     name: "AddCellphone",
     data() {
       return {
-        sent: false
+        countryShow: false,
+        country: '0063',
+        phone: '',
+        sms: '',
+        key: '',
+        sent: false,
+        btnDisabled: true,
+        counter: 60,
+        smsBtnTxt: '获取验证码'
+      }
+    },
+    watch: {
+      phone() {
+        this.validate();
+      },
+      sms() {
+        this.validate();
+      }
+    },
+    methods: {
+      validate() {
+        if (this.phone.length === 11 && this.sms.length === 6)
+          this.btnDisabled = false;
+        else
+          this.btnDisabled = true;
+      },
+      getSms() {
+        if (this.sent) {
+          return false;
+        }
+        AuthService.getSms(this.country, this.phone, res => {
+          this.key = res.data.key;
+          this.counterDown();
+        })
+      },
+      confirm() {
+        AuthService.smsLogin(this.country, this.phone, this.sms, this.key, () => {
+          UserService.getUserInfo(res => {
+            console.log(res);
+            let phones = res.data.extra.phones || [],
+              phone = {
+                'phone': this.phone,
+                'phone_prefix': this.country,
+                'default': 0
+              };
+            phones.push(phone);
+            let userInfo = {
+              extra: {
+                phones: phones
+              }
+            };
+            UserService.updateUserInfo(userInfo, res2 => {
+              console.log(res2)
+            })
+          })
+        })
+      },
+      counterDown() {
+        this.sent = true;
+        this.smsBtnTxt = this.counter + 's后重试';
+        let interval = setInterval(() => {
+          this.counter--;
+          this.smsBtnTxt = this.counter + 's后重试';
+          if (this.counter < 1) {
+            this.sent = false;
+            this.smsBtnTxt = '重新获取验证码';
+            this.counter = 60;
+            clearInterval(interval);
+          }
+        }, 1000);
       }
     }
   }

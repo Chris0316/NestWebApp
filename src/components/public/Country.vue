@@ -39,6 +39,7 @@
         this.selectedVal = val;
       },
       selectedVal(val) {
+        this.$emit('close');
         this.$emit('input', val);
       }
     },

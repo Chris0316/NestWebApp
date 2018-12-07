@@ -5,7 +5,7 @@
       <div class="right" @click="$router.push({ name: 'MyAddCellphone' });">添加手机号</div>
     </div>
     <div class="title">手机号</div>
-    <nest-radio class="mt60" :options="cellphoneList" v-model="cellphone"
+    <nest-radio class="mt60" :options="contacts" v-model="cellphone"
                 size="large"
                 :show-default="true"
                 :is-align-left="true"
@@ -15,13 +15,29 @@
 </template>
 
 <script>
+  import UserService from '../../services/UserService';
+
   export default {
     name: "Cellphone",
     data() {
       return {
         cellphone: '',
-        cellphoneList: ['09162502441', '09162502442', '09162502443']
+        contacts: []
       }
+    },
+    mounted() {
+      UserService.getUserInfo(res => {
+        let arr = res.data.extra.phones,
+          selected = '';
+        if (arr) {
+          selected = arr.filter(item => item.default == '1').phone;
+          arr = arr.map(item => {
+            return item.phone;
+          });
+        }
+        this.cellphone = selected;
+        this.contacts = arr || [];
+      })
     }
   }
 </script>

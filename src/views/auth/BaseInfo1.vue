@@ -68,7 +68,6 @@
         this.lightenBtn();
       },
       country() {
-        this.countryShow = false;
         this.lightenBtn();
       },
       name() {

@@ -32,7 +32,7 @@
           <span>にほんご</span>
         </div>
       </div>
-      <div class="form-group auto-height border-bottom arrow-right">
+      <div class="form-group auto-height border-bottom arrow-right" @click="$router.push({ name: 'MyCellphone' })">
         <div class="label">手机号</div>
         <div class="value">
           <div v-for="item in contacts">{{ item.phone }}</div>

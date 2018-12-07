@@ -46,11 +46,6 @@
         return getSelecteds(DICT.country, this.country)[0].icon;
       }
     },
-    watch: {
-      country() {
-        this.countryShow = false;
-      }
-    },
     methods: {
       getSms() {
         let smsListStr = Storage.getLocalStorage('nest_sms_list'),

@@ -23,7 +23,8 @@
     },
     methods: {
       handleClick(evt) {
-        this.$emit('click', evt);
+        if (!this.disabled)
+          this.$emit('click', evt);
       }
     }
   }
