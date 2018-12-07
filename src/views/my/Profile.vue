@@ -26,9 +26,8 @@
     </div>
     <div class="form-group auto-height border-bottom">
       <div class="label">手机号</div>
-      <div>
-        133****7655<br>
-        133****7655
+      <div class="value">
+        <div v-for="item in contacts">{{ item.phone }}</div>
       </div>
     </div>
     <div class="form-group border-bottom">
@@ -57,7 +56,7 @@
         signature: '',
         gender: '',
         languages: [],
-        contact: '',
+        contacts: [],
         email: '',
         regDate: ''
       }
@@ -71,6 +70,7 @@
         this.signature = res.data.introduction;
         this.gender = getSelecteds(DICT.user.gender, res.data.gender)[0].label;
         this.languages = getSelecteds(DICT.languages, res.data.languages);
+        this.contacts = res.data.extra.phones;
         this.email = res.data.email;
         this.regDate = res.data.created_at;
       })
@@ -168,9 +168,17 @@
         }
       }
       &.auto-height {
+        min-height: 1rem;
         height: auto;
-        padding: .4rem 0;
         align-items: unset;
+        box-sizing: border-box;
+        .label {
+          line-height: 1rem;
+        }
+        .value {
+          padding: .29rem 0;
+          line-height: .42rem;
+        }
       }
     }
   }

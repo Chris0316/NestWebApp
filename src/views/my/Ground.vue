@@ -39,10 +39,10 @@
         </nest-swipe-cell>
       </div>
     </nest-scroll>
-    <nest-modal title="类型" modal-confirm-txt="确定" @modalClose="typeShow = false" :status="typeShow">
+    <nest-modal title="类型" modal-confirm-txt="确定" @close="typeShow = false" :status="typeShow">
       <nest-check v-model="typeVal" :options="typeOpts"></nest-check>
     </nest-modal>
-    <nest-modal title="地点" modal-confirm-txt="确定" @modalClose="locationShow = false" :status="locationShow">
+    <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
       <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
     </nest-modal>
   </div>

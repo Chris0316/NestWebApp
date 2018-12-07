@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="country" v-show="show">
       <div class="header">
-        <div class="back" @click="$emit('countryClose')"></div>
+        <div class="back" @click="$emit('close')"></div>
       </div>
       <div class="content">
         <div class="title">{{ title }}</div>

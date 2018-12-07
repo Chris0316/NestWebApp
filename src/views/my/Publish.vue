@@ -44,18 +44,18 @@
     </div>
     <!--关注时间-->
     <!--followtime-->
-    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @modalClose="followtimeShow = false"
+    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followtimeShow = false"
                 :status="followtimeShow">
       <nest-radio v-model="followtimeVal" :count-in-row="1" :options="followtimeOpts"></nest-radio>
     </nest-modal>
     <!--分类-->
     <!--classify-->
-    <nest-modal title="分类" :has-clear="false" :has-footer="false" @modalClose="classifyShow = false"
+    <nest-modal title="分类" :has-clear="false" :has-footer="false" @close="classifyShow = false"
                 :status="classifyShow">
       <nest-radio v-model="classifyVal" :count-in-row="1" :options="classifyOpts"></nest-radio>
     </nest-modal>
     <!--类型-->
-    <nest-modal title="类型" :has-clear="false" :has-footer="false" @modalClose="settleShow = false" :status="settleShow">
+    <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="settleShow = false" :status="settleShow">
       <nest-radio v-model="settleVal" :count-in-row="1" :options="settleOpts"></nest-radio>
     </nest-modal>
 

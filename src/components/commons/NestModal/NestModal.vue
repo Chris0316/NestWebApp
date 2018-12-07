@@ -3,18 +3,18 @@
     <transition :name="dialogTranName">
       <div class="modal-dialog" v-show="status">
         <div class="modal-header" v-if="!isFull">{{ title }}</div>
-        <a href="javascript:;" class="modal-close" v-if="hasClear && !isFull" @click="$emit('modalClear')">清空</a>
+        <a href="javascript:;" class="modal-close" v-if="hasClear && !isFull" @click="$emit('clear')">清空</a>
         <div class="modal-body" :class="{ full: bodyFull }">
           <slot></slot>
         </div>
         <div :class="oneline?'modal-oneline':'modal-footer'" v-if="hasFooter">
-          <button class="modal-btn cancel" v-if="hasCancel" @click="$emit('modalCancel')">{{ modalCancelTxt }}</button>
-          <button class="modal-btn confirm" @click="$emit('modalConfirm')">{{ modalConfirmTxt }}</button>
+          <button class="modal-btn cancel" v-if="hasCancel" @click="$emit('cancel')">{{ modalCancelTxt }}</button>
+          <button class="modal-btn confirm" @click="$emit('confirm')">{{ modalConfirmTxt }}</button>
         </div>
       </div>
     </transition>
     <transition name="mask">
-      <div class="modal-backdrop" @click="$emit('modalClose')" v-show="status"></div>
+      <div class="modal-backdrop" @click="$emit('close')" v-show="status"></div>
     </transition>
   </div>
 </template>

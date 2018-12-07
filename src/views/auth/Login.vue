@@ -23,7 +23,7 @@
       </div>
       <div class="contract-tip">登录代表你已同意鸟巢用户协议及隐私政策</div>
     </div>
-    <country type="number" :show="countryShow" v-model="country" @countryClose="countryShow = false"></country>
+    <country type="number" :show="countryShow" v-model="country" @close="countryShow = false"></country>
   </div>
 </template>
 

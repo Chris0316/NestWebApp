@@ -19,7 +19,7 @@
       <div class="form-tip">设置邮箱，更好的使用帮住功能</div>
       <nest-button class="mt90" type="primary" size="full" :disabled="btnDisabled" @click="handleSave">完成</nest-button>
     </div>
-    <language :show="languageShow" v-model="languages" @languageClose="languageShow = false"></language>
+    <language :show="languageShow" v-model="languages" @close="languageShow = false"></language>
   </div>
 </template>
 

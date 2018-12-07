@@ -13,7 +13,7 @@
     <div class="details border-top">
       <div class="form-group auto-height border-bottom">
         <div class="label">个性签名</div>
-        <nest-field type="textarea" class="textarea" v-model="signature" :area-style="areaStyle"></nest-field>
+        <nest-field type="textarea" class="value textarea" v-model="signature" :area-style="areaStyle"></nest-field>
         <span class="num">12</span>
       </div>
       <div class="form-group border-bottom arrow-right" @click="countryShow = true">
@@ -34,9 +34,8 @@
       </div>
       <div class="form-group auto-height border-bottom arrow-right">
         <div class="label">手机号</div>
-        <div>
-          133****7655<br>
-          133****7655
+        <div class="value">
+          <div v-for="item in contacts">{{ item.phone }}</div>
         </div>
       </div>
       <div class="form-group border-bottom">
@@ -44,11 +43,11 @@
         <nest-field v-model="email"></nest-field>
       </div>
     </div>
-    <country :show="countryShow" v-model="country"></country>
-    <nest-modal title="性别" :has-clear="false" :has-footer="false" @modalClose="genderShow = false" :status="genderShow">
+    <country :show="countryShow" v-model="country" @close="countryShow = false"></country>
+    <nest-modal title="性别" :has-clear="false" :has-footer="false" @close="genderShow = false" :status="genderShow">
       <nest-radio v-model="gender" :options="genderOpts" :count-in-row="1"></nest-radio>
     </nest-modal>
-    <language :show="languageShow" v-model="languages" @languageClose="languageShow = false"></language>
+    <language :show="languageShow" v-model="languages" @close="languageShow = false"></language>
   </div>
 </template>
 
@@ -71,6 +70,7 @@
         gender: '',
         languageShow: false,
         languages: [],
+        contacts: [],
         email: ''
       }
     },
@@ -93,6 +93,7 @@
         this.country = res.data.nation;
         this.gender = res.data.gender;
         this.languages = res.data.languages;
+        this.contacts = res.data.extra.phones;
         this.email = res.data.email;
       });
     }
@@ -182,10 +183,18 @@
         height: .84rem;
       }
       &.auto-height {
+        min-height: 1rem;
         height: auto;
-        padding: .4rem 0;
         align-items: unset;
-        line-height: .42rem;
+        box-sizing: border-box;
+        .label {
+          line-height: 1rem;
+        }
+        .value {
+          padding-top: .29rem;
+          padding-bottom: .29rem;
+          line-height: .42rem;
+        }
       }
     }
   }
