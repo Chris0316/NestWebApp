@@ -15,7 +15,8 @@ let instance = axios.create({
 
 instance.interceptors.request.use(
   config => {
-    Vue.prototype.$toast.loading();
+    if (!config.disableLoading)
+      Vue.prototype.$toast.loading();
     let accessToken = Storage.getLocalStorage('nest_access_token');
     if (accessToken && accessToken.length !== 0) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;

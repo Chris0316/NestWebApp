@@ -47,7 +47,7 @@
     methods: {
       handleSave() {
         this.$emit('input', this.currentVal);
-        this.$emit('languageClose');
+        this.$emit('close');
       }
     }
   }

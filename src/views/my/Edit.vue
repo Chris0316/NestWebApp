@@ -3,7 +3,7 @@
     <div class="header border-bottom">
       <div class="back" @click="$router.go(-1);"></div>
       <div class="title">编辑信息</div>
-      <div class="right">保存</div>
+      <div class="right" @click="save">保存</div>
     </div>
     <label class="uploader">
       <div class="portrait"></div>
@@ -27,9 +27,7 @@
       <div class="form-group border-bottom arrow-right" @click="languageShow = true">
         <div class="label">语言能力</div>
         <div class="value">
-          <span>汉语</span>
-          <span>English</span>
-          <span>にほんご</span>
+          <span v-for="item in languages">{{ item }}</span>
         </div>
       </div>
       <div class="form-group auto-height border-bottom arrow-right" @click="$router.push({ name: 'MyCellphone' })">
@@ -66,7 +64,6 @@
         signature: '',
         country: '',
         genderShow: false,
-        genderOpts: DICT.user.gender,
         gender: '',
         languageShow: false,
         languages: [],
@@ -87,6 +84,9 @@
         this.genderShow = false;
       }
     },
+    created() {
+      this.genderOpts = DICT.user.gender;
+    },
     mounted() {
       UserService.getUserInfo(res => {
         this.signature = res.data.introduction;
@@ -96,6 +96,11 @@
         this.contacts = res.data.extra.phones;
         this.email = res.data.email;
       });
+    },
+    methods: {
+      save() {
+        this.$router.go(-1);
+      }
     }
   }
 </script>

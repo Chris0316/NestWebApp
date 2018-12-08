@@ -5,11 +5,12 @@
       <div class="right" @click="$router.push({ name: 'MyAddCellphone' });">添加手机号</div>
     </div>
     <div class="title">手机号</div>
-    <nest-radio class="mt60" :options="contacts" v-model="cellphone"
+    <nest-radio class="mt60" :options="contacts" v-model="phone"
                 size="large"
                 :show-default="true"
                 :is-align-left="true"
-                :count-in-row="1">
+                :count-in-row="1"
+                @input="change">
     </nest-radio>
   </div>
 </template>
@@ -21,23 +22,45 @@
     name: "Cellphone",
     data() {
       return {
-        cellphone: '',
-        contacts: []
+        phone: '',
+        contacts: [],
+        phones: []
       }
     },
     mounted() {
       UserService.getUserInfo(res => {
         let arr = res.data.extra.phones,
           selected = '';
+        this.phones = arr;
         if (arr) {
-          selected = arr.filter(item => item.default == '1').phone;
+          selected = arr.filter(item => item.default == 1)[0].phone;
           arr = arr.map(item => {
             return item.phone;
           });
         }
-        this.cellphone = selected;
+        this.phone = selected;
         this.contacts = arr || [];
-      })
+      });
+    },
+    methods: {
+      change() {
+        this.phones = this.phones.map(item => {
+          if (item.phone === this.phone) {
+            item.default = '1';
+          } else {
+            item.default = '0';
+          }
+          return item;
+        });
+        let userInfo = {
+          extra: {
+            phones: this.phones
+          }
+        };
+        UserService.updateUserInfo(userInfo, () => {
+          this.$router.go(-1);
+        });
+      }
     }
   }
 </script>

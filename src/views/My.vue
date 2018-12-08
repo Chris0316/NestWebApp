@@ -11,25 +11,25 @@
         </div>
         <div class="personal-sign arrow-right" v-if="isLogin" @click="login">{{ signature }}</div>
         <div class="menu-panel">
-          <div class="menu-item">
+          <div class="menu-item" @click="$router.push({ name: 'MyPublish' })">
             <div class="item-icon icon1"></div>
             <div class="item-label">我的发布</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon2"></div>
+            <div class="item-icon icon2" @click="$router.push({ name: 'MyLive' })"></div>
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon3"></div>
+            <div class="item-icon icon3" @click="$router.push({ name: 'MyMessage' })"></div>
             <div class="item-label">我的资讯</div>
           </div>
         </div>
         <div class="live-ground border-bottom">
           <div class="banner" @click="$router.push({ name: 'MyGround' })">帮住广场</div>
         </div>
-        <div class="form-group border-bottom arrow-right">
-          <div class="label">我的信息</div>
-        </div>
+        <!--<div class="form-group border-bottom arrow-right">-->
+          <!--<div class="label">我的信息</div>-->
+        <!--</div>-->
         <div class="form-group border-bottom arrow-right">
           <div class="label">我的消息</div>
         </div>
@@ -41,7 +41,7 @@
           <div class="label">新消息通知</div>
           <nest-switch v-model="msgSwitch"></nest-switch>
         </div>
-        <div class="form-group border-bottom">
+        <div class="form-group border-bottom" v-if="!isAgent">
           <div class="label">加入我们</div>
           <nest-switch v-model="joinSwitch"></nest-switch>
         </div>
@@ -77,6 +77,7 @@
         account: 'Arthas',
         signature: '',
         portrait: '',
+        isAgent: false,
         msgSwitch: false,
         joinSwitch: false
       }
@@ -93,6 +94,7 @@
           this.name = res.data.local_name;
           this.account = res.data.name;
           this.signature = res.data.introduction;
+          this.isAgent = res.data.is_agent;
         });
       }
     },

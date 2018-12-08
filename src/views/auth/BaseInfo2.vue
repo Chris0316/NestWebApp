@@ -25,7 +25,7 @@
 
 <script>
   import UserService from '../../services/UserService';
-  import dict from '../../configs/DICT.js';
+  import DICT from '../../configs/DICT.js';
 
   export default {
     name: "BaseInfo2",
@@ -34,10 +34,12 @@
         btnDisabled: true,
         languageShow: false,
         gender: '',
-        genderOpts: dict.user.gender,
         languages: [],
         email: ''
       }
+    },
+    created() {
+      this.genderOpts = DICT.user.gender;
     },
     mounted() {
       UserService.getUserInfo(res => {

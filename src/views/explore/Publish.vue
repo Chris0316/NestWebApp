@@ -6,14 +6,14 @@
     </div>
     <nest-scroll class="app-body">
       <div>
-        <nest-upload></nest-upload>
+        <nest-upload v-model="uploadPics"></nest-upload>
         <div class="tag border-bottom">
           <nest-radio :options="typeOpts" :count-in-row="3" cell-type="default"></nest-radio>
         </div>
         <div class="realm border-bottom">
           <div class="realm-name">用途</div>
           <div class="realm-content">
-            <nest-radio :countInRow="3" size="small" :options="['住房','商业办公','商住两用']"></nest-radio>
+            <nest-radio :countInRow="3" size="small" :options="purpose"></nest-radio>
           </div>
         </div>
         <div class="realm border-bottom">
@@ -169,7 +169,8 @@
           <div class="facilitie">
             <div class="fac-title">配套设施</div>
             <div class="fac-row">
-              <div class="fac-item" v-for="(item, i) in facList" :key="i" @click="sleFun(item,i,$event)" :class="{on:item.facFlag}">
+              <div class="fac-item" v-for="(item, i) in facList" :key="i" @click="sleFun(item,i,$event)"
+                   :class="{on:item.facFlag}">
                 <img class="fac-img fac-img0" :src="item.url1">
                 <div class="fac-name">{{item.facName}}</div>
               </div>
@@ -332,7 +333,8 @@
           <div class="facilitie">
             <div class="fac-title">配套设施</div>
             <div class="fac-row">
-              <div class="fac-item" v-for="(item, i) in facList" :key="i" @click="sleFun(item,i,$event)" :class="{on:item.facFlag}">
+              <div class="fac-item" v-for="(item, i) in facList" :key="i" @click="sleFun(item,i,$event)"
+                   :class="{on:item.facFlag}">
                 <img class="fac-img fac-img0" :src="item.url1">
                 <div class="fac-name">{{item.facName}}</div>
               </div>
@@ -462,86 +464,92 @@
 </template>
 
 <script>
+  import DICT from '../../configs/DICT';
+
   export default {
     name: "Pulish",
     data() {
       return {
+        uploadPics: [],
         typeOpts: ['公寓', '别墅', '民居', '商铺/写字楼', '车位'],
-        facList:[
+        facList: [
           {
-            url1:require('../../assets/images/facility/fac0.png'),
-            url2:require('../../assets/images/facility/fac-on0.png'),
-            facName:'洗衣机',
-            facFlag:false,
+            url1: require('../../assets/images/facility/fac0.png'),
+            url2: require('../../assets/images/facility/fac-on0.png'),
+            facName: '洗衣机',
+            facFlag: false,
           },
           {
-            url1:require('../../assets/images/facility/fac1.png'),
-            url2:require('../../assets/images/facility/fac-on1.png'),
-            facName:'静音空调',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac1.png'),
+            url2: require('../../assets/images/facility/fac-on1.png'),
+            facName: '静音空调',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac2.png'),
-            url2:require('../../assets/images/facility/fac-on2.png'),
-            facName:'普通空调',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac2.png'),
+            url2: require('../../assets/images/facility/fac-on2.png'),
+            facName: '普通空调',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac3.png'),
-            url2:require('../../assets/images/facility/fac-on3.png'),
-            facName:'热水器',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac3.png'),
+            url2: require('../../assets/images/facility/fac-on3.png'),
+            facName: '热水器',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac4.png'),
-            url2:require('../../assets/images/facility/fac-on4.png'),
-            facName:'床',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac4.png'),
+            url2: require('../../assets/images/facility/fac-on4.png'),
+            facName: '床',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac5.png'),
-            url2:require('../../assets/images/facility/fac-on5.png'),
-            facName:'电视',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac5.png'),
+            url2: require('../../assets/images/facility/fac-on5.png'),
+            facName: '电视',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac6.png'),
-            url2:require('../../assets/images/facility/fac-on6.png'),
-            facName:'冰箱',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac6.png'),
+            url2: require('../../assets/images/facility/fac-on6.png'),
+            facName: '冰箱',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac7.png'),
-            url2:require('../../assets/images/facility/fac-on7.png'),
-            facName:'宽带',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac7.png'),
+            url2: require('../../assets/images/facility/fac-on7.png'),
+            facName: '宽带',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac8.png'),
-            url2:require('../../assets/images/facility/fac-on8.png'),
-            facName:'沙发',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac8.png'),
+            url2: require('../../assets/images/facility/fac-on8.png'),
+            facName: '沙发',
+            facFlag: false
           },
           {
-            url1:require('../../assets/images/facility/fac9.png'),
-            url2:require('../../assets/images/facility/fac-on9.png'),
-            facName:'衣柜',
-            facFlag:false
+            url1: require('../../assets/images/facility/fac9.png'),
+            url2: require('../../assets/images/facility/fac-on9.png'),
+            facName: '衣柜',
+            facFlag: false
           }
         ],
-        facSleArr:[]
+        facSleArr: []
       }
     },
-    methods:{
-      checkEquip(){
+    created() {
+      this.purpose = DICT.house.purpose;
+    },
+    methods: {
+      checkEquip() {
 
       },
-      sleFun(item,i,$event){
-        if (!this.facList[i].facFlag){
+      sleFun(item, i, $event) {
+        if (!this.facList[i].facFlag) {
           this.facList[i].url1 = require(`../../assets/images/facility/fac-on${i}.png`)
           this.facList[i].facFlag = true
           this.facSleArr.push(item.facName)
-        }else {
+        } else {
           this.facList[i].url1 = require(`../../assets/images/facility/fac${i}.png`)
           this.facList[i].facFlag = false
           // 数组查找摸一个元素
@@ -727,8 +735,8 @@
         &:nth-child(5n) {
           margin-right: 0rem;
         }
-        &.on{
-          .fac-name{
+        &.on {
+          .fac-name {
             color: #0f9183;
           }
         }

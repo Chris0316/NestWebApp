@@ -72,22 +72,30 @@
       confirm() {
         AuthService.smsLogin(this.country, this.phone, this.sms, this.key, () => {
           UserService.getUserInfo(res => {
-            console.log(res);
             let phones = res.data.extra.phones || [],
               phone = {
                 'phone': this.phone,
                 'phone_prefix': this.country,
                 'default': 0
+              },
+              arr = phones.filter(item => {
+                return item.phone === this.phone;
+              });
+            if (arr.length > 0) {
+              this.$toast.info({
+                message: '您已添加过此手机号！！！'
+              })
+            } else {
+              phones.push(phone);
+              let userInfo = {
+                extra: {
+                  phones: phones
+                }
               };
-            phones.push(phone);
-            let userInfo = {
-              extra: {
-                phones: phones
-              }
-            };
-            UserService.updateUserInfo(userInfo, res2 => {
-              console.log(res2)
-            })
+              UserService.updateUserInfo(userInfo, res2 => {
+                this.$router.go(-1);
+              })
+            }
           })
         })
       },

@@ -1,13 +1,13 @@
 <template>
-  <div class="nest-upload" v-if="finalMediaArr.length > 0">
-    <div class="upload-row" v-for="(rowNum, rowIndex) in Math.ceil((finalMediaArr.length + 1) / 4)">
+  <div class="nest-upload" v-if="currentVal.length > 0">
+    <div class="upload-row" v-for="(rowNum, rowIndex) in Math.ceil((currentVal.length + 1) / 4)">
       <div class="upload-cell" v-for="(cellNum, cellIndex) in 4">
         <div class="upload-item img"
-             v-if="rowIndex * 4 + cellIndex < finalMediaArr.length"
+             v-if="rowIndex * 4 + cellIndex < currentVal.length"
              :style="{ backgroundImage: 'url(' + mediaInCell(rowIndex, cellIndex) + ')' }">
           <span class="close" @click="deleteImg(rowIndex, cellIndex)"></span>
         </div>
-        <label class="upload-item add" v-else-if="rowIndex * 4 + cellIndex === finalMediaArr.length">
+        <label class="upload-item add" v-else-if="rowIndex * 4 + cellIndex === currentVal.length">
           添加
           <input type="file" accept="image/*" @change="selectMedia" multiple class="hidden" />
         </label>
@@ -22,31 +22,32 @@
 </template>
 
 <script>
-  import canvasResize from 'canvas-resize';
+  import UploadService from '../../../services/UploadService';
+  import lrz from 'lrz';
 
   export default {
     name: "nest-upload",
     props: {
-      mediaSrcArr: {
+      value: {
         type: Array,
         default: () => {
           return [];
         }
       }
     },
-    computed: {
-      finalMediaArr() {
-        return this.mediaSrcArr;
+    data() {
+      return {
+        currentVal: this.value
       }
     },
     methods: {
       mediaInCell(rowIndex, cellIndex) {
         let mediaIndex = rowIndex * 4 + cellIndex;
-        return this.finalMediaArr[mediaIndex];
+        return this.currentVal[mediaIndex];
       },
       deleteImg(rowIndex, cellIndex) {
         let mediaIndex = rowIndex * 4 + cellIndex;
-        this.finalMediaArr.splice(mediaIndex, 1);
+        this.currentVal.splice(mediaIndex, 1);
       },
       selectMedia(e) {
         let files = e.target.files || e.dataTransfer.files;
@@ -57,14 +58,18 @@
         })
       },
       compressImg(file) {
-        //todo 尺寸压缩，质量压缩
-        canvasResize(file, {
-          crop: false,
-          quality: 0.9,
-          rotate: 0,
-          callback: baseStr => {
-            this.finalMediaArr.push(baseStr);
-          }
+        lrz(file).then(rst => {
+          // 上传
+          let image = rst.file;
+          UploadService.uploadImage(image, 'default', res => {
+            this.currentVal.push(res.data.path);
+            this.$emit('input', this.currentVal);
+          });
+          return rst;
+        }).catch(err => {
+          console.log(err);
+        }).always(() => {
+
         });
       }
     }
