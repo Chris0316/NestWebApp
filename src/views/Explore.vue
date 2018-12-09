@@ -4,7 +4,7 @@
     <nest-scroll class="app-body">
       <div class="explore-body">
         <div class="menus">
-          <div class="menu-item" @click="$router.push({ name: 'ExplorePublish' })">
+          <div class="menu-item" @click="tradeShow = true">
             <div class="menu-icon icon1"></div>
             <div class="name">发布房源</div>
           </div>
@@ -94,16 +94,18 @@
             </div>
           </div>
         </div>
-
-
       </div>
     </nest-scroll>
+    <nest-modal title="类型" :has-clear="false" @close="tradeShow = false" :status="tradeShow" @confirm="tradeConfirm">
+      <nest-radio v-model="trade" :options="tradeOpts" :count-in-row="1"></nest-radio>
+    </nest-modal>
     <nest-nav page="explore"></nest-nav>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll';
+  import DICT from '../configs/DICT';
 
   export default {
     props: {
@@ -175,8 +177,13 @@
         proprent: this.rent,
         propsecond: this.second,
         propnew: this.new,
-        propparking: this.parking
+        propparking: this.parking,
+        tradeShow: false,
+        trade: 'rent'
       }
+    },
+    created() {
+      this.tradeOpts = DICT.house.trade;
     },
     methods: {
       leaseChange(i) {
@@ -188,6 +195,10 @@
           scrollX: true,
           click: true
         });
+      },
+      tradeConfirm() {
+        this.tradeShow = false;
+        this.$router.push({ name: 'ExplorePublish', params: { type: this.trade } });
       }
     }
   }

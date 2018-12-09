@@ -2,7 +2,7 @@
   <div class="publish">
     <div class="header border-bottom">
       <div class="back" @click="$router.go(-1);"></div>
-      发布出租信息
+      发布{{ title }}信息
     </div>
     <nest-scroll class="app-body">
       <div>
@@ -464,10 +464,10 @@
 </template>
 
 <script>
-  import DICT from '../../configs/DICT';
+  import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
-    name: "Pulish",
+    name: "Publish",
     data() {
       return {
         uploadPics: [],
@@ -539,6 +539,7 @@
     },
     created() {
       this.purpose = DICT.house.purpose;
+      this.title = getSelecteds(DICT.house.trade, this.$route.params.type)[0].label;
     },
     methods: {
       checkEquip() {

@@ -55,7 +55,7 @@
         </div>
       </div>
     </nest-modal>
-    <nest-modal title="排序" :has-clear="false" :has-footer="false" @modalClose="sortShow = false" :status="sortShow"
+    <nest-modal title="排序" :has-clear="false" :has-footer="false" @close="sortShow = false" :status="sortShow"
                 v-if="headerType !== 'explore'">
       <nest-radio v-model="sortVal" :count-in-row="1" :options="sortOpts"></nest-radio>
     </nest-modal>

@@ -4,7 +4,7 @@ import Storage from './Storage';
 import Router from '../router';
 
 let base_url = {
-  dev: 'http://api.dev.ohmynest.com/api',
+  dev: 'https://api.dev.ohmynest.com/api',
   prod: 'https://api.ohmynest.com/api'
 };
 
