@@ -165,25 +165,25 @@ const DICT = {
     }],
     "region": [{
       "label": "马卡提(Makati)",
-      "value": "1"
-    }, {
-      "label": "帕赛(Pasay)",
-      "value": "2"
-    }, {
-      "label": "马尼拉市(City of Manila)",
       "value": "3"
     }, {
-      "label": "曼达卢永(Mandaluyong)",
+      "label": "帕赛(Pasay)",
       "value": "4"
     }, {
-      "label": "奎松(Quezon)",
+      "label": "马尼拉市(City of Manila)",
       "value": "5"
     }, {
-      "label": "BGC(BGC, Taguig)",
+      "label": "曼达卢永(Mandaluyong)",
       "value": "6"
     }, {
-      "label": "帕西市(Pasig)",
+      "label": "奎松(Quezon)",
       "value": "7"
+    }, {
+      "label": "BGC(BGC, Taguig)",
+      "value": "8"
+    }, {
+      "label": "帕西市(Pasig)",
+      "value": "9"
     }]
   },
   "user": {
