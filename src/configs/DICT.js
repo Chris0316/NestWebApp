@@ -13,58 +13,79 @@ import EuropeFlag2 from "../assets/images/flags/Europe-r.png";
 import EarthFlag from "../assets/images/flags/Earth.png";
 import EarthFlag2 from "../assets/images/flags/Earth-r.png";
 
+import FacIcon0 from "../assets/images/facility/fac0.png";
+import FacIconSelected0 from "../assets/images/facility/fac-on0.png";
+import FacIcon1 from "../assets/images/facility/fac1.png";
+import FacIconSelected1 from "../assets/images/facility/fac-on1.png";
+import FacIcon2 from "../assets/images/facility/fac2.png";
+import FacIconSelected2 from "../assets/images/facility/fac-on2.png";
+import FacIcon3 from "../assets/images/facility/fac3.png";
+import FacIconSelected3 from "../assets/images/facility/fac-on3.png";
+import FacIcon4 from "../assets/images/facility/fac4.png";
+import FacIconSelected4 from "../assets/images/facility/fac-on4.png";
+import FacIcon5 from "../assets/images/facility/fac5.png";
+import FacIconSelected5 from "../assets/images/facility/fac-on5.png";
+import FacIcon6 from "../assets/images/facility/fac6.png";
+import FacIconSelected6 from "../assets/images/facility/fac-on6.png";
+import FacIcon7 from "../assets/images/facility/fac7.png";
+import FacIconSelected7 from "../assets/images/facility/fac-on7.png";
+import FacIcon8 from "../assets/images/facility/fac8.png";
+import FacIconSelected8 from "../assets/images/facility/fac-on8.png";
+import FacIcon9 from "../assets/images/facility/fac9.png";
+import FacIconSelected9 from "../assets/images/facility/fac-on9.png";
+
 const DICT = {
   "house": {
     "facilities": [{
       "value": 1,
       "label": "电视机",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon5,
+      "icon_selected": FacIconSelected5
     }, {
       "value": 2,
       "label": "洗衣机",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon0,
+      "icon_selected": FacIconSelected0
     }, {
       "value": 3,
       "label": "冰箱",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon6,
+      "icon_selected": FacIconSelected6
     }, {
       "value": 4,
       "label": "沙发",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon8,
+      "icon_selected": FacIconSelected8
     }, {
       "value": 5,
       "label": "床",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon4,
+      "icon_selected": FacIconSelected4
     }, {
       "value": 6,
       "label": "宽带",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon7,
+      "icon_selected": FacIconSelected7
     }, {
       "value": 7,
-      "label": "电脑桌",
-      "icon": "",
-      "icon_selected": ""
+      "label": "热水器",
+      "icon": FacIcon3,
+      "icon_selected": FacIconSelected3
     }, {
       "value": 8,
       "label": "衣柜",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon9,
+      "icon_selected": FacIconSelected9
     }, {
       "value": 9,
       "label": "静音空调",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon1,
+      "icon_selected": FacIconSelected1
     }, {
       "value": 10,
       "label": "普通空调",
-      "icon": "",
-      "icon_selected": ""
+      "icon": FacIcon2,
+      "icon_selected": FacIconSelected2
     }],
     "trade": [{
       "label": "出租",
@@ -88,13 +109,16 @@ const DICT = {
     }, {
       "label": "车库",
       "value": "carport"
+    }, {
+      "label": "土地",
+      "value": "land"
     }],
     "purpose": [{
-      "label": "办公",
-      "value": "office"
-    }, {
       "label": "居住",
       "value": "live"
+    }, {
+      "label": "办公",
+      "value": "office"
     }, {
       "label": "商住两用",
       "value": "office_live"
@@ -128,6 +152,38 @@ const DICT = {
     }, {
       "label": "北",
       "value": "4"
+    }],
+    "carport": [{
+      "label": "有(免费)",
+      "value": "1"
+    }, {
+      "label": "有(另议)",
+      "value": "2"
+    }, {
+      "label": "无",
+      "value": "0"
+    }],
+    "region": [{
+      "label": "马卡提(Makati)",
+      "value": "1"
+    }, {
+      "label": "帕赛(Pasay)",
+      "value": "2"
+    }, {
+      "label": "马尼拉市(City of Manila)",
+      "value": "3"
+    }, {
+      "label": "曼达卢永(Mandaluyong)",
+      "value": "4"
+    }, {
+      "label": "奎松(Quezon)",
+      "value": "5"
+    }, {
+      "label": "BGC(BGC, Taguig)",
+      "value": "6"
+    }, {
+      "label": "帕西市(Pasig)",
+      "value": "7"
     }]
   },
   "user": {

@@ -96,7 +96,7 @@
         </div>
       </div>
     </nest-scroll>
-    <nest-modal title="类型" :has-clear="false" @close="tradeShow = false" :status="tradeShow" @confirm="tradeConfirm">
+    <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
       <nest-radio v-model="trade" :options="tradeOpts" :count-in-row="1"></nest-radio>
     </nest-modal>
     <nest-nav page="explore"></nest-nav>
@@ -179,7 +179,15 @@
         propnew: this.new,
         propparking: this.parking,
         tradeShow: false,
-        trade: 'rent'
+        trade: ''
+      }
+    },
+    watch: {
+      trade(val) {
+        this.tradeShow = false;
+        setTimeout(() => {
+          this.$router.push({ name: 'ExplorePublish', params: { type: val } });
+        }, 500);
       }
     },
     created() {
@@ -195,10 +203,6 @@
           scrollX: true,
           click: true
         });
-      },
-      tradeConfirm() {
-        this.tradeShow = false;
-        this.$router.push({ name: 'ExplorePublish', params: { type: this.trade } });
       }
     }
   }
