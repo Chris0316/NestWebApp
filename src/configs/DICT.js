@@ -171,19 +171,19 @@ const DICT = {
       "value": "4"
     }, {
       "label": "马尼拉市(City of Manila)",
-      "value": "5"
+      "value": "9"
     }, {
       "label": "曼达卢永(Mandaluyong)",
       "value": "6"
     }, {
       "label": "奎松(Quezon)",
-      "value": "7"
+      "value": "5"
     }, {
       "label": "BGC(BGC, Taguig)",
-      "value": "8"
+      "value": "7"
     }, {
       "label": "帕西市(Pasig)",
-      "value": "9"
+      "value": "8"
     }]
   },
   "user": {
