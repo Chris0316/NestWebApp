@@ -1,14 +1,21 @@
 import axios from '../utils/Request';
 
 const api = {
-  publishRent: '/houses'
+  house: '/houses'
 };
 
 let HouseService = {
-  publishRent(houseObj, callback) {
-    axios.post(api.publishRent, houseObj).then(res => {
+  publish(houseObj, callback) {
+    axios.post(api.house, houseObj).then(res => {
       callback(res);
-    })
+    });
+  },
+  getList(params, callback) {
+    axios.get(api.house, {
+      params: params
+    }).then(res => {
+      callback(res);
+    });
   }
 };
 
