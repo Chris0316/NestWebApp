@@ -9,7 +9,7 @@ let base_url = {
 };
 
 let instance = axios.create({
-  baseURL: base_url.dev,
+  baseURL: process.env.ADMIN_SERVER,
   timeout: 1000 * 10
 });
 

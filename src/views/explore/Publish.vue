@@ -8,7 +8,7 @@
       <div>
         <nest-upload v-model="uploadPics"></nest-upload>
         <div class="tag border-bottom">
-          <nest-radio :options="typeOpts" v-model="type" :count-in-row="3" cell-type="default" @select="sss"></nest-radio>
+          <nest-radio :options="typeOpts" v-model="type" :count-in-row="3" cell-type="default"></nest-radio>
         </div>
         <div class="realm border-bottom">
           <div class="realm-name">用途</div>
@@ -51,7 +51,7 @@
           </div>
         </div>
         <div class="realm border-bottom" v-if="['apartment', 'villa', 'homestay'].indexOf(type) > -1">
-          <div class="realm-name">户型</div>
+          <div class="realm-name required">户型</div>
           <div class="realm-content house-type">
             <div class="deltails">
               <nest-field type="tel" class="deltail1" text-align="center" v-model="bedroom"></nest-field>室
@@ -82,10 +82,10 @@
           <div class="realm-name">付款方式</div>
           <div class="realm-content pay-mode">
             <div class="inpval-wrap">
-              押<nest-field type="tel" class="inpval" text-align="center"></nest-field>
+              押<nest-field type="tel" class="inpval" text-align="center" v-model="depositMonth"></nest-field>
             </div>
             <div class="inpval-wrap">
-              付<nest-field type="tel" class="inpval" text-align="center"></nest-field>
+              付<nest-field type="tel" class="inpval" text-align="center" v-model="payMonth"></nest-field>
             </div>
           </div>
         </div>
@@ -134,7 +134,7 @@
           <div class="realm border-bottom" v-if="['apartment', 'villa', 'homestay'].indexOf(type) > -1">
             <div class="realm-name">主卧朝向</div>
             <div class="realm-content">
-              <nest-radio :count-in-row="4" size="small" :options="masterDirectionOpts"></nest-radio>
+              <nest-radio :count-in-row="4" size="small" :options="masterDirectionOpts" v-model="masterDirection"></nest-radio>
             </div>
           </div>
           <div class="realm border-bottom" v-if="['apartment', 'villa', 'homestay'].indexOf(type) > -1">
@@ -149,7 +149,7 @@
               <nest-radio :count-in-row="3" size="small" :options="petOpts" v-model="pet"></nest-radio>
             </div>
           </div>
-          <div class="facilities" v-if="['apartment', 'villa', 'homestay'].indexOf(type) > -1">
+          <div class="facilities border-bottom" v-if="['apartment', 'villa', 'homestay'].indexOf(type) > -1">
             <div class="title">配套设施</div>
             <div class="content">
               <div class="item" v-for="item in facilitiesOpts" :class="{'on': facOn(item)}" @click="selectFac(item)">
@@ -158,8 +158,7 @@
               </div>
             </div>
           </div>
-          <!-- notop:去掉上边框 -->
-          <div class="description border-top border-bottom">
+          <div class="description border-bottom">
             <div class="description-title">介绍</div>
             <nest-field type="textarea" v-model="description"></nest-field>
           </div>
@@ -168,7 +167,7 @@
           <span>点击填写详细信息，轻松方便出租</span>
         </div>
         <div class="pub-bottom">
-          <nest-button type="primary" size="full">发布</nest-button>
+          <nest-button type="primary" size="full" @click="publish">发布</nest-button>
         </div>
       </div>
     </nest-scroll>
@@ -184,12 +183,14 @@
 
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
+  import UserService from '../../services/UserService';
+  import HouseService from '../../services/HouseService';
 
   export default {
     name: "Publish",
     data() {
       return {
-        detailShow: true,
+        detailShow: false,
         calendarShow: false,
         regionShow: false,
         uploadPics: [],
@@ -198,7 +199,7 @@
         rentType: 'sole',
         estateName: '',
         address: '',
-        region: '1',
+        region: '3',
         buildingNo: '',
         floor: '',
         floorMax: '',
@@ -207,6 +208,8 @@
         toilet: '',
         centiare: '',
         price: '',
+        depositMonth: '',
+        payMonth: '',
         selectedDate: [],
         minStayMonth: '',
         maxStayMonth: '',
@@ -216,7 +219,7 @@
         masterDirection: '',
         balcony: '',
         pet: '',
-        facSelectedList: [],
+        facilities: [],
         description: ''
       }
     },
@@ -279,7 +282,7 @@
       },
       facOn(item) {
         let flag = false;
-        this.facSelectedList.forEach(item2 => {
+        this.facilities.forEach(item2 => {
           if (item2 == item.value) {
             flag = true;
           }
@@ -288,7 +291,7 @@
       },
       facIcon(item) {
         let icon = item.icon;
-        this.facSelectedList.forEach(item2 => {
+        this.facilities.forEach(item2 => {
           if (item2 == item.value) {
             icon = item.icon_selected;
           }
@@ -296,15 +299,56 @@
         return icon;
       },
       selectFac(item) {
-        let index = this.facSelectedList.indexOf(item.value);
+        let index = this.facilities.indexOf(item.value);
         if (index > -1) {
-          this.facSelectedList.splice(index, 1);
+          this.facilities.splice(index, 1);
         } else {
-          this.facSelectedList.push(item.value);
+          this.facilities.push(item.value);
         }
       },
-      sss(val) {
-        console.log(val);
+      publish() {
+        let houseObj = {
+          is_new: '0',
+          galleries: this.uploadPics.join(','),
+          trade: this.trade,
+          type: this.type,
+          purpose: this.purpose,
+          rent_type: this.rentType,
+          building_name: this.estateName,
+          address: this.address,
+          region_id: this.region,
+          building_no: this.buildingNo,
+          floor: this.floor,
+          max_floor: this.floorMax,
+          bedroom: this.bedroom,
+          hall: this.hall,
+          toilet: this.toilet,
+          centiare: this.centiare,
+          price: this.trade === 'rent' ? this.price : this.price + '0000',
+          deposit_month: this.depositMonth,
+          pay_month: this.payMonth,
+          // contact:
+          // contact_no:
+          available_time: this.availableTime,
+          min_stay_month: this.minStayMonth,
+          max_stay_month: this.maxStayMonth,
+          carport: this.carport,
+          lift: this.lift,
+          decor: this.decor,
+          master_direction: this.masterDirection,
+          balcony: this.balcony,
+          pet: this.pet,
+          facilities: this.facilities.join(','),
+          description: this.description
+        };
+        for(let i in houseObj) {
+          if (houseObj[i] === '') {
+            delete houseObj[i];
+          }
+        }
+        HouseService.publish(houseObj, res => {
+          this.$router.go(-1);
+        })
       }
     }
   }
@@ -485,11 +529,7 @@
       overflow: hidden;
       height: 3.8rem;
       background: #fff;
-      margin-bottom: 0.1rem;
       overflow: hidden;
-      &.notop {
-        border-top: 0rem;
-      }
       .description-title {
         width: 1.92rem;
         height: 3.4rem;
@@ -498,10 +538,11 @@
       }
     }
     .detail-link {
-      margin-top: .6rem;
+      padding-top: .6rem;
       font-size: 0;
       text-align: center;
       line-height: 1;
+      background-color: #F2F2F2;
       span {
         display: inline-block;
         vertical-align: middle;
@@ -520,7 +561,7 @@
       }
     }
     .pub-bottom {
-      padding: 0.5rem .68rem 1rem;
+      padding: 1rem .68rem 1rem;
       background: #F2F2F2;
     }
   }

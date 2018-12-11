@@ -9,7 +9,8 @@ let UploadService = {
     let configs = {
       headers: {
         'Content-Type': 'multipart/form-data'
-      }
+      },
+      timeout: 0
     };
     let params = new FormData();
     params.append('image', image);

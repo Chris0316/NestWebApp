@@ -3,7 +3,8 @@
     <div class="search-wrap">
       <div class="back" v-if="headerType !== 'explore'" @click="$router.go(-1);"></div>
       <div class="search-box" @click="$router.push({ name: 'Search' })">
-        <nest-select @keyValue="changekey"/>
+        <div class="input"></div>
+        <nest-select v-model="searchType"/>
       </div>
       <div class="location">马尼拉</div>
     </div>
@@ -14,14 +15,14 @@
       <div class="sort-btn" @click="sortShow = !sortShow" v-if="headerType !== 'explore'"></div>
     </div>
     <!--@modalConfirm="locationConfirm" @modalClear="locationClear"-->
-    <nest-modal title="地点" modal-confirm-txt="确定" @modalClose="locationShow = false" :status="locationShow">
+    <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
       <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
     </nest-modal>
     <!--@modalConfirm="typeConfirm" @modalClear="typeClear"-->
-    <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" @modalClose="roomTypeShow = false" :status="roomTypeShow">
+    <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" @close="roomTypeShow = false" :status="roomTypeShow">
       <nest-check v-model="roomTypeVal" :options="roomTypeOpts"></nest-check>
     </nest-modal>
-    <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" @modalClose="conditionShow = false"
+    <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" @close="conditionShow = false"
                 :status="conditionShow" v-if="headerType !== 'explore'">
       <div class="conditions">
         <div class="condition">
@@ -70,6 +71,7 @@
     },
     data() {
       return {
+        searchType: '',
         locationShow: false,
         roomTypeShow: false,
         conditionShow: false,
@@ -98,11 +100,11 @@
         keyValue:''
       }
     },
-    methods: {
-      changekey(keymsg){
-        this.keyValue = keymsg;
+    watch: {
+      searchType(val) {
+        console.log(val);
       }
-    },
+    }
   }
 </script>
 
@@ -121,6 +123,7 @@
     }
     .search-box {
       position: relative;
+      display: flex;
       flex: 1;
       height: .8rem;
       border: 1px solid #e8e8ea;
@@ -149,6 +152,9 @@
           background-color: #e8e8ea;
           z-index: -1;
         }
+      }
+      .input {
+        width: 3.65rem;
       }
     }
     .location {
