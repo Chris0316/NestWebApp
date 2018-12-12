@@ -51,13 +51,9 @@ instance.interceptors.response.use(
          */
         Storage.removeLocalStorage('nest_access_token');
         Router.replace({ name: 'AuthLogin' });
-        Vue.prototype.$toast.info({
-          message: resData.message
-        });
+        Vue.prototype.$toast.info(resData.message);
       } else if (error.response.status >= 300 || error.response.status < 200) {
-        Vue.prototype.$toast.info({
-          message: resData.message
-        });
+        Vue.prototype.$toast.info(resData.message);
         return Promise.reject('error');
       } else {
         return error;

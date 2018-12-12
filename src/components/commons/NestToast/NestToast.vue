@@ -68,7 +68,6 @@
     transform: translate(-50%, -50%);
     transition: opacity .3s;
     box-sizing: border-box;
-    white-space: nowrap;
     z-index: 9;
     &.info {
       padding: 0 .4rem;
@@ -79,6 +78,7 @@
         line-height: .8rem;
         color: #fff;
         font-size: .28rem;
+        white-space: nowrap;
       }
     }
     &.loading {
@@ -90,6 +90,43 @@
         height: 1.6rem;
         background: url('../../../assets/images/loading.gif') no-repeat center center;
         background-size: 1rem 1rem;
+      }
+    }
+    &.success, &.fail {
+      padding: .4rem .45rem;
+      border-radius: .2rem;
+      box-shadow: 1px 4px .2rem 0 rgba(182,185,186,.8);
+      min-width: 3rem;
+      max-width: 4rem;
+      background-color: #fff;
+      box-sizing: border-box;
+      .toast-icon {
+        margin: auto;
+        width: .96rem;
+        height: .96rem;
+      }
+      .toast-text {
+        margin-top: .2rem;
+        font-size: .28rem;
+        text-align: center;
+      }
+    }
+    &.success {
+      .toast-icon {
+        background: url('../../../assets/images/success.png') no-repeat center center;
+        background-size: 100% 100%;
+      }
+      .toast-text {
+        color: #0f9183;
+      }
+    }
+    &.fail {
+      .toast-icon {
+        background: url('../../../assets/images/fail.png') no-repeat center center;
+        background-size: 100% 100%;
+      }
+      .toast-text {
+        color: #F54545;
       }
     }
   }

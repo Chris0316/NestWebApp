@@ -39,24 +39,16 @@
         }, error => {
           switch (error.code) {
             case 1:
-              this.$toast.info({
-                message: "位置服务被拒绝"
-              });
+              this.$toast.info("位置服务被拒绝");
               break;
             case 2:
-              this.$toast.info({
-                message: "暂时获取不到位置信息"
-              });
+              this.$toast.info("暂时获取不到位置信息");
               break;
             case 3:
-              this.$toast.info({
-                message: "获取信息超时"
-              });
+              this.$toast.info("获取信息超时");
               break;
             case 4:
-              this.$toast.info({
-                message: "未知错误"
-              });
+              this.$toast.info("未知错误");
               break;
           }
         }, options);

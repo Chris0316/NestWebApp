@@ -4,9 +4,10 @@ import NestToast from './NestToast';
 const ToastConstructor = Vue.extend(NestToast);
 let instance;
 
-let showToast = (type, options = {}) => {
+let showToast = (type, message, options = {}) => {
   options.type = type;
   options.visible = true;
+  options.message = message;
   instance = instance || new ToastConstructor({
     propsData: options
   }).$mount(document.createElement('div'));
@@ -19,11 +20,17 @@ let showToast = (type, options = {}) => {
 };
 
 const Toast = {
-  info(options) {
-    showToast('info', options);
+  info(message, options) {
+    showToast('info', message, options);
   },
   loading(options) {
-    showToast('loading', options);
+    showToast('loading', '', options);
+  },
+  success(message, options) {
+    showToast('success', message, options);
+  },
+  fail(message, options) {
+    showToast('fail', message, options);
   },
   hide() {
     if (instance) {

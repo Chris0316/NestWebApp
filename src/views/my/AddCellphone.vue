@@ -82,9 +82,7 @@
                 return item.phone === this.phone;
               });
             if (arr.length > 0) {
-              this.$toast.info({
-                message: '您已添加过此手机号！！！'
-              })
+              this.$toast.info('您已添加过此手机号！！！')
             } else {
               phones.push(phone);
               let userInfo = {

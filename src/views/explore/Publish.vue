@@ -347,6 +347,7 @@
           }
         }
         HouseService.publish(houseObj, res => {
+          this.$toast.success('发布成功！');
           this.$router.go(-1);
         })
       }

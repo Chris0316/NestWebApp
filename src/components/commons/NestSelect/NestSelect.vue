@@ -1,9 +1,11 @@
 <template>
   <div class="nest-select" :class="{ 'tran': listShow }" @click="listShow = !listShow">
     <div class="select-label">{{ getLabelByValue(currentValue) }}</div>
-    <div class="select-list" v-show="listShow">
-      <div class="list-item" :class="{ 'on': currentValue === item.value }" v-for="item in options" @click.stop="select(item)">{{ item.label }}</div>
-    </div>
+    <transition name="list">
+      <div class="select-list" v-show="listShow">
+        <div class="list-item" :class="{ 'on': currentValue === item.value }" v-for="item in options" @click.stop="select(item)">{{ item.label }}</div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -37,6 +39,14 @@
 </script>
 
 <style lang="scss" scoped>
+  .list-enter-active, .list-leave-active {
+    max-height: 200px;
+    transition: .3s;
+  }
+  .list-enter, .list-leave-to {
+    opacity: 0;
+    max-height: 0;
+  }
   .nest-select {
     position: relative;
     display: flex;

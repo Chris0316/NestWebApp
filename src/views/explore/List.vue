@@ -4,7 +4,7 @@
       <div class="search-wrap">
         <div class="back" @click="$router.go(-1);"></div>
         <div class="search-box">
-          <div class="input" @click="$router.push({ name: 'Search' })"></div>
+          <div class="input" @click="$router.push({ name: 'Search', params: { type: 'list'}})"></div>
         </div>
         <div class="location">马尼拉</div>
       </div>
