@@ -2,38 +2,32 @@
   <div class="search">
     <div class="search-wrap">
       <div class="search-box">
-        <input class="search-msg" type="text" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
-        <div class="search-img" @click="saveKey"></div>
-
-        <!--首页搜索-->
-        <!--<nest-select class="sear-sel" @keyValue="changekey" :seleNum="0"/>-->
-
-
-        <div class="delete" v-if="deleteShow" @click="clearSearch"></div>
+        <div class="input" :class="{ 'explore': searchType === 'explore' }">
+          <input class="search-msg" type="text" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
+          <div class="delete" v-show="deleteShow" @click="clearSearch"></div>
+        </div>
+        <nest-select v-model="selectType" :options="selectOpts" v-if="searchType === 'explore'"/>
       </div>
-      <div class="cancel" @click="cleanAll">
-        取消
-      </div>
+      <div class="cancel" @click="cleanAll">取消</div>
     </div>
     <div class="no-act" v-if="listShow">
 
       <!--首页搜索-->
       <!--<div class="near">我的附近</div>-->
       <!--<div class="near-place">-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
-        <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
+      <!--<div class="one-place">jazz</div>-->
       <!--</div>-->
-
 
 
       <div class="search-pre">
@@ -53,11 +47,17 @@
 </template>
 
 <script>
-  import storageUtil from '../utils/Storage'
+  import DICT from '../configs/DICT';
+  import storageUtil from '../utils/Storage';
 
   export default {
     name: "search",
     created() {
+      let params = this.$route.params;
+      if (params) {
+        this.searchType = params.type;
+      }
+
       // 读取本地数据
       this.listData = storageUtil.fetch('storageKey');
       console.log(this.listData);
@@ -65,11 +65,14 @@
     },
     data() {
       return {
+        searchType: '',
+        selectType: '',
+        selectOpts: DICT.filter.select,
         listData: [],
         listShow: true,
         searchkey: '',
         keyValue: '',
-        deleteShow:false
+        deleteShow: false
       }
     },
     methods: {
@@ -80,7 +83,7 @@
           return;
         }
         this.listData.push(Keyname);
-        storageUtil.save('storageKey',this.listData);
+        storageUtil.save('storageKey', this.listData);
         this.searchkey = '';
       },
       changekey(keymsg) {
@@ -104,13 +107,13 @@
         this.searchkey = '';
         this.$router.go(-1);
       },
-      blurFun(){
+      blurFun() {
         this.deleteShow = false;
       },
-      focusFun(){
+      focusFun() {
         this.deleteShow = true
       },
-      clearSearch(){
+      clearSearch() {
         this.searchkey = '';
       }
     },
@@ -118,13 +121,6 @@
 </script>
 
 <style lang="scss" scoped>
-  input {
-    background: none;
-    outline: none;
-    border: 0px;
-    caret-color: #0f9183;
-  }
-
   @mixin rowcenter {
     display: flex;
     justify-content: center;
@@ -135,18 +131,50 @@
     box-sizing: border-box;
     width: 100%;
     min-height: 100%;
-    padding: 0.2rem .28rem 0rem;
+    padding: .2rem .28rem 0;
     background-color: #fff;
     .search-wrap {
-      margin-bottom: 0.6rem;
+      margin-bottom: .6rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      .search-box {
+    }
+    .search-box {
+      position: relative;
+      display: flex;
+      flex: 1;
+      height: .8rem;
+      border: 1px solid #e8e8ea;
+      border-radius: .1rem;
+      box-shadow: 0 0 0.2rem rgba(176, 183, 187, .4);
+      box-sizing: border-box;
+      z-index: 1;
+      &::before {
+        position: absolute;
+        content: "";
+        top: .24rem;
+        left: .24rem;
+        width: .32rem;
+        height: .32rem;
+        background: url('../assets/images/search-img.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      .input {
         position: relative;
-        width: 5.06rem;
-        height: 0.8rem;
-        .delete{
+        padding-left: .64rem;
+        width: 100%;
+        box-sizing: border-box;
+        &.explore {
+          width: 3.65rem;
+        }
+        .search-msg {
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          font-size: .28rem;
+          border: none;
+          border-radius: 0 .1rem .1rem 0;
+        }
+        .delete {
           position: absolute;
           top: 50%;
           right: 0.25rem;
@@ -157,81 +185,16 @@
           background-size: 100% 100%;
         }
       }
-      .search-msg {
-        box-sizing: border-box;
-        padding-left: 0.64rem;
-        width: 100%;
-        height: 100%;
-        border: 1px solid #e8e8ea;
-        border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
-        &:active {
-          background-color: #e8e8ea;
-        }
-      }
-      .search-img {
-        position: absolute;
-        top: 0.26rem;
-        left: 0.2rem;
-        width: 0.32rem;
-        height: 0.32rem;
-        background: url("../assets/images/search-img.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      .search-sle {
-        @include rowcenter;
-        position: absolute;
-        top: 0.24rem;
-        right: 0rem;
-      }
-      .types {
-        padding-left: 0.2rem;
-        padding-top: 0.01rem;
-        padding-bottom: 0.01rem;
-        font-size: 0.24rem;
-        color: #333333;
-        border-left: 1px solid #cccccc;
-      }
-      .point {
-        margin-left: 0.14rem;
-        margin-right: 0.25rem;
-        width: 0.14rem;
-        height: 0.09rem;
-        background: url("../assets/images/triangle.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      .typelist {
-        position: absolute;
-        right: 0rem;
-        top: 0.8rem;
-        width: 1.4rem;
-        border: 1px solid #e8e8ea;
-        border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
-        background: #ffffff;
-        .typeli {
-          box-sizing: border-box;
-          height: 0.7rem;
-          line-height: 0.7rem;
-          padding-left: 0.18rem;
-          color: #0f9183;
-          font-size: 0.24rem;
-          &:hover {
-            background: #e7f4f2;
-            color: #333333;
-          }
-        }
-      }
-      .cancel {
-        flex: 1;
-        margin-left: 0.28rem;
-        width: 2.1rem;
-        height: 0.8rem;
-        line-height: 0.8rem;
-        text-align: center;
-        font-size: 0.28rem;
-        color: #333333;
-      }
+    }
+    .cancel {
+      position: relative;
+      padding-left: .8rem;
+      width: 1.88rem;
+      height: .8rem;
+      line-height: .8rem;
+      font-size: .28rem;
+      color: #333;
+      box-sizing: border-box;
     }
     .near {
       color: #b2b2b2;

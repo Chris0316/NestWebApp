@@ -14,8 +14,8 @@ import NestTabItem from './commons/NestTabItem'
 import NestTabContainer from './commons/NestTabContainer'
 import NestTabContainerItem from './commons/NestTabContainerItem'
 import NestScroll from './commons/NestScroll'
+import NestShare from './commons/NestShare'
 
-import NestHeader from './public/NestHeader'
 import NestNav from './public/NestNav'
 import Country from './public/Country'
 import Language from './public/Language'
@@ -39,7 +39,7 @@ let components = {
   NestTabContainer,
   NestTabContainerItem,
   NestScroll,
-  NestHeader,
+  NestShare,
   NestNav,
   Country,
   Language

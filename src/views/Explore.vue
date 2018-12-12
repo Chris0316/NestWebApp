@@ -1,6 +1,26 @@
 <template>
   <div class="explore">
-    <nest-header header-type="explore"></nest-header>
+    <div class="nest-header">
+      <div class="search-wrap">
+        <div class="search-box">
+          <div class="input" @click="$router.push({ name: 'Search', params: { type: 'explore' } })"></div>
+          <nest-select v-model="selectType" :options="selectOpts" />
+        </div>
+        <div class="location">马尼拉</div>
+      </div>
+      <div class="control-wrap">
+        <nest-button class="mr28" @click="locationShow = !locationShow">地点</nest-button>
+        <nest-button class="mr28" @click="roomTypeShow = !roomTypeShow">户型</nest-button>
+      </div>
+      <!--@modalConfirm="locationConfirm" @modalClear="locationClear"-->
+      <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
+        <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
+      </nest-modal>
+      <!--@modalConfirm="typeConfirm" @modalClear="typeClear"-->
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" @close="roomTypeShow = false" :status="roomTypeShow">
+        <nest-check v-model="roomTypeVal" :options="roomTypeOpts"></nest-check>
+      </nest-modal>
+    </div>
     <nest-scroll class="app-body">
       <div class="explore-body">
         <div class="menus">
@@ -20,7 +40,7 @@
             <div class="menu-icon icon4"></div>
             <div class="name">新房</div>
           </div>
-          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'parking' } })">
+          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'carport' } })">
             <div class="menu-icon icon5"></div>
             <div class="name">车位</div>
           </div>
@@ -66,8 +86,6 @@
             </nest-tab-bar>
           </div>
         </div>
-        <!--<nest-list-view double/>-->
-
         <div class="list-wrap">
           <div class="unit" v-for="(recommend,index) in recommends">
             <div class="unit-img"></div>
@@ -173,6 +191,14 @@
     },
     data() {
       return {
+        selectType: '',
+        selectOpts: DICT.filter.select,
+        locationShow: false,
+        roomTypeShow: false,
+        locationVal: [],
+        locationOpts: DICT.region,
+        roomTypeVal: [],
+        roomTypeOpts: ['一居室', '二居室', '三居室', '其他'],
         tabSelected: 'rent',
         proprent: this.rent,
         propsecond: this.second,
@@ -223,6 +249,78 @@
     box-sizing: border-box;
     background-color: #fff;
     padding: 0.2rem 0 0;
+    .nest-header {
+      padding: 0 .28rem .2rem;
+      .search-wrap {
+        display: flex;
+        align-items: center;
+      }
+      .search-box {
+        position: relative;
+        display: flex;
+        flex: 1;
+        height: .8rem;
+        border: 1px solid #e8e8ea;
+        border-radius: 0.1rem;
+        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
+        box-sizing: border-box;
+        z-index: 1;
+        &::before {
+          position: absolute;
+          content: "";
+          top: .24rem;
+          left: .24rem;
+          width: .32rem;
+          height: .32rem;
+          background: url('../assets/images/search-img.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        &:active {
+          &::after {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e8e8ea;
+            z-index: -1;
+          }
+        }
+        .input {
+          width: 3.65rem;
+        }
+      }
+      .location {
+        position: relative;
+        padding-left: .88rem;
+        width: 1.88rem;
+        height: .8rem;
+        line-height: .8rem;
+        font-size: .28rem;
+        color: #333;
+        box-sizing: border-box;
+        &::before {
+          position: absolute;
+          content: "";
+          left: .48rem;
+          top: .22rem;
+          width: .26rem;
+          height: .35rem;
+          background: url('../assets/images/position.png') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      .control-wrap {
+        position: relative;
+        margin-top: .28rem;
+        display: flex;
+      }
+      .mr28 {
+        margin-right: .28rem;
+      }
+    }
+
     .app-body {
       flex: 1;
       overflow: hidden;
