@@ -240,7 +240,7 @@
         }
       },
       regionName() {
-        return getSelecteds(DICT.house.region, this.region);
+        return getSelecteds(DICT.region, this.region);
       }
     },
     created() {
@@ -253,7 +253,7 @@
         this.title = getSelecteds(DICT.house.trade, this.trade)[0].label;
         this.typeOpts = DICT.house.type;
         this.rentTypeOpts = DICT.house.rent_type;
-        this.regionOpts = DICT.house.region;
+        this.regionOpts = DICT.region;
         this.carportOpts = DICT.house.carport;
         this.liftOpts = [{
           label: '有电梯',

@@ -162,28 +162,6 @@ const DICT = {
     }, {
       "label": "无",
       "value": "0"
-    }],
-    "region": [{
-      "label": "马卡提(Makati)",
-      "value": "3"
-    }, {
-      "label": "帕赛(Pasay)",
-      "value": "4"
-    }, {
-      "label": "马尼拉市(City of Manila)",
-      "value": "9"
-    }, {
-      "label": "曼达卢永(Mandaluyong)",
-      "value": "6"
-    }, {
-      "label": "奎松(Quezon)",
-      "value": "5"
-    }, {
-      "label": "BGC(BGC, Taguig)",
-      "value": "7"
-    }, {
-      "label": "帕西市(Pasig)",
-      "value": "8"
     }]
   },
   "user": {
@@ -234,7 +212,47 @@ const DICT = {
     "icon": EarthFlag,
     "icon2": EarthFlag2
   }],
-  "languages": ['中文', '한국어', 'にほんご', 'English']
+  "languages": ['中文', '한국어', 'にほんご', 'English'],
+  "region": [{
+    "label": "马卡提(Makati)",
+    "value": "3"
+  }, {
+    "label": "帕赛(Pasay)",
+    "value": "4"
+  }, {
+    "label": "马尼拉市(City of Manila)",
+    "value": "9"
+  }, {
+    "label": "曼达卢永(Mandaluyong)",
+    "value": "6"
+  }, {
+    "label": "奎松(Quezon)",
+    "value": "5"
+  }, {
+    "label": "BGC(BGC, Taguig)",
+    "value": "7"
+  }, {
+    "label": "帕西市(Pasig)",
+    "value": "8"
+  }],
+  "filter": {
+    "select": [{
+      "label": "租房",
+      "value": "trade=rent"
+    }, {
+      "label": "二手房",
+      "value": "is_new=0"
+    }, {
+      "label": "新房",
+      "value": "is_new=1"
+    }, {
+      "label": "车位",
+      "value": "type=carport"
+    }, {
+      "label": "土地",
+      "value": "type=land"
+    }]
+  }
 };
 
 let getSelecteds = (array, values) => {

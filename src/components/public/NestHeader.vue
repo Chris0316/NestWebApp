@@ -2,9 +2,9 @@
   <div class="nest-header">
     <div class="search-wrap">
       <div class="back" v-if="headerType !== 'explore'" @click="$router.go(-1);"></div>
-      <div class="search-box" @click="$router.push({ name: 'Search' })">
-        <div class="input"></div>
-        <nest-select v-model="searchType"/>
+      <div class="search-box">
+        <div class="input" @click="$router.push({ name: 'Search' })"></div>
+        <nest-select v-model="searchType" :options="selectOpts" />
       </div>
       <div class="location">马尼拉</div>
     </div>
@@ -64,6 +64,8 @@
 </template>
 
 <script>
+  import DICT from '../../configs/DICT';
+
   export default {
     name: "nest-header",
     props: {
@@ -72,12 +74,13 @@
     data() {
       return {
         searchType: '',
+        selectOpts: DICT.filter.select,
         locationShow: false,
         roomTypeShow: false,
         conditionShow: false,
         sortShow: false,
         locationVal: [],
-        locationOpts: ['马卡提(Makati)', '帕赛(Pasay)', '马尼拉市(City of Manila)', '曼达卢永(Mandaluyong)', '奎松(Quezon)', 'BGC(BGC, Taguig)', '帕西市(Pasig)'],
+        locationOpts: DICT.region,
         roomTypeVal: [],
         roomTypeOpts: ['一居室', '二居室', '三居室', '其他'],
         sortVal: '默认排序',
@@ -98,11 +101,6 @@
         parkingVal: '',
         parkingOpts: ['带车位', '不带车位'],
         keyValue:''
-      }
-    },
-    watch: {
-      searchType(val) {
-        console.log(val);
       }
     }
   }

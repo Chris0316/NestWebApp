@@ -1,8 +1,8 @@
 <template>
-  <div class="nest-select" :class="{ 'tran': listShow }">
-    <div class="select-label" @click.stop="listShow = !listShow">{{ getLabelByValue(currentValue) }}</div>
+  <div class="nest-select" :class="{ 'tran': listShow }" @click="listShow = !listShow">
+    <div class="select-label">{{ getLabelByValue(currentValue) }}</div>
     <div class="select-list" v-show="listShow">
-      <div class="list-item" v-for="item in options" @click.stop="select(item)">{{ item.label }}</div>
+      <div class="list-item" :class="{ 'on': currentValue === item.value }" v-for="item in options" @click.stop="select(item)">{{ item.label }}</div>
     </div>
   </div>
 </template>
@@ -11,42 +11,21 @@
   export default {
     name: "nest-select",
     props: {
-      value: String
+      value: String,
+      options: Array
     },
     data() {
       return {
-        currentValue: this.value,
+        currentValue: this.value || this.options[0].value,
         listShow: false
       }
-    },
-    created() {
-      this.options = [{
-        "label": "租房",
-        "value": "trade=rent"
-      }, {
-        "label": "二手房",
-        "value": "is_new=0"
-      }, {
-        "label": "新房",
-        "value": "is_new=1"
-      }, {
-        "label": "车位",
-        "value": "type=carport"
-      }, {
-        "label": "土地",
-        "value": "type=land"
-      }]
     },
     methods: {
       getLabelByValue(value) {
         let arr = this.options.filter(item => {
           return value === item.value;
         });
-        if (arr.length > 0) {
-          return arr[0].label;
-        } else {
-          return this.options[0].label;
-        }
+        return arr[0].label;
       },
       select(item) {
         this.currentValue = item.value;
