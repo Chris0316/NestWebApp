@@ -9,18 +9,18 @@
         <div class="location">马尼拉</div>
       </div>
       <div class="control-wrap">
-        <nest-button class="mr28" @click="locationShow = !locationShow">地点</nest-button>
-        <nest-button class="mr28" @click="roomTypeShow = !roomTypeShow" v-if="listType !== 'carport' || listType !== 'land'">户型</nest-button>
+        <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
+        <nest-button :type="structureBtn" class="mr28" @click="structureShow = !structureShow" v-if="listType !== 'carport' || listType !== 'land'">{{ structureBtnTxt }}</nest-button>
         <nest-button class="mr28" @click="conditionShow = !conditionShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
       </div>
-      <!--@modalConfirm="locationConfirm" @modalClear="locationClear"-->
-      <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
-        <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
+      <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
+                  @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
+        <nest-check v-model="region" :options="regionOpts"></nest-check>
       </nest-modal>
-      <!--@modalConfirm="typeConfirm" @modalClear="typeClear"-->
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" @close="roomTypeShow = false" :status="roomTypeShow" v-if="listType !== 'carport' || listType !== 'land'">
-        <nest-check v-model="roomTypeVal" :options="roomTypeOpts"></nest-check>
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="structureShow" v-if="listType !== 'carport' || listType !== 'land'"
+                  @close="structureShow = false" @confirm="structureConfirm" @clear="structure = []">
+        <nest-check v-model="structure" :options="structureOpts"></nest-check>
       </nest-modal>
       <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" @close="conditionShow = false"
                   :status="conditionShow">
@@ -28,7 +28,7 @@
           <div class="condition">
             <div class="condition-title">租金</div>
             <nest-radio v-model="rentalVal" :options="rentalOpts" size="small"></nest-radio>
-            <nest-range class="range-container" v-model="rangeVal" :max="125000" :step="5000"></nest-range>
+            <nest-range class="range-container" v-model="rangeVal" :max="400000" :step="5000"></nest-range>
           </div>
           <div class="condition">
             <div class="condition-title">房型</div>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-  import DICT from '../../configs/DICT';
+  import DICT, {getSelecteds} from '../../configs/DICT';
 
   export default {
     props: {
@@ -150,21 +150,25 @@
     data() {
       return {
         listType: '',
-        locationShow: false,
-        roomTypeShow: false,
-        conditionShow: false,
+        regionShow: false,
+        regionBtn: 'default',
+        regionBtnTxt: '地点',
+        region: [],
+        regionOpts: DICT.region,
+        structureShow: false,
+        structureBtn: 'default',
+        structureBtnTxt: '户型',
+        structure: [],
+        structureOpts: DICT.filter.structure,
         sortShow: false,
-        locationVal: [],
-        locationOpts: DICT.region,
-        roomTypeVal: [],
-        roomTypeOpts: ['一居室', '二居室', '三居室', '其他'],
         sortVal: '默认排序',
         sortOpts: ['默认排序', '均价由低到高', '均价由高到低', '开盘时间顺序', '开盘时间倒序'],
+        conditionShow: false,
         rentalVal: '',
         rentalOpts: ['15000-30000', '30000-40000', '40000-50000', '50000以上'],
-        rangeVal: [0, 100000],
+        rangeVal: [0, '不限'],
         houseTypeVal: '',
-        houseTypeOpts: ['公寓', '别墅', '居民', '车位'],
+        houseTypeOpts: ['公寓', '别墅', '民居', '车位'],
         purposeVal: '',
         purposeOpts: ['住房', '商业办公', '商住两用'],
         rentWayVal: '',
@@ -172,7 +176,7 @@
         payWayVal: '',
         payWayOpts: ['押二付一', '押一付二', '其他'],
         deviceVal: '',
-        deviceOpts: ['阳台', '花园', '静音空调', '冰箱', '洗衣机', '热水器'],
+        deviceOpts: ['阳台', '静音空调', '冰箱', '洗衣机', '热水器'],
         parkingVal: '',
         parkingOpts: ['带车位', '不带车位'],
         keyValue:''
@@ -182,6 +186,46 @@
       let params = this.$route.params;
       if (params) {
         this.listType = params.type;
+      }
+    },
+    watch: {
+      region(val) {
+        if (val.length === 0) {
+          this.regionBtn = 'default';
+          this.regionBtnTxt = '地点';
+        } else {
+          this.regionBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.region, val[0])[0].label;
+            this.regionBtnTxt = label.split('(')[0];
+          } else {
+            this.regionBtnTxt = '地点(' + val.length + ')';
+          }
+        }
+      },
+      structure(val) {
+        if (val.length === 0) {
+          this.structureBtn = 'default';
+          this.structureBtnTxt = '户型';
+        } else {
+          this.structureBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.filter.structure, val[0])[0].label;
+            this.structureBtnTxt = label;
+          } else {
+            this.structureBtnTxt = '户型(' + val.length + ')';
+          }
+        }
+      }
+    },
+    methods: {
+      regionConfirm() {
+        this.regionShow = false;
+        // todo 筛选发请求
+      },
+      structureConfirm() {
+        this.structureShow = false;
+        // todo 筛选发请求
       }
     }
   }

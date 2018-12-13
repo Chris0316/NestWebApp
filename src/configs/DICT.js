@@ -235,23 +235,280 @@ const DICT = {
     "label": "帕西市(Pasig)",
     "value": "8"
   }],
+  // 复合查询条件
   "filter": {
     "select": [{
+      "dbkey1": "trade",
+      "dbvalue1": "rent",
       "label": "租房",
-      "value": "trade=rent"
+      "value": "rent"
     }, {
+      "dbkey1": "is_new",
+      "dbvalue1": "0",
       "label": "二手房",
-      "value": "is_new=0"
+      "value": "second"
     }, {
+      "dbkey1": "is_new",
+      "dbvalue1": "1",
       "label": "新房",
-      "value": "is_new=1"
+      "value": "new"
     }, {
+      "dbkey1": "type",
+      "dbvalue1": "carport",
       "label": "车位",
-      "value": "type=carport"
+      "value": "carport"
     }, {
+      "dbkey1": "type",
+      "dbvalue1": "land",
       "label": "土地",
-      "value": "type=land"
-    }]
+      "value": "land"
+    }],
+    "structure": [{
+      "dbkey1": "bedroom",
+      "dbvalue1": "1",
+      "label": "一居室",
+      "value": "1"
+    }, {
+      "dbkey1": "bedroom",
+      "dbvalue1": "2",
+      "label": "二居室",
+      "value": "2"
+    }, {
+      "dbkey1": "bedroom",
+      "dbvalue1": "3",
+      "label": "三居室",
+      "value": "3"
+    }, {
+      "dbkey1": "bedroom",
+      "dbvalue1": "1",
+      "label": "其他",
+      "value": "4"
+    }],
+    "sort": {
+      "rent": [{
+        "dbkey1": "order",
+        "dbvalue1": "default",
+        "dbkey2": "orderway",
+        "dbvalue2": "",
+        "label": "默认排序",
+        "value": "0"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "created_at",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "最新发布",
+        "value": "1"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "租金由低到高",
+        "value": "2"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "租金由高到低",
+        "value": "3"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "centiare",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "面积从小到大",
+        "value": "4"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "centiare",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "面积从大到小",
+        "value": "5"
+      }],
+      "second": [{
+        "dbkey1": "order",
+        "dbvalue1": "default",
+        "dbkey2": "orderway",
+        "dbvalue2": "",
+        "label": "默认排序",
+        "value": "0"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "created_at",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "最新发布",
+        "value": "1"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "总价由低到高",
+        "value": "2"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "总价由高到低",
+        "value": "3"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "avg_price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "单价由低到高",
+        "value": "4"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "centiare",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "面积从大到小",
+        "value": "5"
+      }],
+      "carport_land": [{
+        "dbkey1": "order",
+        "dbvalue1": "default",
+        "dbkey2": "orderway",
+        "dbvalue2": "",
+        "label": "默认排序",
+        "value": "0"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "created_at",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "最新发布",
+        "value": "1"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "总价由低到高",
+        "value": "2"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "总价由高到低",
+        "value": "3"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "avg_price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "单价由低到高",
+        "value": "4"
+      }],
+      "new": [{
+        "dbkey1": "order",
+        "dbvalue1": "default",
+        "dbkey2": "orderway",
+        "dbvalue2": "",
+        "label": "默认排序",
+        "value": "0"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "avg_price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "均价由低到高",
+        "value": "1"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "avg_price",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "均价由高到低",
+        "value": "2"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "available_time",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "开盘时间顺序",
+        "value": "3"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "available_time",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "开盘时间倒序",
+        "value": "4"
+      }]
+    },
+    "price": {
+      "rent": [{
+        "dbkey1": "price",
+        "dbvalue1": "15000-30000",
+        "label": "15000-30000",
+        "value": "0"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "30000-40000",
+        "label": "30000-40000",
+        "value": "1"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "40000-50000",
+        "label": "40000-50000",
+        "value": "2"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "50000-0",
+        "label": "50000以上",
+        "value": "0"
+      }],
+      "second": [{
+        "dbkey1": "price",
+        "dbvalue1": "2000000-4000000",
+        "label": "200万-400万",
+        "value": "0"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "4000000-6000000",
+        "label": "400万-600万",
+        "value": "1"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "6000000-8000000",
+        "label": "600万-800万",
+        "value": "2"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "8000000-0",
+        "label": "800万以上",
+        "value": "3"
+      }],
+      "carport": [{
+        "dbkey1": "price",
+        "dbvalue1": "0-500000",
+        "label": "50万以下",
+        "value": "0"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "500000-1000000",
+        "label": "50万-100万",
+        "value": "1"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "1000000-1500000",
+        "label": "100万-150万",
+        "value": "2"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "1500000-0",
+        "label": "150万以上",
+        "value": "3"
+      }]
+    }
   }
 };
 

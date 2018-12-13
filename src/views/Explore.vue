@@ -4,21 +4,21 @@
       <div class="search-wrap">
         <div class="search-box">
           <div class="input" @click="$router.push({ name: 'Search', params: { type: 'explore' } })"></div>
-          <nest-select v-model="selectType" :options="selectOpts" />
+          <nest-select v-model="selectType" :options="selectOpts"/>
         </div>
         <div class="location">马尼拉</div>
       </div>
       <div class="control-wrap">
-        <nest-button class="mr28" @click="locationShow = !locationShow">地点</nest-button>
-        <nest-button class="mr28" @click="roomTypeShow = !roomTypeShow">户型</nest-button>
+        <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
+        <nest-button :type="structureBtn" class="mr28" @click="structureShow = !structureShow">{{ structureBtnTxt }}</nest-button>
       </div>
-      <!--@modalConfirm="locationConfirm" @modalClear="locationClear"-->
-      <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
-        <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
+      <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
+                  @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
+        <nest-check v-model="region" :options="regionOpts"></nest-check>
       </nest-modal>
-      <!--@modalConfirm="typeConfirm" @modalClear="typeClear"-->
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" @close="roomTypeShow = false" :status="roomTypeShow">
-        <nest-check v-model="roomTypeVal" :options="roomTypeOpts"></nest-check>
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="structureShow"
+                  @close="structureShow = false" @confirm="structureConfirm" @clear="structure = []">
+        <nest-check v-model="structure" :options="structureOpts"></nest-check>
       </nest-modal>
     </div>
     <nest-scroll class="app-body">
@@ -82,7 +82,7 @@
           <div class="right">
             <nest-tab-bar class="tabs" v-model="tabSelected" align="right">
               <nest-tab-item id="rent">出租</nest-tab-item>
-              <nest-tab-item id="sell">出售</nest-tab-item>
+              <nest-tab-item id="sale">售卖</nest-tab-item>
             </nest-tab-bar>
           </div>
         </div>
@@ -122,113 +122,119 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll';
-  import DICT from '../configs/DICT';
+  import DICT, {getSelecteds} from '../configs/DICT';
 
   export default {
-    props: {
-      rent:{
-        type: Boolean,
-        default: true
-      },
-      second:{
-        type: Boolean,
-        default: false
-      },
-      new:{
-        type: Boolean,
-        default: false
-      },
-      parking:{
-        type: Boolean,
-        default: false
-      },
-      recommends: {
-        type: Array,
-        default: function () {
-          return [
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型',
-              roomsizes: "新房旧房Makati, 1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "车位Makati, 1207 Metro Manila",
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            }
-          ];
-        }
-      }
-    },
     data() {
       return {
         selectType: '',
         selectOpts: DICT.filter.select,
-        locationShow: false,
-        roomTypeShow: false,
-        locationVal: [],
-        locationOpts: DICT.region,
-        roomTypeVal: [],
-        roomTypeOpts: ['一居室', '二居室', '三居室', '其他'],
-        tabSelected: 'rent',
-        proprent: this.rent,
-        propsecond: this.second,
-        propnew: this.new,
-        propparking: this.parking,
+        regionShow: false,
+        regionBtn: 'default',
+        regionBtnTxt: '地点',
+        region: [],
+        regionOpts: DICT.region,
+        structureBtn: 'default',
+        structureBtnTxt: '户型',
+        structureShow: false,
+        structure: [],
+        structureOpts: DICT.filter.structure,
         tradeShow: false,
-        trade: ''
+        trade: '',
+        tabSelected: 'rent',
+        proprent: true,
+        propsecond: false,
+        propnew: false,
+        propparking: false,
+        recommends: [
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+            roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
+            pricem: 23000,
+            rentsize: '28.00-100.55 ㎡'
+          },
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型',
+            roomsizes: "新房旧房Makati, 1207 Metro Manila",
+            pricem: 23000,
+            rentsize: '28.00-100.55 ㎡'
+          },
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+            roomsizes: "车位Makati, 1207 Metro Manila",
+            pricem: 23000
+          },
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+            roomsizes: ['10F', '100.55 ㎡'],
+            pricem: 23000
+          },
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+            roomsizes: ['10F', '100.55 ㎡'],
+            pricem: 23000
+          },
+          {
+            roomimg: '',
+            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
+            roomsizes: ['10F', '100.55 ㎡'],
+            pricem: 23000
+          }
+        ]
       }
     },
     watch: {
       trade(val) {
         this.tradeShow = false;
         setTimeout(() => {
-          this.$router.push({ name: 'ExplorePublish', params: { type: val } });
+          this.$router.push({name: 'ExplorePublish', params: {type: val}});
         }, 500);
+      },
+      region(val) {
+        if (val.length === 0) {
+          this.regionBtn = 'default';
+          this.regionBtnTxt = '地点';
+        } else {
+          this.regionBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.region, val[0])[0].label;
+            this.regionBtnTxt = label.split('(')[0];
+          } else {
+            this.regionBtnTxt = '地点(' + val.length + ')';
+          }
+        }
+      },
+      structure(val) {
+        if (val.length === 0) {
+          this.structureBtn = 'default';
+          this.structureBtnTxt = '户型';
+        } else {
+          this.structureBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.filter.structure, val[0])[0].label;
+            this.structureBtnTxt = label;
+          } else {
+            this.structureBtnTxt = '户型(' + val.length + ')';
+          }
+        }
       }
     },
     created() {
       this.tradeOpts = DICT.house.trade;
     },
     methods: {
-      leaseChange(i) {
-        this.curindex = i;
+      regionConfirm() {
+        this.regionShow = false;
+        // todo 筛选发请求
       },
-      initSwiper() {
-        new BScroll(this.$refs.swiper2, {
-          eventPassthrough: 'vertical',
-          scrollX: true,
-          click: true
-        });
+      structureConfirm() {
+        this.structureShow = false;
+        // todo 筛选发请求
       }
     }
   }
