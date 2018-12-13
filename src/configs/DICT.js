@@ -371,7 +371,43 @@ const DICT = {
         "label": "面积从大到小",
         "value": "5"
       }],
-      "carport_land": [{
+      "carport": [{
+        "dbkey1": "order",
+        "dbvalue1": "default",
+        "dbkey2": "orderway",
+        "dbvalue2": "",
+        "label": "默认排序",
+        "value": "0"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "created_at",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "最新发布",
+        "value": "1"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "总价由低到高",
+        "value": "2"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "price",
+        "dbkey2": "orderway",
+        "dbvalue2": "desc",
+        "label": "总价由高到低",
+        "value": "3"
+      }, {
+        "dbkey1": "order",
+        "dbvalue1": "avg_price",
+        "dbkey2": "orderway",
+        "dbvalue2": "asc",
+        "label": "单价由低到高",
+        "value": "4"
+      }],
+      "land": [{
         "dbkey1": "order",
         "dbvalue1": "default",
         "dbkey2": "orderway",
@@ -466,6 +502,27 @@ const DICT = {
         "label": "50000以上",
         "value": "0"
       }],
+      "new": [{
+        "dbkey1": "price",
+        "dbvalue1": "2000000-4000000",
+        "label": "200万-400万",
+        "value": "0"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "4000000-6000000",
+        "label": "400万-600万",
+        "value": "1"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "6000000-8000000",
+        "label": "600万-800万",
+        "value": "2"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "8000000-0",
+        "label": "800万以上",
+        "value": "3"
+      }],
       "second": [{
         "dbkey1": "price",
         "dbvalue1": "2000000-4000000",
@@ -506,6 +563,27 @@ const DICT = {
         "dbkey1": "price",
         "dbvalue1": "1500000-0",
         "label": "150万以上",
+        "value": "3"
+      }],
+      "land": [{
+        "dbkey1": "price",
+        "dbvalue1": "0-5000000",
+        "label": "500万以下",
+        "value": "0"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "5000000-10000000",
+        "label": "500万-1000万",
+        "value": "1"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "10000000-20000000",
+        "label": "1000万-2000万",
+        "value": "2"
+      }, {
+        "dbkey1": "price",
+        "dbvalue1": "20000000-0",
+        "label": "2000万以上",
         "value": "3"
       }]
     }

@@ -154,15 +154,12 @@
         regionBtn: 'default',
         regionBtnTxt: '地点',
         region: [],
-        regionOpts: DICT.region,
         structureShow: false,
         structureBtn: 'default',
         structureBtnTxt: '户型',
         structure: [],
-        structureOpts: DICT.filter.structure,
         sortShow: false,
-        sortVal: '默认排序',
-        sortOpts: ['默认排序', '均价由低到高', '均价由高到低', '开盘时间顺序', '开盘时间倒序'],
+        sortVal: '0',
         conditionShow: false,
         rentalVal: '',
         rentalOpts: ['15000-30000', '30000-40000', '40000-50000', '50000以上'],
@@ -180,12 +177,6 @@
         parkingVal: '',
         parkingOpts: ['带车位', '不带车位'],
         keyValue:''
-      }
-    },
-    created() {
-      let params = this.$route.params;
-      if (params) {
-        this.listType = params.type;
       }
     },
     watch: {
@@ -218,7 +209,19 @@
         }
       }
     },
+    created() {
+      let params = this.$route.params;
+      if (params) {
+        this.listType = params.type;
+      }
+      this.initOpts();
+    },
     methods: {
+      initOpts() {
+        this.regionOpts = DICT.region;
+        this.structureOpts = DICT.filter.structure;
+        this.sortOpts = DICT.filter.sort[this.listType];
+      },
       regionConfirm() {
         this.regionShow = false;
         // todo 筛选发请求

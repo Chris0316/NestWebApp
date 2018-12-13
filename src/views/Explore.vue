@@ -128,17 +128,14 @@
     data() {
       return {
         selectType: '',
-        selectOpts: DICT.filter.select,
         regionShow: false,
         regionBtn: 'default',
         regionBtnTxt: '地点',
         region: [],
-        regionOpts: DICT.region,
         structureBtn: 'default',
         structureBtnTxt: '户型',
         structureShow: false,
         structure: [],
-        structureOpts: DICT.filter.structure,
         tradeShow: false,
         trade: '',
         tabSelected: 'rent',
@@ -225,9 +222,15 @@
       }
     },
     created() {
-      this.tradeOpts = DICT.house.trade;
+      this.initOpts();
     },
     methods: {
+      initOpts() {
+        this.tradeOpts = DICT.house.trade;
+        this.selectOpts = DICT.filter.select;
+        this.regionOpts = DICT.region;
+        this.structureOpts = DICT.filter.structure;
+      },
       regionConfirm() {
         this.regionShow = false;
         // todo 筛选发请求
