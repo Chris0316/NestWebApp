@@ -10,15 +10,15 @@
       </div>
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
-        <nest-button :type="structureBtn" class="mr28" @click="structureShow = !structureShow">{{ structureBtnTxt }}</nest-button>
+        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow">{{ bedroomBtnTxt }}</nest-button>
       </div>
       <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
         <nest-check v-model="region" :options="regionOpts"></nest-check>
       </nest-modal>
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="structureShow"
-                  @close="structureShow = false" @confirm="structureConfirm" @clear="structure = []">
-        <nest-check v-model="structure" :options="structureOpts"></nest-check>
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
+                  @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
+        <nest-check v-model="bedroom" :options="bedroomOpts"></nest-check>
       </nest-modal>
     </div>
     <nest-scroll class="app-body">
@@ -132,10 +132,10 @@
         regionBtn: 'default',
         regionBtnTxt: '地点',
         region: [],
-        structureBtn: 'default',
-        structureBtnTxt: '户型',
-        structureShow: false,
-        structure: [],
+        bedroomBtn: 'default',
+        bedroomBtnTxt: '户型',
+        bedroomShow: false,
+        bedroom: [],
         tradeShow: false,
         trade: '',
         tabSelected: 'rent',
@@ -206,17 +206,17 @@
           }
         }
       },
-      structure(val) {
+      bedroom(val) {
         if (val.length === 0) {
-          this.structureBtn = 'default';
-          this.structureBtnTxt = '户型';
+          this.bedroomBtn = 'default';
+          this.bedroomBtnTxt = '户型';
         } else {
-          this.structureBtn = 'primary';
+          this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filter.structure, val[0])[0].label;
-            this.structureBtnTxt = label;
+            let label = getSelecteds(DICT.filter.bedroom, val[0])[0].label;
+            this.bedroomBtnTxt = label;
           } else {
-            this.structureBtnTxt = '户型(' + val.length + ')';
+            this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
       }
@@ -229,14 +229,14 @@
         this.tradeOpts = DICT.house.trade;
         this.selectOpts = DICT.filter.select;
         this.regionOpts = DICT.region;
-        this.structureOpts = DICT.filter.structure;
+        this.bedroomOpts = DICT.filter.bedroom;
       },
       regionConfirm() {
         this.regionShow = false;
         // todo 筛选发请求
       },
-      structureConfirm() {
-        this.structureShow = false;
+      bedroomConfirm() {
+        this.bedroomShow = false;
         // todo 筛选发请求
       }
     }

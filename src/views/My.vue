@@ -74,7 +74,7 @@
     data() {
       return {
         name: '点击登录',
-        account: 'Arthas',
+        account: '',
         signature: '',
         portrait: '',
         isAgent: false,

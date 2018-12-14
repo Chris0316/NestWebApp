@@ -10,7 +10,7 @@
       </div>
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
-        <nest-button :type="structureBtn" class="mr28" @click="structureShow = !structureShow" v-if="listType !== 'carport' || listType !== 'land'">{{ structureBtnTxt }}</nest-button>
+        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow" v-if="listType !== 'carport' || listType !== 'land'">{{ bedroomBtnTxt }}</nest-button>
         <nest-button class="mr28" @click="conditionShow = !conditionShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
       </div>
@@ -18,41 +18,58 @@
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
         <nest-check v-model="region" :options="regionOpts"></nest-check>
       </nest-modal>
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="structureShow" v-if="listType !== 'carport' || listType !== 'land'"
-                  @close="structureShow = false" @confirm="structureConfirm" @clear="structure = []">
-        <nest-check v-model="structure" :options="structureOpts"></nest-check>
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow" v-if="listType !== 'carport' || listType !== 'land'"
+                  @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
+        <nest-check v-model="bedroom" :options="bedroomOpts"></nest-check>
       </nest-modal>
-      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" @close="conditionShow = false"
-                  :status="conditionShow">
+      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="conditionShow"
+                  @close="conditionShow = false"
+                  @clear="conditionClear">
         <div class="conditions">
           <div class="condition">
             <div class="condition-title">租金</div>
-            <nest-radio v-model="rentalVal" :options="rentalOpts" size="small"></nest-radio>
-            <nest-range class="range-container" v-model="rangeVal" :max="400000" :step="5000"></nest-range>
+            <nest-radio v-model="price" :options="priceOpts" size="small"></nest-radio>
+            <nest-range class="range-container" v-model="range" :max="rangeMax" :step="rangeStep"></nest-range>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType !== 'carport' && listType !== 'land'">
             <div class="condition-title">房型</div>
-            <nest-radio v-model="houseTypeVal" :options="houseTypeOpts" size="small" :count-in-row="4"></nest-radio>
+            <nest-radio v-model="type" :options="typeOpts" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">用途</div>
-            <nest-radio v-model="purposeVal" :options="purposeOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="purpose" :options="purposeOpts" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">方式</div>
-            <nest-radio v-model="rentWayVal" :options="rentWayOpts" size="small"></nest-radio>
+            <nest-radio v-model="rentType" :options="rentTypeOpts" size="small"></nest-radio>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">付款</div>
-            <nest-radio v-model="payWayVal" :options="payWayOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="payWay" :options="payWayOpts" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">设施</div>
-            <nest-radio v-model="deviceVal" :options="deviceOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-check v-model="facilities" :options="facilitiesOpts" size="small" :count-in-row="3"></nest-check>
           </div>
-          <div class="condition">
+          <div class="condition" v-if="listType === 'rent'">
+            <div class="condition-title">阳台</div>
+            <nest-radio v-model="balcony" :options="balconyOpts" size="small"></nest-radio>
+          </div>
+          <div class="condition" v-if="listType !== 'rent' && listType !== 'carport'">
+            <div class="condition-title">面积</div>
+            <nest-radio v-model="centiare" :options="centiareOpts" size="small"></nest-radio>
+          </div>
+          <div class="condition" v-if="listType === 'rent' || listType === 'second'">
             <div class="condition-title">车位</div>
-            <nest-radio v-model="parkingVal" :options="parkingOpts" size="small"></nest-radio>
+            <nest-radio v-model="carport" :options="carportOpts" size="small"></nest-radio>
+          </div>
+          <div class="condition" v-if="listType !== 'rent' && listType !== 'land'">
+            <div class="condition-title">楼层</div>
+            <nest-radio v-model="floor" :options="floorOpts" size="small"></nest-radio>
+          </div>
+          <div class="condition" v-if="listType === 'new' || listType === 'second'">
+            <div class="condition-title">装修</div>
+            <nest-radio v-model="decor" :options="decorOpts" size="small" :count-in-row="3"></nest-radio>
           </div>
         </div>
       </nest-modal>
@@ -154,29 +171,33 @@
         regionBtn: 'default',
         regionBtnTxt: '地点',
         region: [],
-        structureShow: false,
-        structureBtn: 'default',
-        structureBtnTxt: '户型',
-        structure: [],
+        bedroomShow: false,
+        bedroomBtn: 'default',
+        bedroomBtnTxt: '户型',
+        bedroom: [],
         sortShow: false,
         sortVal: '0',
         conditionShow: false,
-        rentalVal: '',
-        rentalOpts: ['15000-30000', '30000-40000', '40000-50000', '50000以上'],
-        rangeVal: [0, '不限'],
-        houseTypeVal: '',
-        houseTypeOpts: ['公寓', '别墅', '民居', '车位'],
-        purposeVal: '',
-        purposeOpts: ['住房', '商业办公', '商住两用'],
-        rentWayVal: '',
-        rentWayOpts: ['整租', '合租'],
-        payWayVal: '',
-        payWayOpts: ['押二付一', '押一付二', '其他'],
-        deviceVal: '',
-        deviceOpts: ['阳台', '静音空调', '冰箱', '洗衣机', '热水器'],
-        parkingVal: '',
-        parkingOpts: ['带车位', '不带车位'],
+        price: '',
+        type: '',
+        purpose: '',
+        rentType: '',
+        payWay: '',
+        facilities: [],
+        balcony: '',
+        centiare: '',
+        carport: '',
+        floor: '',
+        decor: '',
         keyValue:''
+      }
+    },
+    computed: {
+      range: {
+        get() {
+          return [0, this.rangeMax + this.rangeStep];
+        },
+        set(newVal) {}
       }
     },
     watch: {
@@ -194,17 +215,17 @@
           }
         }
       },
-      structure(val) {
+      bedroom(val) {
         if (val.length === 0) {
-          this.structureBtn = 'default';
-          this.structureBtnTxt = '户型';
+          this.bedroomBtn = 'default';
+          this.bedroomBtnTxt = '户型';
         } else {
-          this.structureBtn = 'primary';
+          this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filter.structure, val[0])[0].label;
-            this.structureBtnTxt = label;
+            let label = getSelecteds(DICT.filter.bedroom, val[0])[0].label;
+            this.bedroomBtnTxt = label;
           } else {
-            this.structureBtnTxt = '户型(' + val.length + ')';
+            this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
       }
@@ -219,16 +240,54 @@
     methods: {
       initOpts() {
         this.regionOpts = DICT.region;
-        this.structureOpts = DICT.filter.structure;
+        this.bedroomOpts = DICT.filter.bedroom;
         this.sortOpts = DICT.filter.sort[this.listType];
+        this.priceOpts = DICT.filter.price[this.listType];
+        if (this.listType === 'rent') {
+          this.rangeMax = 400000;
+          this.rangeStep = 5000;
+          this.typeOpts = DICT.filter.type[this.listType];
+          this.purposeOpts = DICT.house.purpose;
+          this.rentTypeOpts = DICT.house.rent_type;
+          this.payWayOpts = ['押二付一', '押一付二', '其他'];
+          this.facilitiesOpts = DICT.filter.facilities;
+          this.balconyOpts = DICT.house.balcony;
+          this.carportOpts = DICT.filter.carport;
+        } else if (this.listType === 'second') {
+          this.rangeMax = 20000000;
+          this.rangeStep = 100000;
+          this.typeOpts = DICT.filter.type[this.listType];
+          this.centiareOpts = DICT.filter.centiare[this.listType];
+          this.carportOpts = DICT.filter.carport;
+          this.floorOpts = DICT.filter.floor[this.listType];
+          this.decorOpts = DICT.house.decor;
+        } else if (this.listType === 'carport') {
+          this.rangeMax = 5000000;
+          this.rangeStep = 50000;
+          this.floorOpts = DICT.filter.floor[this.listType];
+        } else if (this.listType === 'land') {
+          this.rangeMax = 200000000;
+          this.rangeStep = 1000000;
+          this.centiareOpts = DICT.filter.centiare[this.listType];
+        } else if (this.listType === 'new') {
+          this.rangeMax = 20000000;
+          this.rangeStep = 100000;
+          this.typeOpts = DICT.filter.type[this.listType];
+          this.centiareOpts = DICT.filter.centiare[this.listType];
+          this.floorOpts = DICT.filter.floor[this.listType];
+          this.decorOpts = DICT.house.decor;
+        }
       },
       regionConfirm() {
         this.regionShow = false;
         // todo 筛选发请求
       },
-      structureConfirm() {
-        this.structureShow = false;
+      bedroomConfirm() {
+        this.bedroomShow = false;
         // todo 筛选发请求
+      },
+      conditionClear() {
+
       }
     }
   }

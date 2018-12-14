@@ -255,29 +255,11 @@
         this.rentTypeOpts = DICT.house.rent_type;
         this.regionOpts = DICT.region;
         this.carportOpts = DICT.house.carport;
-        this.liftOpts = [{
-          label: '有电梯',
-          value: '1'
-        }, {
-          label: '无电梯',
-          value: '0'
-        }];
+        this.liftOpts = DICT.house.lift;
         this.decorOpts = DICT.house.decor;
         this.masterDirectionOpts = DICT.house.master_direction;
-        this.balconyOpts = [{
-          label: '有阳台',
-          value: '1'
-        }, {
-          label: '无阳台',
-          value: '0'
-        }];
-        this.petOpts = [{
-          label: '可养宠物',
-          value: '1'
-        }, {
-          label: '禁止宠物',
-          value: '0'
-        }];
+        this.balconyOpts = DICT.house.balcony;
+        this.petOpts = DICT.house.pet;
         this.facilitiesOpts = DICT.house.facilities;
       },
       facOn(item) {
