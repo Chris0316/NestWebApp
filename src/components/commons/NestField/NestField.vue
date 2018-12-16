@@ -89,6 +89,7 @@
       height: .1rem;
       border-radius: .1rem;
       background-color: #d9d9d9;
+      pointer-events: none;
       &.center{
         margin-left: -.05rem;
         left: 50%;

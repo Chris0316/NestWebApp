@@ -21,5 +21,5 @@ export default [
   { path: '/my/cellphone/add', name: 'MyAddCellphone', component: MyAddCellphone, meta: { keepAlive: false, slideLevel: 1 } },
   { path: '/my/message', name: 'MyMessage', component: Message, meta: { keepAlive: false, slideLevel: 1 } },
   { path: '/my/message/detail', name: 'MyMessageDetail', component: MsgDetail, meta: { keepAlive: false, slideLevel: 1 } },
-  { path: '/my/publish/:id', name: 'MyPublish', component: MyPublish, meta: { keepAlive: false, slideLevel: 1 } },
+  { path: '/my/publish', name: 'MyPublish', component: MyPublish, meta: { keepAlive: false, slideLevel: 1 } },
 ]

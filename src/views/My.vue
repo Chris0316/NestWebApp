@@ -88,7 +88,7 @@
         return token ? true : false;
       }
     },
-    created() {
+    mounted() {
       if (this.isLogin) {
         UserService.getUserInfo(res => {
           this.name = res.data.local_name;

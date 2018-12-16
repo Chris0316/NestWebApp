@@ -10,7 +10,9 @@
       </div>
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
-        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow" v-if="listType !== 'carport' || listType !== 'land'">{{ bedroomBtnTxt }}</nest-button>
+        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow"
+                     v-if="listType !== 'carport' || listType !== 'land'">{{ bedroomBtnTxt }}
+        </nest-button>
         <nest-button class="mr28" @click="conditionShow = !conditionShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
       </div>
@@ -18,7 +20,8 @@
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
         <nest-check v-model="region" :options="regionOpts"></nest-check>
       </nest-modal>
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow" v-if="listType !== 'carport' || listType !== 'land'"
+      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
+                  v-if="listType !== 'carport' || listType !== 'land'"
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="bedroomOpts"></nest-check>
       </nest-modal>
@@ -74,32 +77,47 @@
         </div>
       </nest-modal>
       <nest-modal title="排序" :has-clear="false" :has-footer="false" @close="sortShow = false" :status="sortShow">
-        <nest-radio v-model="sortVal" :count-in-row="1" :options="sortOpts"></nest-radio>
+        <nest-radio v-model="sort" :count-in-row="1" :options="sortOpts"></nest-radio>
       </nest-modal>
     </div>
     <nest-scroll class="app-body">
       <div class="list-top">
-        <nest-swipe-cell v-for="(recommend,index) in recommends" :key="index">
-          <div class="search-item"  slot="content">
+        <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
+          <div class="search-item" slot="content">
             <div class="move-wrap">
-              <div class="item-img"></div>
+              <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
-                <div class="title">{{recommend.roomplace}}</div>
-                <div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">
-                  <div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
+                <div class="title">{{ item.building_name }}</div>
+                <div class="type-wrap" v-if="listType === 'new'">
+                  <div class="type-str">{{ item.address }}</div>
                 </div>
-                <div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">
-                  <div class="type-str">{{recommend.roomsizes}}</div>
+                <div class="type-wrap" v-else>
+                  <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
                 </div>
-                <div class="rent" v-if="!recommend.rentsize">
-                  <div class="price">{{recommend.pricem}}</div>
-                  <div class="price-msg">P/月</div>
-                </div>
-                <div class="rent" v-else-if="recommend.rentsize">
-                  <div class="price">{{recommend.pricem}}</div>
+                <div class="rent" v-if="listType === 'second' || listType === 'new'">
+                  <div class="price">400</div>
                   <div class="price-msg">P/㎡</div>
-                  <div class="room-size">{{recommend.rentsize}}</div>
+                  <div class="room-size">28.00-100.55 ㎡</div>
                 </div>
+                <div class="rent" v-else>
+                  <div class="price">400</div>
+                  <div class="price-msg">P/㎡</div>
+                </div>
+                <!--<div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">-->
+                  <!--<div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>-->
+                <!--</div>-->
+                <!--<div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">-->
+                  <!--<div class="type-str">{{recommend.roomsizes}}</div>-->
+                <!--</div>-->
+                <!--<div class="rent" v-if="!recommend.rentsize">-->
+                  <!--<div class="price">{{recommend.pricem}}</div>-->
+                  <!--<div class="price-msg">P/月</div>-->
+                <!--</div>-->
+                <!--<div class="rent" v-else-if="recommend.rentsize">-->
+                  <!--<div class="price">{{recommend.pricem}}</div>-->
+                  <!--<div class="price-msg">P/㎡</div>-->
+                  <!--<div class="room-size">{{recommend.rentsize}}</div>-->
+                <!--</div>-->
               </div>
             </div>
           </div>
@@ -115,6 +133,7 @@
 
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
+  import HouseService from '../../services/HouseService';
 
   export default {
     props: {
@@ -167,6 +186,7 @@
     data() {
       return {
         listType: '',
+        dataList: null,
         regionShow: false,
         regionBtn: 'default',
         regionBtnTxt: '地点',
@@ -176,7 +196,7 @@
         bedroomBtnTxt: '户型',
         bedroom: [],
         sortShow: false,
-        sortVal: '0',
+        sort: '0',
         conditionShow: false,
         price: '',
         type: '',
@@ -188,8 +208,7 @@
         centiare: '',
         carport: '',
         floor: '',
-        decor: '',
-        keyValue:''
+        decor: ''
       }
     },
     computed: {
@@ -197,7 +216,8 @@
         get() {
           return [0, this.rangeMax + this.rangeStep];
         },
-        set(newVal) {}
+        set(newVal) {
+        }
       }
     },
     watch: {
@@ -237,6 +257,11 @@
       }
       this.initOpts();
     },
+    mounted() {
+      HouseService.getList({}, res => {
+        this.dataList = res.data;
+      })
+    },
     methods: {
       initOpts() {
         this.regionOpts = DICT.region;
@@ -249,7 +274,7 @@
           this.typeOpts = DICT.filter.type[this.listType];
           this.purposeOpts = DICT.house.purpose;
           this.rentTypeOpts = DICT.house.rent_type;
-          this.payWayOpts = ['押二付一', '押一付二', '其他'];
+          this.payWayOpts = DICT.filter.rent_pay;
           this.facilitiesOpts = DICT.filter.facilities;
           this.balconyOpts = DICT.house.balcony;
           this.carportOpts = DICT.filter.carport;
@@ -276,6 +301,13 @@
           this.centiareOpts = DICT.filter.centiare[this.listType];
           this.floorOpts = DICT.filter.floor[this.listType];
           this.decorOpts = DICT.house.decor;
+        }
+      },
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return '';
         }
       },
       regionConfirm() {
@@ -432,7 +464,7 @@
         border-radius: 0.1rem;
         background-color: #e8e8ea;
         background-repeat: no-repeat;
-        background-size: 100% 100%;
+        background-size: cover;
       }
       .msg-wrap {
         display: flex;

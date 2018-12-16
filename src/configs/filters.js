@@ -1,12 +1,3 @@
-import FacIcon5 from "../assets/images/facility/fac5.png";
-import FacIconSelected5 from "../assets/images/facility/fac-on5.png";
-import FacIcon0 from "../assets/images/facility/fac0.png";
-import FacIconSelected0 from "../assets/images/facility/fac-on0.png";
-import FacIcon6 from "../assets/images/facility/fac6.png";
-import FacIconSelected6 from "../assets/images/facility/fac-on6.png";
-import FacIcon8 from "../assets/images/facility/fac8.png";
-import FacIconSelected8 from "../assets/images/facility/fac-on8.png";
-
 const filters = {
   "select": [{
     "dbkey1": "trade",
@@ -243,6 +234,24 @@ const filters = {
       "value": "4"
     }]
   },
+  "rent_pay": [{
+    "dbkey1": "pay_month",
+    "dbvalue1": "1",
+    "dbkey2": "deposit_month",
+    "dbvalue2": "2",
+    "label": "押二付一",
+    "value": "0"
+  }, {
+    "dbkey1": "pay_month",
+    "dbvalue1": "2",
+    "dbkey2": "deposit_month",
+    "dbvalue2": "1",
+    "label": "押一付二",
+    "value": "1"
+  }, {
+    "label": "其他",
+    "value": "2"
+  }],
   "price": {
     "rent": [{
       "label": "15000-30000",
