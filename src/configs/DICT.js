@@ -133,10 +133,10 @@ const DICT = {
       "value": "shared"
     }],
     "decor": [{
-      "label": "精装修",
+      "label": "豪华装修",
       "value": "1"
     }, {
-      "label": "豪华装修",
+      "label": "精装修",
       "value": "2"
     }, {
       "label": "毛坯",
