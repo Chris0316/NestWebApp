@@ -1,7 +1,8 @@
 import axios from '../utils/Request';
 
 const api = {
-  house: '/houses'
+  house: '/houses',
+  agent:'/agents'
 };
 
 let HouseService = {
@@ -10,12 +11,19 @@ let HouseService = {
       callback(res);
     });
   },
-  getList(params, callback) {
+  getHomeList(params, callback) {
     axios.get(api.house, {
       params: params
     }).then(res => {
       callback(res);
     });
+  },
+  getAgentList(params,callback){
+    axios.get(api.agent,{
+      params:params
+    }).then(res=>{
+      callback(res)
+    })
   }
 };
 

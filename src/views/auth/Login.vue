@@ -36,8 +36,8 @@
     name: "Login",
     data() {
       return {
-        country: '0063',
-        phone: '09888888888',
+        country: '0086',
+        phone: '18521520527',
         countryShow: false
       }
     },

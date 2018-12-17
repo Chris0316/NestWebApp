@@ -26,65 +26,76 @@
     </nest-tab-container>
     <nest-scroll class="app-body">
       <nest-tab-container v-model="tabSelected">
+
         <nest-tab-container-item id="houseres">
-          <nest-swipe-cell  v-for="(recommend,index) in recommends" :key="index">
-            <div class="search-item"  slot="content">
-              <div class="move-wrap">
-                <div class="item-img"></div>
-                <div class="msg-wrap">
-                  <div class="title">{{recommend.roomplace}}</div>
-                  <div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">
-                    <div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
-                  </div>
-                  <div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">
-                    <div class="type-str">{{recommend.roomsizes}}</div>
-                  </div>
-                  <div class="rent" v-if="!recommend.rentsize">
-                    <div class="price">{{recommend.pricem}}</div>
-                    <div class="price-msg">P/月</div>
-                  </div>
-                  <div class="rent" v-else-if="recommend.rentsize">
-                    <div class="price">{{recommend.pricem}}</div>
-                    <div class="price-msg">P/㎡</div>
-                    <div class="room-size">{{recommend.rentsize}}</div>
+          <template v-if="recommends.length > 0">
+            <nest-swipe-cell  v-for="(recommend,index) in recommends" :key="index">
+              <div class="search-item"  slot="content">
+                <div class="move-wrap">
+                  <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
+                  <div class="item-img"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                  <div class="msg-wrap">
+                    <div class="title">{{recommend.building_name}}</div>
+                    <div class="type-wrap" v-if="recommend.trade == 'rent'">
+                      <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                    </div>
+                    <div class="type-wrap" v-else="recommend.trade != 'rent'">
+                      <div class="type-str">{{recommend.address}}</div>
+                    </div>
+                    <div class="rent" v-if="recommend.trade == 'rent'">
+                      <div class="price">{{recommend.price}}</div>
+                      <div class="price-msg">P/月</div>
+                    </div>
+                    <div class="rent" v-else-if="recommend.trade == 'sale'">
+                      <div class="price">{{recommend.price}}</div>
+                      <div class="price-msg">P/㎡</div>
+                      <div class="room-size">{{recommend.centiare}} ㎡</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="collect-wrap"  slot="controls">
-              <div class="collect">
-                <div class="heart"></div>
-                <div class="share"></div>
+              <div class="collect-wrap"  slot="controls">
+                <div class="collect">
+                  <div class="heart"></div>
+                  <div class="share"></div>
+                </div>
+                <div class="collect-del">
+                  <div class="call-icon"></div>
+                </div>
               </div>
-              <div class="collect-del">
-                <div class="call-icon"></div>
-              </div>
-            </div>
-          </nest-swipe-cell>
+            </nest-swipe-cell>
+          </template>
         </nest-tab-container-item>
+
+
+
         <nest-tab-container-item id="econman">
           <nest-swipe-cell v-for="(item, index) in peopleArr" :key="index">
             <div class="item" slot="content">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
-                    <div class="cli"></div>
+                    <div class="cli" :style="{backgroundImage:item.avatar}"></div>
                     <div class="det">
-                      <div class="name">Govern</div>
-                      <div class="skill">语言：汉语/英语/韩语/日语</div>
+                      <div class="name">{{item.local_name}}</div>
+                      <div class="skill">语言：
+                        <span v-for="(language, i) in item.languages">{{language}}<span v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
+                        <!--汉语/英语/韩语/日语-->
+                      </div>
                     </div>
                   </div>
                   <div class="top-r">
                     <div class="follow-btn">已关注</div>
-                    <div class="follow-num">67人关注</div>
+                    <div class="follow-num">{{item.follows}}人关注</div>
                   </div>
                 </div>
                 <div class="text1">
-                  近一个月：出租 <span class="sp">13</span>套 &nbsp;售卖 <span class="sp">24</span> 套
+                  近一个月：出租 <span class="sp">{{item.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{item.monthly_sold_amount}}</span> 套
                 </div>
                 <div class="text2">
-                  我是来自makati的经纪人，这是个性签名随便写点什么做多两行的
-                  最后一行在这里最后用“...“表示就行了最后一行在这里最后用“...“表示就行了
+                  {{item.introduction}}
+                  <!--我是来自makati的经纪人，这是个性签名随便写点什么做多两行的-->
+                  <!--最后一行在这里最后用“...“表示就行了最后一行在这里最后用“...“表示就行了-->
                 </div>
               </div>
             </div>
@@ -128,10 +139,11 @@
 </template>
 
 <script>
+  import HouseService from '../services/HouseService'
   export default {
     name: "Follow",
     props: {
-      recommends: {
+      housesList: {
         type: Array,
         default: function () {
           return [
@@ -190,8 +202,21 @@
         classifyVal: '默认',
         followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
         followtimeShow: false,
-        followtimeVal: '默认'
+        followtimeVal: '默认',
+        recommends :this.housesList
       }
+    },
+    created(){
+      HouseService.getAgentList('',res=>{
+        this.peopleArr = res.data
+      });
+      HouseService.getHomeList('',res=>{
+        console.log(res.data);
+        this.recommends = res.data;
+        console.log(this.recommends.length);
+        // console.log(this.recommends[0].galleries.data[0].url);
+        console.log(this.recommends[9].galleries.data.length);
+      });
     },
     methods: {
       typeModalFun() {
@@ -202,6 +227,16 @@
       },
       followtimeModalFun() {
         this.followtimeShow = !this.followtimeShow
+      },
+      imageUrl(item) {
+        // console.log(item.galleries['data']);
+
+        console.log(Object.keys(item.galleries))
+        // if (item.galleries.data.length > 0) {
+        //   return item.galleries.data[0].url;
+        // } else {
+        //   return '';
+        // }
       }
     }
   }
@@ -437,8 +472,10 @@
       height: 2.15rem;
       margin-bottom: 0.4rem;
       .item-cont {
+        box-sizing: border-box;
+        padding: 0 0.28rem;
         position: absolute;
-        margin: 0 0.28rem;
+        width: 100%;
       }
       .top {
         margin-bottom: 0.2rem;
