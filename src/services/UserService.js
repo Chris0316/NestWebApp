@@ -1,7 +1,8 @@
 import axios from '../utils/Request';
 
 const api = {
-  userInfo: '/user'
+  userInfo: '/user',
+  agent:'/agents'
 };
 
 let UserService = {
@@ -13,6 +14,13 @@ let UserService = {
   updateUserInfo(userInfo, callback) {
     axios.patch(api.userInfo, userInfo).then(res => {
       callback(res);
+    })
+  },
+  getAgentList(params,callback){
+    axios.get(api.agent,{
+      params:params
+    }).then(res=>{
+      callback(res)
     })
   }
 };
