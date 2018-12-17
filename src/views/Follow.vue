@@ -32,7 +32,7 @@
             <div class="search-item"  slot="content">
               <div class="move-wrap">
                 <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
-                <div class="item-img" v-if="recommend.galleries.data.length !=0"  :style="{backgroundImage:'url('+recommend.galleries.data[0].url+')'}"></div>
+                <div class="item-img"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
                 <div class="msg-wrap">
                   <div class="title">{{recommend.building_name}}</div>
                   <div class="type-wrap" v-if="recommend.trade == 'rent'">
@@ -64,6 +64,8 @@
             </div>
           </nest-swipe-cell>
         </nest-tab-container-item>
+
+
 
         <nest-tab-container-item id="econman">
           <nest-swipe-cell v-for="(item, index) in peopleArr" :key="index">
@@ -136,7 +138,6 @@
 
 <script>
   import HouseService from '../services/HouseService'
-  import UserService from '../services/UserService'
   export default {
     name: "Follow",
     props: {
@@ -200,7 +201,7 @@
         followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
         followtimeShow: false,
         followtimeVal: '默认',
-        recommends :[]
+        recommends : null
       }
     },
     created(){
@@ -223,6 +224,13 @@
       },
       followtimeModalFun() {
         this.followtimeShow = !this.followtimeShow
+      },
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return '';
+        }
       }
     }
   }
