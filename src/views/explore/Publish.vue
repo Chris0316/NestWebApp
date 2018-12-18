@@ -185,6 +185,7 @@
   import DICT, {getSelecteds} from '../../configs/DICT';
   import UserService from '../../services/UserService';
   import HouseService from '../../services/HouseService';
+  import HouseAdaptor from '../../adaptor/HouseAdaptor';
 
   export default {
     name: "Publish",
@@ -289,8 +290,8 @@
         }
       },
       publish() {
-        let houseObj = {
-          is_new: '0',
+        let params = {
+          is_new: 0,
           galleries: this.uploadPics.join(','),
           trade: this.trade,
           type: this.type,
@@ -301,7 +302,7 @@
           region_id: this.region,
           building_no: this.buildingNo,
           floor: this.floor,
-          max_floor: this.floorMax,
+          floor_max: this.floorMax,
           bedroom: this.bedroom,
           hall: this.hall,
           toilet: this.toilet,
@@ -309,8 +310,8 @@
           price: this.trade === 'rent' ? this.price : this.price + '0000',
           deposit_month: this.depositMonth,
           pay_month: this.payMonth,
-          // contact:
-          // contact_no:
+          // contact_name:
+          // contact_phone:
           available_time: this.availableTime,
           min_stay_month: this.minStayMonth,
           max_stay_month: this.maxStayMonth,
@@ -323,12 +324,15 @@
           facilities: this.facilities.join(','),
           description: this.description
         };
-        for(let i in houseObj) {
-          if (houseObj[i] === '') {
-            delete houseObj[i];
+        let house = new HouseAdaptor(params);
+        for(let key in house) {
+          if (house.hasOwnProperty(key)) {
+            if (house[key] === "" || house[key] === null || house[key] === undefined) {
+              delete house[key];
+            }
           }
         }
-        HouseService.publish(houseObj, res => {
+        HouseService.publish(house, res => {
           this.$toast.success('发布成功！');
           this.$router.go(-1);
         })

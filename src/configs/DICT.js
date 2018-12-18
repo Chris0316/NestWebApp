@@ -109,7 +109,7 @@ const DICT = {
       "label": "商铺/写字楼",
       "value": "office"
     }, {
-      "label": "车库",
+      "label": "车位",
       "value": "carport"
     }, {
       "label": "土地",

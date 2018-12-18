@@ -330,6 +330,9 @@ const filters = {
       "label": "民居",
       "value": "homestay"
     }, {
+      "label": "车位",
+      "value": "carport"
+    }, {
       "label": "写字楼",
       "value": "office"
     }, {

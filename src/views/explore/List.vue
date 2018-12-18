@@ -81,7 +81,7 @@
       </nest-modal>
     </div>
     <nest-scroll class="app-body">
-      <div class="list-top">
+      <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
           <div class="search-item" slot="content">
             <div class="move-wrap">
@@ -94,14 +94,14 @@
                 <div class="type-wrap" v-else>
                   <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
                 </div>
-                <div class="rent" v-if="listType === 'second' || listType === 'new'">
-                  <div class="price">400</div>
-                  <div class="price-msg">P/㎡</div>
-                  <div class="room-size">28.00-100.55 ㎡</div>
-                </div>
-                <div class="rent" v-else>
-                  <div class="price">400</div>
-                  <div class="price-msg">P/㎡</div>
+                <div class="rent">
+                  <div class="price" v-if="listType === 'new' || listType === 'rent'">{{ item.price }}</div>
+                  <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
+                  <div class="price-msg" v-if="listType === 'new'">P/㎡</div>
+                  <div class="price-msg" v-else-if="listType === 'rent'">P/月</div>
+                  <div class="price-msg" v-else>万</div>
+                  <div class="room-size" v-if="listType === 'new'">{{ item.centiare }} ㎡</div>
+                  <div class="room-size" v-else-if="listType === 'second'">{{ item.price }} P/㎡</div>
                 </div>
                 <!--<div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">-->
                   <!--<div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>-->
@@ -134,55 +134,9 @@
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
   import HouseService from '../../services/HouseService';
+  import PreviewDefaultImg from '../../assets/images/preview-default.png';
 
   export default {
-    props: {
-      recommends: {
-        type: Array,
-        default: function () {
-          return [
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型',
-              roomsizes: "新房旧房Makati, 1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "车位Makati, 1207 Metro Manila",
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            }
-          ];
-        }
-      }
-    },
     data() {
       return {
         listType: '',
@@ -196,19 +150,33 @@
         bedroomBtnTxt: '户型',
         bedroom: [],
         sortShow: false,
-        sort: '0',
         conditionShow: false,
-        price: '',
-        type: '',
-        purpose: '',
-        rentType: '',
-        payWay: '',
-        facilities: [],
-        balcony: '',
-        centiare: '',
-        carport: '',
-        floor: '',
-        decor: ''
+        conditions: {
+          sort: '0',
+          price: '',
+          type: '',
+          purpose: '',
+          rentType: '',
+          payWay: '',
+          facilities: [],
+          balcony: '',
+          centiare: '',
+          carport: '',
+          floor: '',
+          decor: ''
+        },
+        // sort: '0',
+        // price: '',
+        // type: '',
+        // purpose: '',
+        // rentType: '',
+        // payWay: '',
+        // facilities: [],
+        // balcony: '',
+        // centiare: '',
+        // carport: '',
+        // floor: '',
+        // decor: ''
       }
     },
     computed: {
@@ -254,11 +222,23 @@
       let params = this.$route.params;
       if (params) {
         this.listType = params.type;
+        if (this.listType === 'rent' || this.listType ==='new' || this.listType === 'second') {
+          this.type = '';
+        } else if (this.listType === 'carport') {
+          this.type = 'carport';
+        } else if (this.listType === 'land') {
+          this.type = 'land';
+        }
       }
       this.initOpts();
     },
     mounted() {
-      HouseService.getList({}, res => {
+      let obj = {
+        trade: this.trade,
+        type: this.type,
+        is_new: this.listType === 'new' ? 1 : 0
+      };
+      HouseService.getList(obj, res => {
         this.dataList = res.data;
       })
     },
@@ -269,6 +249,7 @@
         this.sortOpts = DICT.filter.sort[this.listType];
         this.priceOpts = DICT.filter.price[this.listType];
         if (this.listType === 'rent') {
+          this.trade = 'rent';
           this.rangeMax = 400000;
           this.rangeStep = 5000;
           this.typeOpts = DICT.filter.type[this.listType];
@@ -279,6 +260,7 @@
           this.balconyOpts = DICT.house.balcony;
           this.carportOpts = DICT.filter.carport;
         } else if (this.listType === 'second') {
+          this.trade = 'sale';
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
           this.typeOpts = DICT.filter.type[this.listType];
@@ -287,14 +269,17 @@
           this.floorOpts = DICT.filter.floor[this.listType];
           this.decorOpts = DICT.house.decor;
         } else if (this.listType === 'carport') {
+          this.trade = 'sale';
           this.rangeMax = 5000000;
           this.rangeStep = 50000;
           this.floorOpts = DICT.filter.floor[this.listType];
         } else if (this.listType === 'land') {
+          this.trade = 'sale';
           this.rangeMax = 200000000;
           this.rangeStep = 1000000;
           this.centiareOpts = DICT.filter.centiare[this.listType];
         } else if (this.listType === 'new') {
+          this.trade = 'sale';
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
           this.typeOpts = DICT.filter.type[this.listType];
@@ -307,7 +292,7 @@
         if (item.galleries.data.length > 0) {
           return item.galleries.data[0].url;
         } else {
-          return '';
+          return PreviewDefaultImg;
         }
       },
       regionConfirm() {
@@ -438,8 +423,8 @@
       flex: 1;
       overflow: hidden;
     }
-    .list-top {
-      padding-top: 0.5rem;
+    .list-container {
+      padding: 0.5rem 0;
     }
     .search-item {
       display: flex;
