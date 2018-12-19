@@ -129,7 +129,7 @@
     data() {
       return {
         listType: '',
-        dataList: null,
+        dataList: [],
         regionShow: false,
         regionBtn: 'default',
         regionBtnTxt: '地点',
@@ -156,7 +156,7 @@
         floor: '',
         decor: '',
         filters: {
-          page: 1,
+          page: 0,
           per_page: 10
         },
         pullUpLoadObj: {
@@ -228,7 +228,7 @@
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;
-      this.doSearch(this.filters);
+      this.onPullingUp();
     },
     methods: {
       initOpts() {
@@ -266,32 +266,18 @@
       regionConfirm() {
         this.regionShow = false;
         this.filters.region_id = this.region;
-        this.onPullingDown(this.filters);
+        this.onPullingUp();
       },
       bedroomConfirm() {
         this.bedroomShow = false;
         this.filters.bedroom = this.bedroom;
-        this.onPullingDown(this.filters);
+        this.onPullingUp();
       },
       filterConfirm() {
         this.filtersShow = false;
       },
       filterClear() {
 
-      },
-      doSearch(params) {
-        for(let key in params) {
-          if (params.hasOwnProperty(key)) {
-            if (params[key] === "" || params[key] === null || params[key] === undefined) {
-              delete params[key];
-            } else if (params[key] instanceof Array && params[key].length === 0) {
-              delete params[key];
-            }
-          }
-        }
-        HouseService.getList(params, res => {
-          this.dataList = res.data;
-        });
       },
       filterParams(params) {
         for(let key in params) {
