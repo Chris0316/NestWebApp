@@ -138,6 +138,7 @@
 
 <script>
   import HouseService from '../services/HouseService'
+  import UserService from '../services/UserService'
   export default {
     name: "Follow",
     props: {
@@ -211,8 +212,6 @@
       HouseService.getList('',res=>{
         console.log(res.data);
         this.recommends = res.data;
-        // console.log(this.recommends[0].galleries.data[0].url);
-        console.log(this.recommends[9].galleries.data.length);
       });
     },
     methods: {
