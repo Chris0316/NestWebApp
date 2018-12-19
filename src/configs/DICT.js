@@ -263,7 +263,7 @@ const DICT = {
   }],
 
   // 复合查询条件
-  "filter": filters
+  "filters": filters
 };
 
 let getSelecteds = (array, values) => {

@@ -324,14 +324,7 @@
           facilities: this.facilities.join(','),
           description: this.description
         };
-        let house = new HouseAdaptor(params);
-        for(let key in house) {
-          if (house.hasOwnProperty(key)) {
-            if (house[key] === "" || house[key] === null || house[key] === undefined) {
-              delete house[key];
-            }
-          }
-        }
+        let house = new HouseAdaptor(params).getEffectiveObject();
         HouseService.publish(house, res => {
           this.$toast.success('发布成功！');
           this.$router.go(-1);

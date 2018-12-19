@@ -35,6 +35,7 @@ class House {
     // 设置房屋公共属性
     this.trade = params.trade;
     this.type = params.type;
+    this.is_new = params.is_new;
     this.galleries = params.galleries;
     this.purpose = params.purpose;
     this.building_name = params.building_name;
@@ -44,6 +45,20 @@ class House {
     this.contact_name = params.contact_name;
     this.contact_phone = params.contact_phone;
     this.description = params.description;
+  }
+
+  getEffectiveObject() {
+    let params = this;
+    for(let key in params) {
+      if (params.hasOwnProperty(key)) {
+        if (params[key] === "" || params[key] === null || params[key] === undefined) {
+          delete params[key];
+        } else if (params[key] instanceof Array && params[key].length === 0) {
+          delete params[key];
+        }
+      }
+    }
+    return params;
   }
 }
 
@@ -58,8 +73,6 @@ class ResidenceImpl extends House {
       this.available_time = params.available_time;
       this.min_stay_month = params.min_stay_month;
       this.max_stay_month = params.max_stay_month;
-    } else {
-      this.is_new = params.is_new;
     }
     this.building_no = params.building_no;
     this.floor = params.floor;
@@ -89,8 +102,6 @@ class OfficeImpl extends House {
       this.available_time = params.available_time;
       this.min_stay_month = params.min_stay_month;
       this.max_stay_month = params.max_stay_month;
-    } else {
-      this.is_new = params.is_new;
     }
     this.building_no = params.building_no;
     this.floor = params.floor;
@@ -115,7 +126,6 @@ class CarportImpl extends House {
       this.max_stay_month = params.max_stay_month;
     } else {
       this.centiare = params.centiare;
-      this.is_new = params.is_new;
     }
     this.building_no = params.building_no;
     this.floor = params.floor;
@@ -136,7 +146,6 @@ class LandImpl extends House {
       this.max_stay_month = params.max_stay_month;
     } else {
       this.lift = params.lift;
-      this.is_new = params.is_new;
     }
     this.centiare = params.centiare;
   }

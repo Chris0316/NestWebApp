@@ -12,7 +12,8 @@ let HouseService = {
   },
   getList(params, callback) {
     axios.get(api.house, {
-      params: params
+      params: params,
+      disableLoading: true
     }).then(res => {
       callback(res);
     });

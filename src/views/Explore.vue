@@ -4,7 +4,7 @@
       <div class="search-wrap">
         <div class="search-box">
           <div class="input" @click="$router.push({ name: 'Search', params: { type: 'explore' } })"></div>
-          <nest-select v-model="selectType" :options="selectOpts"/>
+          <nest-select v-model="selectType" :options="DICT.filters.select"/>
         </div>
         <div class="location">马尼拉</div>
       </div>
@@ -14,11 +14,11 @@
       </div>
       <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
-        <nest-check v-model="region" :options="regionOpts"></nest-check>
+        <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
       <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
-        <nest-check v-model="bedroom" :options="bedroomOpts"></nest-check>
+        <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
     </div>
     <nest-scroll class="app-body">
@@ -115,7 +115,7 @@
       </div>
     </nest-scroll>
     <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
-      <nest-radio v-model="trade" :options="tradeOpts" :count-in-row="1"></nest-radio>
+      <nest-radio v-model="trade" :options="DICT.house.trade" :count-in-row="1"></nest-radio>
     </nest-modal>
     <nest-nav page="explore"></nest-nav>
   </div>
@@ -213,7 +213,7 @@
         } else {
           this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filter.bedroom, val[0])[0].label;
+            let label = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
             this.bedroomBtnTxt = label;
           } else {
             this.bedroomBtnTxt = '户型(' + val.length + ')';
@@ -226,10 +226,7 @@
     },
     methods: {
       initOpts() {
-        this.tradeOpts = DICT.house.trade;
-        this.selectOpts = DICT.filter.select;
-        this.regionOpts = DICT.region;
-        this.bedroomOpts = DICT.filter.bedroom;
+        this.DICT = DICT;
       },
       regionConfirm() {
         this.regionShow = false;

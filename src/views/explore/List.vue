@@ -13,76 +13,80 @@
         <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow"
                      v-if="listType !== 'carport' || listType !== 'land'">{{ bedroomBtnTxt }}
         </nest-button>
-        <nest-button class="mr28" @click="conditionShow = !conditionShow">筛选</nest-button>
+        <nest-button class="mr28" @click="filtersShow = !filtersShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
       </div>
       <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
-        <nest-check v-model="region" :options="regionOpts"></nest-check>
+        <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
       <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
                   v-if="listType !== 'carport' || listType !== 'land'"
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
-        <nest-check v-model="bedroom" :options="bedroomOpts"></nest-check>
+        <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
-      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="conditionShow"
-                  @close="conditionShow = false"
-                  @clear="conditionClear">
+      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
+                  @close="filtersShow = false"
+                  @confirm="filterConfirm"
+                  @clear="filterClear">
         <div class="conditions">
           <div class="condition">
-            <div class="condition-title">租金</div>
-            <nest-radio v-model="price" :options="priceOpts" size="small"></nest-radio>
+            <div class="condition-title">{{ listType === 'rent' ? '租金' : '价格' }}</div>
+            <nest-radio v-model="price" :options="DICT.filters.price[listType]" size="small"></nest-radio>
             <nest-range class="range-container" v-model="range" :max="rangeMax" :step="rangeStep"></nest-range>
           </div>
           <div class="condition" v-if="listType !== 'carport' && listType !== 'land'">
             <div class="condition-title">房型</div>
-            <nest-radio v-model="type" :options="typeOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="type" :options="DICT.filters.type[listType]" size="small" :count-in-row="3"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">用途</div>
-            <nest-radio v-model="purpose" :options="purposeOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="purpose" :options="DICT.house.purpose" size="small" :count-in-row="3"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">方式</div>
-            <nest-radio v-model="rentType" :options="rentTypeOpts" size="small"></nest-radio>
+            <nest-radio v-model="rent_type" :options="DICT.house.rent_type" size="small"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">付款</div>
-            <nest-radio v-model="payWay" :options="payWayOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="payWay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">设施</div>
-            <nest-check v-model="facilities" :options="facilitiesOpts" size="small" :count-in-row="3"></nest-check>
+            <nest-check v-model="facilities" :options="DICT.filters.facilities" size="small" :count-in-row="3"></nest-check>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">阳台</div>
-            <nest-radio v-model="balcony" :options="balconyOpts" size="small"></nest-radio>
+            <nest-radio v-model="balcony" :options="DICT.house.balcony" size="small"></nest-radio>
           </div>
           <div class="condition" v-if="listType !== 'rent' && listType !== 'carport'">
             <div class="condition-title">面积</div>
-            <nest-radio v-model="centiare" :options="centiareOpts" size="small"></nest-radio>
+            <nest-radio v-model="centiare" :options="DICT.filters.centiare[listType]" size="small"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent' || listType === 'second'">
             <div class="condition-title">车位</div>
-            <nest-radio v-model="carport" :options="carportOpts" size="small"></nest-radio>
+            <nest-radio v-model="carport" :options="DICT.filters.carport" size="small"></nest-radio>
           </div>
           <div class="condition" v-if="listType !== 'rent' && listType !== 'land'">
             <div class="condition-title">楼层</div>
-            <nest-radio v-model="floor" :options="floorOpts" size="small"></nest-radio>
+            <nest-radio v-model="floor" :options="DICT.filters.floor[this.listType]" size="small"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'new' || listType === 'second'">
             <div class="condition-title">装修</div>
-            <nest-radio v-model="decor" :options="decorOpts" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="decor" :options="DICT.house.decor" size="small" :count-in-row="3"></nest-radio>
           </div>
         </div>
       </nest-modal>
       <nest-modal title="排序" :has-clear="false" :has-footer="false" @close="sortShow = false" :status="sortShow">
-        <nest-radio v-model="sort" :count-in-row="1" :options="sortOpts"></nest-radio>
+        <nest-radio v-model="sort" :count-in-row="1" :options="DICT.filters.sort[listType]"></nest-radio>
       </nest-modal>
     </div>
-    <nest-scroll class="app-body">
+    <nest-scroll class="app-body"
+                 ref="scroll"
+                 :pullUpLoad="pullUpLoadObj"
+                 @pullingUp="onPullingUp">
       <div class="list-container">
-        <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
+        <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
           <div class="search-item" slot="content">
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
@@ -103,21 +107,6 @@
                   <div class="room-size" v-if="listType === 'new'">{{ item.centiare }} ㎡</div>
                   <div class="room-size" v-else-if="listType === 'second'">{{ item.price }} P/㎡</div>
                 </div>
-                <!--<div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">-->
-                  <!--<div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>-->
-                <!--</div>-->
-                <!--<div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">-->
-                  <!--<div class="type-str">{{recommend.roomsizes}}</div>-->
-                <!--</div>-->
-                <!--<div class="rent" v-if="!recommend.rentsize">-->
-                  <!--<div class="price">{{recommend.pricem}}</div>-->
-                  <!--<div class="price-msg">P/月</div>-->
-                <!--</div>-->
-                <!--<div class="rent" v-else-if="recommend.rentsize">-->
-                  <!--<div class="price">{{recommend.pricem}}</div>-->
-                  <!--<div class="price-msg">P/㎡</div>-->
-                  <!--<div class="room-size">{{recommend.rentsize}}</div>-->
-                <!--</div>-->
               </div>
             </div>
           </div>
@@ -144,47 +133,38 @@
         regionShow: false,
         regionBtn: 'default',
         regionBtnTxt: '地点',
-        region: [],
         bedroomShow: false,
         bedroomBtn: 'default',
         bedroomBtnTxt: '户型',
-        bedroom: [],
         sortShow: false,
-        conditionShow: false,
-        conditions: {
-          sort: '0',
-          price: '',
-          type: '',
-          purpose: '',
-          rentType: '',
-          payWay: '',
-          facilities: [],
-          balcony: '',
-          centiare: '',
-          carport: '',
-          floor: '',
-          decor: ''
+        filtersShow: false,
+        region: [],
+        bedroom: [],
+        trade: '',
+        type: '',
+        is_new: '',
+        sort: '0',
+        price: '',
+        range: [],
+        purpose: '',
+        rent_type: '',
+        payWay: '',
+        facilities: [],
+        balcony: '',
+        centiare: '',
+        carport: '',
+        floor: '',
+        decor: '',
+        filters: {
+          page: 1,
+          per_page: 10
         },
-        // sort: '0',
-        // price: '',
-        // type: '',
-        // purpose: '',
-        // rentType: '',
-        // payWay: '',
-        // facilities: [],
-        // balcony: '',
-        // centiare: '',
-        // carport: '',
-        // floor: '',
-        // decor: ''
-      }
-    },
-    computed: {
-      range: {
-        get() {
-          return [0, this.rangeMax + this.rangeStep];
-        },
-        set(newVal) {
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
         }
       }
     },
@@ -210,11 +190,23 @@
         } else {
           this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filter.bedroom, val[0])[0].label;
+            let label = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
             this.bedroomBtnTxt = label;
           } else {
             this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
+        }
+      },
+      sort(val) {
+        this.sortShow = false;
+        let selectedObj = getSelecteds(DICT.filters.sort[this.listType], val)[0];
+        this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
+        this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
+        this.onPullingDown(this.filters);
+      },
+      range(val) {
+        if (val !== [0, this.rangeMax + this.rangeStep]) {
+          this.price = '';
         }
       }
     },
@@ -222,7 +214,7 @@
       let params = this.$route.params;
       if (params) {
         this.listType = params.type;
-        if (this.listType === 'rent' || this.listType ==='new' || this.listType === 'second') {
+        if (this.listType === 'rent' || this.listType === 'new' || this.listType === 'second') {
           this.type = '';
         } else if (this.listType === 'carport') {
           this.type = 'carport';
@@ -233,60 +225,36 @@
       this.initOpts();
     },
     mounted() {
-      let obj = {
-        trade: this.trade,
-        type: this.type,
-        is_new: this.listType === 'new' ? 1 : 0
-      };
-      HouseService.getList(obj, res => {
-        this.dataList = res.data;
-      })
+      this.filters.trade = this.trade;
+      this.filters.type = this.type;
+      this.filters.is_new = this.is_new;
+      this.doSearch(this.filters);
     },
     methods: {
       initOpts() {
-        this.regionOpts = DICT.region;
-        this.bedroomOpts = DICT.filter.bedroom;
-        this.sortOpts = DICT.filter.sort[this.listType];
-        this.priceOpts = DICT.filter.price[this.listType];
+        this.DICT = DICT;
         if (this.listType === 'rent') {
           this.trade = 'rent';
           this.rangeMax = 400000;
           this.rangeStep = 5000;
-          this.typeOpts = DICT.filter.type[this.listType];
-          this.purposeOpts = DICT.house.purpose;
-          this.rentTypeOpts = DICT.house.rent_type;
-          this.payWayOpts = DICT.filter.rent_pay;
-          this.facilitiesOpts = DICT.filter.facilities;
-          this.balconyOpts = DICT.house.balcony;
-          this.carportOpts = DICT.filter.carport;
         } else if (this.listType === 'second') {
           this.trade = 'sale';
+          this.is_new = '0';
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
-          this.typeOpts = DICT.filter.type[this.listType];
-          this.centiareOpts = DICT.filter.centiare[this.listType];
-          this.carportOpts = DICT.filter.carport;
-          this.floorOpts = DICT.filter.floor[this.listType];
-          this.decorOpts = DICT.house.decor;
         } else if (this.listType === 'carport') {
-          this.trade = 'sale';
           this.rangeMax = 5000000;
           this.rangeStep = 50000;
-          this.floorOpts = DICT.filter.floor[this.listType];
         } else if (this.listType === 'land') {
-          this.trade = 'sale';
           this.rangeMax = 200000000;
           this.rangeStep = 1000000;
-          this.centiareOpts = DICT.filter.centiare[this.listType];
         } else if (this.listType === 'new') {
           this.trade = 'sale';
+          this.is_new = '1';
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
-          this.typeOpts = DICT.filter.type[this.listType];
-          this.centiareOpts = DICT.filter.centiare[this.listType];
-          this.floorOpts = DICT.filter.floor[this.listType];
-          this.decorOpts = DICT.house.decor;
         }
+        this.range = [0, this.rangeMax + this.rangeStep];
       },
       imageUrl(item) {
         if (item.galleries.data.length > 0) {
@@ -297,14 +265,58 @@
       },
       regionConfirm() {
         this.regionShow = false;
-        // todo 筛选发请求
+        this.filters.region_id = this.region;
+        this.onPullingDown(this.filters);
       },
       bedroomConfirm() {
         this.bedroomShow = false;
-        // todo 筛选发请求
+        this.filters.bedroom = this.bedroom;
+        this.onPullingDown(this.filters);
       },
-      conditionClear() {
+      filterConfirm() {
+        this.filtersShow = false;
+      },
+      filterClear() {
 
+      },
+      doSearch(params) {
+        for(let key in params) {
+          if (params.hasOwnProperty(key)) {
+            if (params[key] === "" || params[key] === null || params[key] === undefined) {
+              delete params[key];
+            } else if (params[key] instanceof Array && params[key].length === 0) {
+              delete params[key];
+            }
+          }
+        }
+        HouseService.getList(params, res => {
+          this.dataList = res.data;
+        });
+      },
+      filterParams(params) {
+        for(let key in params) {
+          if (params.hasOwnProperty(key)) {
+            if (params[key] === "" || params[key] === null || params[key] === undefined) {
+              delete params[key];
+            } else if (params[key] instanceof Array && params[key].length === 0) {
+              delete params[key];
+            }
+          }
+        }
+        return params;
+      },
+      onPullingUp () {
+        let params = this.filterParams(this.filters);
+        this.filters.page += 1;
+        HouseService.getList(params, res => {
+          this.filters.page = res.meta.pagination.current_page;
+          this.dataList = this.dataList.concat(res.data);
+          if (this.dataList.length < res.meta.pagination.total) {
+            this.$refs.scroll.forceUpdate(true);
+          } else {
+            this.$refs.scroll.forceUpdate(false);
+          }
+        });
       }
     }
   }

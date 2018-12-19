@@ -36,12 +36,12 @@ const filters = {
     "value": "3"
   }, {
     "label": "其他",
-    "value": "其他"
+    "value": "others"
   }],
   "sort": {
     "rent": [{
       "dbkey1": "order",
-      "dbvalue1": "default",
+      "dbvalue1": "",
       "dbkey2": "orderway",
       "dbvalue2": "",
       "label": "默认排序",
@@ -84,7 +84,7 @@ const filters = {
     }],
     "second": [{
       "dbkey1": "order",
-      "dbvalue1": "default",
+      "dbvalue1": "",
       "dbkey2": "orderway",
       "dbvalue2": "",
       "label": "默认排序",
@@ -127,7 +127,7 @@ const filters = {
     }],
     "carport": [{
       "dbkey1": "order",
-      "dbvalue1": "default",
+      "dbvalue1": "",
       "dbkey2": "orderway",
       "dbvalue2": "",
       "label": "默认排序",
@@ -163,7 +163,7 @@ const filters = {
     }],
     "land": [{
       "dbkey1": "order",
-      "dbvalue1": "default",
+      "dbvalue1": "",
       "dbkey2": "orderway",
       "dbvalue2": "",
       "label": "默认排序",
@@ -199,7 +199,7 @@ const filters = {
     }],
     "new": [{
       "dbkey1": "order",
-      "dbvalue1": "default",
+      "dbvalue1": "",
       "dbkey2": "orderway",
       "dbvalue2": "",
       "label": "默认排序",

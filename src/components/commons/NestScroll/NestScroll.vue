@@ -42,8 +42,12 @@
   const DIRECTION_H = 'horizontal'
   const DIRECTION_V = 'vertical'
 
+  /**
+   * reference vue-better-scroll
+   * github: https://github.com/huangjincq/vue-better-scroll
+   * */
   export default {
-    name: 'vue-better-scroll',
+    name: 'nest-scroll',
     props: {
       probeType: {
         type: Number,
