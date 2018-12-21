@@ -15,7 +15,7 @@ let instance = axios.create({
 
 instance.interceptors.request.use(
   config => {
-    if (!config.disableLoading)
+    if (config.loading !== false)
       Vue.prototype.$toast.loading();
     let accessToken = Storage.getLocalStorage('nest_access_token');
     if (accessToken && accessToken.length !== 0) {

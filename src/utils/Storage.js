@@ -44,6 +44,14 @@ export default {
   },
 
   /**
+   * 移除SessionStorage项
+   * @param key
+   */
+  removeSessionStorage(key) {
+    window.sessionStorage.removeItem(key);
+  },
+
+  /**
    * 搜索界面输入的历史值
    * 往LocalStorage中保存值
    * @param storageKey

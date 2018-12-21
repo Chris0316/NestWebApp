@@ -1,152 +1,212 @@
 <template>
   <div class="details">
-    <div class="head-bar"></div>
     <nest-scroll class="app-body">
-      <div>
-        <div class="top-banner"></div>
-        <div class="banner-desc">房源编号：ZF180915111</div>
-        <div class="details-title">Jazz residence Towoerr HDHDowoowoo...</div>
+      <div v-if="house">
+        <div class="top-banner">
+          <div class="head-bar">
+            <div class="back" @click="$router.go(-1)"></div>
+          </div>
+          <swiper class="swiper" :options="swiperOption" ref="swiper" v-if="house.galleries.data.length > 1">
+            <swiper-slide v-for="(item, index) in house.galleries.data" class="swiper-slide" :style="{ backgroundImage: 'url(' + item.url + ')' }" :key="index"></swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+          <div v-else-if="house.galleries.data.length === 1" class="swiper-slide" :style="{ backgroundImage: 'url(' + house.galleries.data[0].url + ')' }"></div>
+          <div v-else class="preview-default"></div>
+        </div>
+        <div class="banner-desc">房源编号：{{ house.id }}</div>
+        <div class="details-title">{{ house.building_name }}</div>
         <div class="title-tags">
-          <span>公寓</span>
+          <span>{{ getLabelTags() }}</span>
           <a href="javascript:;" class="link">详细地址</a>
         </div>
-        <!--new、 old-->
-        <div v-if="propnew" class="main-info">
+        <div class="main-info">
           <div class="item">
-            <div class="txt-1"><span class="bold">100,000</span> P/㎡</div>
-            <div class="label">均价</div>
+            <div class="txt-1 bold" v-if="detailsType === 'rent'">{{ house.price }} P/㎡</div>
+            <div class="txt-1 bold" v-else-if="detailsType === 'new'">{{ house.avg_price }} P/㎡</div>
+            <div class="txt-1 bold" v-else>{{ house.total_amount / 10000 }} 万</div>
+            <div class="label" v-if="detailsType === 'new'">均价</div>
+            <div class="label" v-else-if="detailsType === 'rent'">租金</div>
+            <div class="label" v-else>售价</div>
           </div>
-          <div class="item">
-            <div class="txt-2">2018年8月10日</div>
-            <div class="label">开盘时间</div>
-          </div>
-        </div>
-        <div v-if="propsecond" class="main-info">
-          <div class="item">
-            <div class="txt-1"><span class="bold">660</span> 万</div>
-            <div class="label">售价</div>
-          </div>
-          <div class="item">
-            <div class="txt-1"><span class="bold">一室一厅</span> LOFT</div>
+          <div class="item" v-if="detailsType === 'second'">
+            <div class="txt-1 bold">{{ house.bedroom }}室{{ house.hall }}厅</div>
             <div class="label">户型</div>
           </div>
+          <div class="item" v-if="detailsType === 'new'">
+            <div class="txt-2">{{ house.available_time }}</div>
+            <div class="label">开盘时间</div>
+          </div>
           <div class="item">
-            <div class="txt-1"><span class="bold">30</span> ㎡</div>
+            <div class="txt-1 bold">{{ house.centiare }} ㎡</div>
             <div class="label">面积</div>
           </div>
         </div>
-        <div v-if="propparking" class="main-info">
-          <div class="item">
-            <div class="txt-1"><span class="bold">6000</span> P/月</div>
-            <div class="label">租金</div>
-          </div>
-          <div class="item">
-            <div class="txt-2">10㎡</div>
-            <div class="label">面积</div>
-          </div>
-        </div>
-
-        <div class="details-module" v-if="propnew || propsecond">
+        <div class="details-module" v-if="detailsType === 'new' || detailsType === 'second'">
           <div class="module-title">基本信息</div>
           <div class="info-line">
             <div class="cell">
               <div class="label">单价:</div>
-              <div class="value">100,000P/㎡</div>
+              <div class="value">{{ house.price }}P/㎡</div>
             </div>
             <div class="cell">
               <div class="label">发布时间:</div>
-              <div class="value">2018/9/15</div>
+              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
               <div class="label">用途:</div>
-              <div class="value">住房</div>
+              <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
             </div>
             <div class="cell">
               <div class="label">电梯:</div>
-              <div class="value">有</div>
+              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
-              <div class="label">楼型:</div>
-              <div class="value">塔楼</div>
+              <div class="label">楼层:</div>
+              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
             </div>
             <div class="cell">
-              <div class="label">楼层:</div>
-              <div class="value">11层 (底层)</div>
+              <div class="label">主卧朝向:</div>
+              <div class="value" v-if="house.master_direction">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
               <div class="label">装修:</div>
-              <div class="value">精装修</div>
+              <div class="value" v-if="house.decor">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
             </div>
-            <div class="cell">
-              <div class="label">主卧朝向:</div>
-              <div class="value">朝南</div>
-            </div>
-          </div>
-          <div class="info-line">
             <div class="cell">
               <div class="label">阳台:</div>
-              <div class="value">有阳台</div>
-            </div>
-            <div class="cell">
-              <div class="label">宠物:</div>
-              <div class="value">可养宠物</div>
+              <div class="value" v-if="house.balcony">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
-              <div class="label">车位:</div>
-              <div class="value">有 (需另议)</div>
+              <div class="label">宠物:</div>
+              <div class="value" v-if="house.pet">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
             </div>
             <div class="cell">
-              <div class="label">权属:</div>
-              <div class="value">商品房</div>
+              <div class="label">车位:</div>
+              <div class="value" v-if="house.carport">{{ getSelecteds(DICT.house.carport, house.pet)[0].carport }}</div>
             </div>
           </div>
         </div>
-        <div class="details-module" v-if="propparking">
+        <div class="details-module" v-if="detailsType === 'rent'">
           <div class="module-title">基本信息</div>
           <div class="info-line">
             <div class="cell">
               <div class="label">用途:</div>
-              <div class="value">住房</div>
+              <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
             </div>
             <div class="cell">
               <div class="label">发布时间:</div>
-              <div class="value">2018/9/15</div>
+              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
               <div class="label">租期:</div>
-              <div class="value">12-24个月</div>
+              <div class="value" v-if="house.min_stay_month && house.max_stay_month">{{ house.min_stay_month }}-{{ house.max_stay_month }}个月</div>
             </div>
             <div class="cell">
-              <div class="label">发布时间:</div>
-              <div class="value">2018/9/15</div>
+              <div class="label">可入住时间:</div>
+              <div class="value" v-if="house.available_time">{{ house.available_time.split(' ')[0] }}</div>
             </div>
           </div>
           <div class="info-line">
             <div class="cell">
               <div class="label">电梯:</div>
-              <div class="value">有</div>
+              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
             </div>
             <div class="cell">
               <div class="label">楼层:</div>
-              <div class="value">11层 (底层)</div>
+              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">装修:</div>
+              <div class="value" v-if="house.decor">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
+            </div>
+            <div class="cell">
+              <div class="label">主卧朝向:</div>
+              <div class="value" v-if="house.master_direction">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">阳台:</div>
+              <div class="value" v-if="house.balcony">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
+            </div>
+            <div class="cell">
+              <div class="label">宠物:</div>
+              <div class="value" v-if="house.pet">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">车位:</div>
+              <div class="value" v-if="house.carport">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
             </div>
           </div>
         </div>
-        <!--new才有户型介绍-->
-        <div class="details-module details-spe">
+        <div class="details-module" v-if="detailsType === 'carport'">
+          <div class="module-title">基本信息</div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">单价:</div>
+              <div class="value">{{ house.price }}P/㎡</div>
+            </div>
+            <div class="cell">
+              <div class="label">发布时间:</div>
+              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">用途:</div>
+              <div class="value" v-if="house.purpose">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
+            </div>
+            <div class="cell">
+              <div class="label">电梯:</div>
+              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">楼层:</div>
+              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
+            </div>
+          </div>
+        </div>
+        <div class="details-module" v-if="detailsType === 'land'">
+          <div class="module-title">基本信息</div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">单价:</div>
+              <div class="value">{{ house.price }}P/㎡</div>
+            </div>
+            <div class="cell">
+              <div class="label">发布时间:</div>
+              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            </div>
+          </div>
+          <div class="info-line">
+            <div class="cell">
+              <div class="label">电梯:</div>
+              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
+            </div>
+            <div class="cell">
+              <div class="label">楼层:</div>
+              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
+            </div>
+          </div>
+        </div>
+        <div class="details-module details-spe" v-if="detailsType === 'new'">
           <div class="module-title title-spe">户型介绍</div>
-
-
           <nest-scroll direction="horizontal" class="info-list">
             <div class="info-list-wrap">
               <div class="info-item">
@@ -169,22 +229,6 @@
               </div>
             </div>
           </nest-scroll>
-
-          <!--<div class="info-list">-->
-          <!--<div class="info-item">-->
-          <!--<div class="info-img"></div>-->
-          <!--<div class="info-text1">3室2厅2卫</div>-->
-          <!--<div class="info-text2">建面 91㎡ 朝向南</div>-->
-          <!--<div class="info-text3">约569万</div>-->
-          <!--</div>-->
-          <!--<div class="info-item">-->
-          <!--<div class="info-img"></div>-->
-          <!--<div class="info-text1">3室2厅2卫</div>-->
-          <!--<div class="info-text2">建面 91㎡ 朝向南</div>-->
-          <!--<div class="info-text3">约569万</div>-->
-          <!--</div>-->
-          <!--</div>-->
-
         </div>
         <div class="details-module">
           <div class="module-title">介绍</div>
@@ -199,11 +243,9 @@
           <div class="paragraph">
             位于普吉岛的长泰 (Choeng Thale) 地区，我们的四卧室豪华别墅距离该地区的所有主要海滩都很近，非常方便。该别墅提供多达 1100 平方米的巨大生活空间，有私人泳池，充满活力。
           </div>
-          <div class="paragraph">
-            这个位置非常出色，不用走太远就能到达普吉岛上一些最好的海滩。此外，您与普吉岛著名的夜生活，和岛上最好的一些餐馆只有步行的距离。来往的出租车很多，可以方便您在普吉岛周边观
-          </div>
         </div>
-        <div class="middle-banner"></div>
+        <!--地图-->
+        <!--<div class="details-map"></div>-->
         <div class="others">
           <div class="details-module">
             <div class="module-title">周边楼盘</div>
@@ -291,9 +333,12 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll';
+  // require styles
+  import 'swiper/dist/css/swiper.css'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
+  import DICT, {getSelecteds} from "../../configs/DICT";
+  import HouseService from '../../services/HouseService';
 
-  // {routeType: "rent"} second new parking
   export default {
     props: {
       rent: {
@@ -311,33 +356,65 @@
       parking: {
         type: Boolean,
         default: false
-      },
-      editShow:{
-        type: Boolean,
-        default: false
       }
     },
     data() {
       return {
+        house: null,
+        swiperOption: {
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            type: 'fraction'
+          }
+        },
+        editShow: false,
         proprent: this.rent,
         propsecond: this.second,
         propnew: this.new,
         propparking: this.parking,
       }
     },
-    methods: {
-      initSwiper() {
-        new BScroll(this.$refs.swiper1, {
-          eventPassthrough: 'vertical',
-          scrollX: true,
-          click: true
-        });
-        new BScroll(this.$refs.swiper2, {
-          eventPassthrough: 'vertical',
-          scrollX: true,
-          click: true
-        });
+    created() {
+      this.initConsts();
+    },
+    mounted() {
+      if (this.houseId) {
+        HouseService.getDetailsById(this.houseId, res => {
+          this.house = res.data;
+        })
       }
+    },
+    methods: {
+      initConsts() {
+        let params = this.$route.params;
+        if (params) {
+          this.detailsType = params.type;
+          this.houseId = params.id;
+        }
+        this.DICT = DICT;
+        this.getSelecteds = getSelecteds;
+      },
+      getLabelTags() {
+        let arr = [];
+        if (this.house.building_no) {
+          arr.push(this.house.building_no);
+        }
+        if (this.house.type) {
+          arr.push(getSelecteds(DICT.house.type, this.house.type)[0].label);
+        }
+        if (this.house.rent_type) {
+          arr.push(getSelecteds(DICT.house.rent_type, this.house.rent_type)[0].label);
+        }
+        if (this.house.deposit_month && this.house.pay_month) {
+          arr.push('押' + this.house.deposit_month + '付' + this.house.pay_month);
+        }
+        return arr.join(' / ');
+      }
+    },
+    components: {
+      swiper,
+      swiperSlide
     }
   }
 </script>
@@ -352,17 +429,51 @@
       flex: 1;
       overflow: hidden;
     }
-    .head-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1.2rem;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, .24), rgba(0, 0, 0, 0));
-    }
     .top-banner {
+      position: relative;
       height: 4.84rem;
       background-color: #c0c0c0;
+      .head-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1.2rem;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, .24), rgba(0, 0, 0, 0));
+        z-index: 2;
+        .back {
+          padding-left: .28rem;
+          width: .9rem;
+          height: 100%;
+          background: url('../../assets/images/icon-back.png') no-repeat .28rem center;
+          background-size: .42rem .32rem;
+        }
+      }
+      .swiper {
+        height: 100%;
+      }
+      .swiper-slide {
+        background: no-repeat center center;
+        background-size: contain;
+      }
+      .preview-default {
+        width: 100%;
+        height: 100%;
+        background: url('../../assets/images/preview-default.png') no-repeat center center;
+        background-size: contain;
+      }
+      .swiper-pagination {
+        width: .8rem;
+        height: .4rem;
+        line-height: .4rem;
+        left: unset;
+        bottom: .28rem;
+        right: .28rem;
+        border-radius: .2rem;
+        background: rgba(0,0,0,.1);
+        color: #fff;
+        font-size: .24rem;
+      }
     }
     .banner-desc {
       padding: 0 .28rem;
@@ -453,7 +564,7 @@
         color: #333;
       }
       .label {
-        width: 1.3rem;
+        width: 1.5rem;
         color: #b2b2b2;
       }
       .value {
@@ -525,7 +636,7 @@
       color: #333;
       line-height: .48rem;
     }
-    .middle-banner {
+    .details-map {
       height: 4rem;
       background-color: #dcdcdc;
     }

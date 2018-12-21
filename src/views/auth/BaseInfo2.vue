@@ -5,7 +5,7 @@
     </div>
     <div class="content">
       <div class="title">基本信息设置</div>
-      <div class="title-tip">设置基本信息，更智能的使用鸟巢</div>
+      <div class="title-tip">设置基本信息，更智能的使用鸟窝</div>
       <div class="radio-tit">性别</div>
       <nest-radio class="radio-spacing border-bottom" v-model="gender" :options="genderOpts" :count-in-row="3"></nest-radio>
       <div class="form-group border-bottom arrow-right" @click="languageShow = !languageShow">

@@ -4,7 +4,7 @@
       <div class="back" @click="$router.go(-1);"></div>
     </div>
     <div class="content">
-      <div class="title border-bottom">欢迎登录鸟巢</div>
+      <div class="title border-bottom">欢迎登录鸟窝</div>
       <div class="form-group border-bottom">
         <div class="left" @click="countryShow = !countryShow">{{ country }} <span class="flag" :style="{ backgroundImage: 'url(' + flag + ')' }"></span><div class="arrow-down"></div></div>
         <div class="right">
@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="form-tip">
-        未注册的手机号自动创建鸟巢账户
+        未注册的手机号自动创建鸟窝账户
       </div>
       <nest-button class="mt60" type="primary" size="full" @click="getSms">获取短信验证码</nest-button>
       <div class="login-tip">其他登录方式</div>
@@ -21,7 +21,7 @@
         <div class="third fb"></div>
         <div class="third line"></div>
       </div>
-      <div class="contract-tip">登录代表你已同意鸟巢用户协议及隐私政策</div>
+      <div class="contract-tip">登录代表你已同意鸟窝用户协议及隐私政策</div>
     </div>
     <country type="number" :show="countryShow" v-model="country" @close="countryShow = false"></country>
   </div>

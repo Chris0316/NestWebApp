@@ -10,13 +10,18 @@ let HouseService = {
       callback(res);
     });
   },
-  getList(params, callback) {
+  getList(params, callback, loading) {
     axios.get(api.house, {
       params: params,
-      disableLoading: true
+      loading: loading
     }).then(res => {
       callback(res);
     });
+  },
+  getDetailsById(id, callback) {
+    axios.get(api.house + '/' + id).then(res => {
+      callback(res);
+    })
   }
 };
 

@@ -87,7 +87,7 @@
                  @pullingUp="onPullingUp">
       <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-          <div class="search-item" slot="content">
+          <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: listType, id: item.id }})">
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
@@ -128,7 +128,6 @@
   export default {
     data() {
       return {
-        listType: '',
         dataList: [],
         regionShow: false,
         regionBtn: 'default',
@@ -202,7 +201,7 @@
         let selectedObj = getSelecteds(DICT.filters.sort[this.listType], val)[0];
         this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
         this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
-        this.onPullingDown(this.filters);
+        this.onPullingUp(true);
       },
       range(val) {
         if (val !== [0, this.rangeMax + this.rangeStep]) {
@@ -211,27 +210,27 @@
       }
     },
     created() {
-      let params = this.$route.params;
-      if (params) {
-        this.listType = params.type;
-        if (this.listType === 'rent' || this.listType === 'new' || this.listType === 'second') {
-          this.type = '';
-        } else if (this.listType === 'carport') {
-          this.type = 'carport';
-        } else if (this.listType === 'land') {
-          this.type = 'land';
-        }
-      }
-      this.initOpts();
+      this.initConsts();
     },
     mounted() {
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;
-      this.onPullingUp();
+      this.onPullingUp(true);
     },
     methods: {
-      initOpts() {
+      initConsts() {
+        let params = this.$route.params;
+        if (params) {
+          this.listType = params.type;
+          if (this.listType === 'rent' || this.listType === 'new' || this.listType === 'second') {
+            this.type = '';
+          } else if (this.listType === 'carport') {
+            this.type = 'carport';
+          } else if (this.listType === 'land') {
+            this.type = 'land';
+          }
+        }
         this.DICT = DICT;
         if (this.listType === 'rent') {
           this.trade = 'rent';
@@ -266,12 +265,12 @@
       regionConfirm() {
         this.regionShow = false;
         this.filters.region_id = this.region;
-        this.onPullingUp();
+        this.onPullingUp(true);
       },
       bedroomConfirm() {
         this.bedroomShow = false;
         this.filters.bedroom = this.bedroom;
-        this.onPullingUp();
+        this.onPullingUp(true);
       },
       filterConfirm() {
         this.filtersShow = false;
@@ -291,7 +290,7 @@
         }
         return params;
       },
-      onPullingUp () {
+      onPullingUp(loading = false) {
         let params = this.filterParams(this.filters);
         this.filters.page += 1;
         HouseService.getList(params, res => {
@@ -302,7 +301,7 @@
           } else {
             this.$refs.scroll.forceUpdate(false);
           }
-        });
+        }, loading);
       }
     }
   }

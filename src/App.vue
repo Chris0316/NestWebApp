@@ -2,12 +2,12 @@
   <div id="app" class="nest" @touchstart>
     <transition :name="transitionName">
       <keep-alive>
-        <router-view class="view" v-if="$route.meta.keepAlive"/>
+        <router-view class="view" />
       </keep-alive>
     </transition>
-    <transition :name="transitionName">
-      <router-view class="view" v-if="!$route.meta.keepAlive"/>
-    </transition>
+    <!--<transition :name="transitionName">-->
+      <!--<router-view class="view" v-if="!$route.meta.keepAlive"/>-->
+    <!--</transition>-->
   </div>
 </template>
 

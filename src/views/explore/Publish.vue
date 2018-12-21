@@ -95,7 +95,7 @@
         </div>
         <div class="realm border-bottom arrow-right">
           <div class="realm-name required">手机号</div>
-          <div class="realm-content">13972154874</div>
+          <div class="realm-content" @click="$router.push({ name: 'MyCellphone' })">13972154874</div>
         </div>
         <template v-if="detailShow">
           <div class="realm arrow-right border-bottom" v-if="trade === 'rent'" @click="calendarShow = true">
