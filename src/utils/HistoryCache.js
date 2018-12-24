@@ -2,15 +2,21 @@ import Vue from 'vue';
 import Storage from './Storage';
 
 Vue.mixin({
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.$keepAlives.indexOf(vm.$options.name) === -1)
+        vm.$keepAlives.push(vm.$options.name);
+    });
+  },
   beforeRouteLeave(to, from, next) {
+    console.log(this.$keepAlives)
     const toRoute = to.path;
-    const fromRoute = from.path;
     const h = JSON.parse(Storage.getSessionStorage(toRoute));
+    // this.$destroy();
+    let compName = this.$options.name,
+      index = this.$keepAlives.indexOf(compName);
     if (h && h.history) {
-      this.$destroy();
-      next();
-    } else {
-      next();
+      this.$keepAlives.splice(index, 1);
     }
     next();
   }

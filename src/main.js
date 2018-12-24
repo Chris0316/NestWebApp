@@ -5,13 +5,13 @@ import components from './components'
 import App from './App'
 import router from './router'
 import './libs/remadaptor'
-// import HistoryCache from './utils/HistoryCache';
+import HistoryCache from './utils/HistoryCache';
 
 Vue.use(components)
 
 Vue.config.productionTip = false
 
-// router.beforeEach(HistoryCache);
+router.beforeEach(HistoryCache);
 
 /* eslint-disable no-new */
 new Vue({
