@@ -25,7 +25,7 @@
 
 <script>
   export default {
-    name: "message",
+    name: "MyMessage",
     props:{
       msgList:{
         type: Array,

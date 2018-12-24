@@ -14,8 +14,8 @@ Vue.use(Router)
 
 let routes = [
   { path: '/', redirect: { name: 'Explore' } },
-  { path: '/search/:type', name: 'Search', component: Search, meta: { keepAlive: false, slideLevel: 1 } },
-  { path: '/map', name: 'Map', component: Map, meta: { keepAlive: false, slideLevel: 1 } }
+  { path: '/search/:type', name: 'Search', component: Search, meta: { slideLevel: 1 } },
+  { path: '/map', name: 'Map', component: Map, meta: { slideLevel: 1 } }
 ].concat(explore, follow, live, my, auth);
 
 export default new Router({

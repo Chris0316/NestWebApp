@@ -73,7 +73,7 @@
 
 <script>
   export default {
-    name: "Publish",
+    name: "LivePublish",
     data() {
       return {
         requireOpts: ['租赁', '购置'],

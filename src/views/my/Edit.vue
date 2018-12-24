@@ -54,7 +54,7 @@
   import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
-    name: "Edit",
+    name: "MyEdit",
     data() {
       return {
         countryShow: false,

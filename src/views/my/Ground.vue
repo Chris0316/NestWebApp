@@ -50,7 +50,7 @@
 
 <script>
   export default {
-    name: "Ground",
+    name: "MyGround",
     data() {
       return {
         locationShow: false,

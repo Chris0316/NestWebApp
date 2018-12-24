@@ -20,13 +20,14 @@ export default (to, from, next) => {
   const toRoute = to.path;
   const fromRoute = from.path;
   let h = JSON.parse(Storage.getSessionStorage(toRoute));
-  if (h && h.history) {
+  if (h && h.history) { // 后退操作 删除缓存
     h.history = false;
     Storage.removeSessionStorage(toRoute);
-  } else {
+  } else { // 前进操作 缓存路径
     Storage.setSessionStorage(fromRoute || '/', JSON.stringify({
       history: true
     }));
   }
   next();
 };
+

@@ -50,6 +50,7 @@ let install = function (Vue) {
     Vue.component(key, components[key])
   });
   Vue.prototype.$toast = NestToast;
+  Vue.prototype.$keepAlives = [];
 }
 
 export default { install };

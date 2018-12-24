@@ -33,7 +33,7 @@
   import AuthService from '../../services/AuthService'
 
   export default {
-    name: "Login",
+    name: "AuthLogin",
     data() {
       return {
         country: '0086',

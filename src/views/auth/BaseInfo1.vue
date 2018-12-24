@@ -32,7 +32,7 @@
   import DICT, { getSelecteds } from '../../configs/DICT';
 
   export default {
-    name: "BaseInfo1",
+    name: "AuthBaseInfo1",
     data() {
       return {
         countryShow: false,

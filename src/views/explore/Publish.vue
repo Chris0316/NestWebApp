@@ -188,7 +188,7 @@
   import HouseAdaptor from '../../adaptor/HouseAdaptor';
 
   export default {
-    name: "Publish",
+    name: "ExplorePublish",
     data() {
       return {
         detailShow: false,
@@ -245,7 +245,16 @@
       }
     },
     created() {
+      if (this.$keepAlives.indexOf(this.$options.name) === -1)
+        this.$keepAlives.push(this.$options.name);
       this.initOpts();
+    },
+    beforeRouteLeave(to, from, next) {
+      let index = this.$keepAlives.indexOf(this.$options.name);
+      if (to.name === 'Explore') {
+        this.$keepAlives.splice(index, 1);
+      }
+      next();
     },
     methods: {
       initOpts() {

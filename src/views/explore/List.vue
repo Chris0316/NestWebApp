@@ -126,6 +126,7 @@
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
 
   export default {
+    name: 'ExploreList',
     data() {
       return {
         dataList: [],

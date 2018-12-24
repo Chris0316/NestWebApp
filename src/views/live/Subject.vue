@@ -53,7 +53,7 @@
 
 <script>
   export default {
-    name: "Subject"
+    name: "LiveSubject"
   }
 </script>
 

@@ -100,7 +100,7 @@
 
 <script>
   export default {
-    name: "economic-man",
+    name: "FollowAgent",
     props:{
       recommends: {
         type: Array,

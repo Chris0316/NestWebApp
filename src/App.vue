@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="nest" @touchstart>
     <transition :name="transitionName">
-      <keep-alive>
+      <keep-alive :include="includes">
         <router-view class="view" />
       </keep-alive>
     </transition>
@@ -16,7 +16,8 @@
     name: 'App',
     data() {
       return {
-        transitionName: ''
+        transitionName: '',
+        includes: this.$keepAlives
       }
     },
     watch: {

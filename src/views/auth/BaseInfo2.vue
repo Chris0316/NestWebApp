@@ -28,7 +28,7 @@
   import DICT from '../../configs/DICT.js';
 
   export default {
-    name: "BaseInfo2",
+    name: "AuthBaseInfo2",
     data() {
       return {
         btnDisabled: true,

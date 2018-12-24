@@ -28,7 +28,7 @@
   import AuthService from '../../services/AuthService';
 
   export default {
-    name: "sms-code",
+    name: "AuthSmsCode",
     data() {
       return {
         phone: Storage.getLocalStorage('nest_auth_phone'),

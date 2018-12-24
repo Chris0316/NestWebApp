@@ -90,7 +90,7 @@
 
 <script>
   export default {
-    name: "follow-list",
+    name: "FollowList",
     props:{
       recommends: {
         type: Array,

@@ -63,7 +63,7 @@
 
 <script>
   export default {
-    name: "Details",
+    name: "MyDetails",
     data() {
       return {
         title: '帮住广场-购置信息',

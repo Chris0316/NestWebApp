@@ -125,6 +125,7 @@
   import DICT, {getSelecteds} from '../configs/DICT';
 
   export default {
+    name: 'Explore',
     data() {
       return {
         selectType: '',

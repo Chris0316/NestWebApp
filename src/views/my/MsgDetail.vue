@@ -22,7 +22,7 @@
 
 <script>
   export default {
-    name: "msg-detail"
+    name: "MyMsgDetail"
   }
 </script>
 

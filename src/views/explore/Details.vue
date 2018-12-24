@@ -340,6 +340,7 @@
   import HouseService from '../../services/HouseService';
 
   export default {
+    name: 'ExploreDetails',
     props: {
       rent: {
         type: Boolean,

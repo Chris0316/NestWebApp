@@ -44,7 +44,7 @@
 
 <script>
   export default {
-    name: "Live",
+    name: "MyLive",
     data() {
       return {
         tabSelected: 'my',
