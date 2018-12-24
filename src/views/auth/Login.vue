@@ -36,8 +36,8 @@
     name: "AuthLogin",
     data() {
       return {
-        country: '0086',
-        phone: '18521520527',
+        country: '0063',
+        phone: '09888888888',
         countryShow: false
       }
     },

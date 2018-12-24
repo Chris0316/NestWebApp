@@ -28,7 +28,7 @@
       <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
                   @close="filtersShow = false"
                   @confirm="filterConfirm"
-                  @clear="filterClear">
+                  @cancel="filterClear">
         <div class="conditions">
           <div class="condition">
             <div class="condition-title">{{ listType === 'rent' ? '租金' : '价格' }}</div>
@@ -140,7 +140,6 @@
         filtersShow: false,
         region: [],
         bedroom: [],
-        trade: '',
         type: '',
         is_new: '',
         sort: '0',
@@ -243,9 +242,11 @@
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
         } else if (this.listType === 'carport') {
+          this.trade = 'sale';
           this.rangeMax = 5000000;
           this.rangeStep = 50000;
         } else if (this.listType === 'land') {
+          this.trade = 'sale';
           this.rangeMax = 200000000;
           this.rangeStep = 1000000;
         } else if (this.listType === 'new') {
@@ -274,10 +275,36 @@
         this.onPullingUp(true);
       },
       filterConfirm() {
+        this.filters.type = this.type;
+        this.filters.is_new = this.is_new;
+        // this.filters.price = this.price
+        // this.filters.range
+        this.filters.purpose = this.purpose;
+        this.filters.rent_type = this.rent_type;
+        // this.filters.payWay
+        this.filters.facilities_ids = this.facilities;
+        this.filters.balcony = this.balcony;
+        this.filters.centiare = this.centiare;
+        this.filters.carport = this.carport;
+        this.filters.floor = this.floor;
+        this.filters.decor = this.decor;
         this.filtersShow = false;
+        this.onPullingUp(true);
       },
       filterClear() {
-
+        this.type = '';
+        this.is_new = '';
+        // this.filters.price = this.price
+        // this.filters.range
+        this.purpose = '';
+        this.rent_type = '';
+        // this.filters.payWay
+        this.facilities = [];
+        this.balcony = '';
+        this.centiare = '';
+        this.carport = '';
+        this.floor = '';
+        this.decor = '';
       },
       filterParams(params) {
         for(let key in params) {
@@ -293,16 +320,25 @@
       },
       onPullingUp(loading = false) {
         let params = this.filterParams(this.filters);
-        this.filters.page += 1;
-        HouseService.getList(params, res => {
-          this.filters.page = res.meta.pagination.current_page;
-          this.dataList = this.dataList.concat(res.data);
-          if (this.dataList.length < res.meta.pagination.total) {
+        if (loading) {
+          this.filters.page = 1;
+          HouseService.getList(params, res => {
+            this.dataList = res.data;
+            this.$refs.scroll.scrollTo(0, 0, 300);
             this.$refs.scroll.forceUpdate(true);
-          } else {
-            this.$refs.scroll.forceUpdate(false);
-          }
-        }, loading);
+          }, true);
+        } else {
+          this.filters.page += 1;
+          HouseService.getList(params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataList = this.dataList.concat(res.data);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
+          }, false);
+        }
       }
     }
   }

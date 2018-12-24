@@ -9,10 +9,8 @@ Vue.mixin({
     });
   },
   beforeRouteLeave(to, from, next) {
-    console.log(this.$keepAlives)
     const toRoute = to.path;
     const h = JSON.parse(Storage.getSessionStorage(toRoute));
-    // this.$destroy();
     let compName = this.$options.name,
       index = this.$keepAlives.indexOf(compName);
     if (h && h.history) {

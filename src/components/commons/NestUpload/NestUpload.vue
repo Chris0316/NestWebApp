@@ -53,9 +53,7 @@
         let files = e.target.files || e.dataTransfer.files;
         if (!files.length) return;
         if (this.currentVal.length + files.length > 10) {
-          this.$toast.info({
-            message: '您最多只能上传10张图片'
-          });
+          this.$toast.info('您最多只能上传10张图片');
           return;
         }
         Object.keys(files).forEach((key) => {

@@ -95,6 +95,7 @@
           this.account = res.data.name;
           this.signature = res.data.introduction;
           this.isAgent = res.data.is_agent;
+          this.portrait = res.data.avatar;
         });
       }
     },
@@ -223,8 +224,7 @@
         height: 1.1rem;
         border-radius: 1.1rem;
         border: 1px solid #add9d5;
-        background-position: center center;
-        background-repeat: no-repeat;
+        background: no-repeat center center;
         &.icon4 {
           background-image: url('../assets/images/my/icon4.png');
           background-size: .46rem .41rem;

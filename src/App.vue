@@ -1,13 +1,10 @@
 <template>
   <div id="app" class="nest" @touchstart>
     <transition :name="transitionName">
-      <keep-alive :include="includes">
+      <keep-alive :include="includes" :max="5">
         <router-view class="view" />
       </keep-alive>
     </transition>
-    <!--<transition :name="transitionName">-->
-      <!--<router-view class="view" v-if="!$route.meta.keepAlive"/>-->
-    <!--</transition>-->
   </div>
 </template>
 

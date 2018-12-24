@@ -33,12 +33,12 @@
           selected = '';
         this.phones = arr;
         if (arr) {
-          selected = arr.filter(item => item.default == 1)[0].phone;
+          selected = arr.filter(item => item.default == 1)[0];
           arr = arr.map(item => {
             return item.phone;
           });
         }
-        this.phone = selected;
+        this.phone = selected.phone || '';
         this.contacts = arr || [];
       });
     },

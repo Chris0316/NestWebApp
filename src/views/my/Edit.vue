@@ -6,9 +6,9 @@
       <div class="right" @click="save">保存</div>
     </div>
     <label class="uploader">
-      <div class="portrait"></div>
+      <div class="portrait" :style="{ backgroundImage: 'url(' + portrait + ')'}"></div>
       <div class="camera"></div>
-      <input type="file" accept="image/*" class="hidden" />
+      <input type="file" accept="image/*" class="hidden" @change="selectMedia" />
     </label>
     <div class="details border-top">
       <div class="form-group auto-height border-bottom">
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+  import UploadService from '../../services/UploadService';
+  import lrz from 'lrz';
   import UserService from '../../services/UserService';
   import DICT, { getSelecteds } from '../../configs/DICT';
 
@@ -57,6 +59,7 @@
     name: "MyEdit",
     data() {
       return {
+        portrait: '',
         countryShow: false,
         areaStyle: {
           lineHeight: .42 + 'rem'
@@ -99,7 +102,33 @@
     },
     methods: {
       save() {
-        this.$router.go(-1);
+        let obj = {};
+        obj.introduction = this.signature;
+        obj.avatar = this.portrait;
+        obj.nation = this.country;
+        obj.gender = this.gender;
+        obj.languages = this.languages;
+        obj.phones = this.contacts;
+        UserService.updateUserInfo(obj, res => {
+          this.$router.go(-1);
+        });
+      },
+      selectMedia(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        if (!files.length) return;
+        let file = files[0];
+        lrz(file).then(rst => {
+          // 上传
+          let image = rst.file;
+          UploadService.uploadImage(image, 'avatar', res => {
+            this.portrait = res.data.path;
+          });
+          return rst;
+        }).catch(err => {
+          console.log(err);
+        }).always(() => {
+
+        });
       }
     }
   }
@@ -141,7 +170,8 @@
         margin: auto;
         width: 2.4rem;
         height: 2.4rem;
-        background-color: #dfdfdf;
+        background: #dfdfdf no-repeat center center;
+        background-size: cover;
       }
       .camera {
         position: absolute;
