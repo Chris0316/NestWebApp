@@ -9,25 +9,22 @@
         <div class="content">
           <div class="title">您的需求</div>
           <div class="title-desc">给我您的需求，帮您淘满意的房子</div>
-          <div class="item-label top">我需要</div>
-          <nest-radio class="mt20" :options="requireOpts"></nest-radio>
+          <div class="item-label top required">我需要</div>
+          <nest-radio class="mt20" :options="DICT.house.trade2" :count-in-row="4"></nest-radio>
           <div class="item-label">类型</div>
-          <nest-radio class="mt20" :options="typeOpts"></nest-radio>
-          <div class="item-label">区域</div>
-          <nest-check class="mt20" :options="regionOpts"></nest-check>
-          <div class="item-label">预算范围</div>
+          <nest-check class="mt20" :options="DICT.house.type2" :count-in-row="3"></nest-check>
+          <div class="item-label required">区域</div>
+          <nest-check class="mt20" :options="DICT.region"></nest-check>
+          <div class="item-label required">预算范围</div>
           <div class="form-group border-bottom">
-            <nest-field placeholder="最小金额" text-align="center"></nest-field>
+            <nest-field type="tel" placeholder="最小金额" text-align="center"></nest-field>
             <span class="split"></span>
-            <nest-field placeholder="最大金额" text-align="center"></nest-field>
+            <nest-field type="tel" placeholder="最大金额" text-align="center"></nest-field>
             <span class="unit">万(Peso)</span>
-          </div>
-          <div class="detail-link" v-if="!detailShow" @click="detailShow = true">
-            <span>点击填写详细信息，轻松方便出租</span>
           </div>
           <template v-if="detailShow">
             <div class="item-label">方式</div>
-            <nest-radio class="mt20" :options="waysOpts"></nest-radio>
+            <nest-radio class="mt20" :options="DICT.house.rent_type" :count-in-row="4"></nest-radio>
             <div class="item-label">面积</div>
             <div class="form-group border-bottom">
               <nest-field placeholder="最小面积" text-align="center"></nest-field>
@@ -36,7 +33,7 @@
               <span class="unit">平米</span>
             </div>
             <div class="item-label">户型</div>
-            <nest-check class="mt20" :options="typeOpts"></nest-check>
+            <nest-check class="mt20" :options="DICT.filters.bedroom" :count-in-row="4"></nest-check>
             <div class="item-label">可入住时间</div>
             <div class="form-group border-bottom" @click="calendarShow = true">
               <nest-field placeholder="起始日期" text-align="center" :readonly="true" v-model="startDate"></nest-field>
@@ -44,16 +41,16 @@
               <nest-field placeholder="截止日期" text-align="center" :readonly="true" v-model="endDate"></nest-field>
             </div>
           </template>
+          <div class="detail-link" @click="detailShow = !detailShow">
+            <span>点击填写详细信息，轻松方便出租</span>
+          </div>
           <div class="form-group mt80 border-top border-bottom">
             <span class="label">联系人</span>
-            <nest-field></nest-field>
-            <div class="radio">
-              <nest-radio :options="sexOpts" size="small"></nest-radio>
-            </div>
+            <div>{{ contact_name }}</div>
           </div>
-          <div class="form-group border-bottom">
+          <div class="form-group border-bottom arrow-right">
             <span class="label">手机号</span>
-            <nest-field placeholder="无需区号，11位数"></nest-field>
+            <div>{{ contact_phone }}</div>
           </div>
           <div class="form-textarea">
             <span class="label">其他需求</span>
@@ -72,28 +69,37 @@
 </template>
 
 <script>
+  import DICT, {getSelecteds} from '../../configs/DICT';
+
   export default {
     name: "LivePublish",
     data() {
       return {
-        requireOpts: ['租赁', '购置'],
-        typeOpts: ['公寓', '别墅', '民居', '商铺/写字楼'],
         // regionVal: [],
-        regionOpts: ['马卡提(Makati)', '帕赛(Pasay)', '马尼拉市(City of Manila)', '曼达卢永(Mandaluyong)', '奎松(Quezon)', 'BGC(BGC, Taguig)', '帕西市(Pasig)'],
         detailShow: false,
-        waysOpts: ['整租', '合租'],
-        typeOpts: ['一居室', '二居室', '三居室', '其他'],
-        sexOpts: ['先生', '女士'],
         calendarShow: false,
         selectedDate: [],
         startDate: '',
-        endDate: ''
+        endDate: '',
+        contact_name: '',
+        contact_phone: ''
       }
     },
     watch: {
       selectedDate(val) {
         this.startDate = val[0].getFullYear() + '-' + (val[0].getMonth() + 1) + '-' + val[0].getDate();
         this.endDate = val[1].getFullYear() + '-' + (val[1].getMonth() + 1) + '-' + val[1].getDate();
+      }
+    },
+    created() {
+      this.DICT = DICT;
+      this.getSelecteds = getSelecteds;
+    },
+    methods: {
+      validate() {
+        // trade
+        // budget
+        // region
       }
     }
   }
@@ -149,6 +155,12 @@
       &.top {
         margin-top: .58rem;
       }
+      &.required {
+        &::after {
+          content: '*';
+          color: #f99c91;
+        }
+      }
     }
     .mt20 {
       margin-top: .2rem;
@@ -160,9 +172,6 @@
       display: flex;
       align-items: center;
       height: 1rem;
-      .radio {
-        width: 2.6rem;
-      }
     }
     .label {
       width: 1.9rem;

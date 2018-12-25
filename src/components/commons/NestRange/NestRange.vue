@@ -42,7 +42,6 @@
     },
     data() {
       return {
-        status: false,
         startX: 0,
         currentStartVal: this.value[0]  === '不限' ? this.min - this.step : this.value[0],
         currentEndVal: this.value[1]  === '不限' ? this.max + this.step : this.value[1],
@@ -50,6 +49,12 @@
           this.value[0] === '不限' ? this.min - this.step : this.value[0],
           this.value[1] === '不限' ? this.max + this.step : this.value[1]
         ]
+      }
+    },
+    watch: {
+      value(val) {
+        this.currentStartVal = val[0]  === '不限' ? this.min - this.step : val[0];
+        this.currentEndVal = val[1]  === '不限' ? this.min - this.step : val[1];
       }
     },
     computed: {

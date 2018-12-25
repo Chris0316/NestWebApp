@@ -24,11 +24,11 @@
           </div>
         </div>
         <div class="realm arrow-right border-bottom">
-          <div class="realm-name required" v-html="estateNameLabel"></div>
+          <div class="realm-name" :class="{ 'required' : type !== 'land' }" v-html="estateNameLabel"></div>
           <nest-field v-model="estateName"></nest-field>
         </div>
         <div class="realm border-bottom">
-          <div class="realm-name">地址</div>
+          <div class="realm-name" :class="{ 'required': type === 'land' }">地址</div>
           <nest-field v-model="address"></nest-field>
         </div>
         <div class="realm arrow-right border-bottom" @click="regionShow = true">
@@ -91,11 +91,11 @@
         </div>
         <div class="realm border-bottom">
           <div class="realm-name required">联系人</div>
-          <div class="realm-content">刘强东</div>
+          <div class="realm-content">{{ contact_name }}</div>
         </div>
         <div class="realm border-bottom arrow-right">
           <div class="realm-name required">手机号</div>
-          <div class="realm-content" @click="$router.push({ name: 'MyCellphone' })">13972154874</div>
+          <div class="realm-content" @click="$router.push({ name: 'MyCellphone' })">{{ contact_phone }}</div>
         </div>
         <template v-if="detailShow">
           <div class="realm arrow-right border-bottom" v-if="trade === 'rent'" @click="calendarShow = true">
@@ -221,7 +221,9 @@
         balcony: '',
         pet: '',
         facilities: [],
-        description: ''
+        description: '',
+        contact_name: '',
+        contact_phone: ''
       }
     },
     computed: {
@@ -249,12 +251,22 @@
         this.$keepAlives.push(this.$options.name);
       this.initOpts();
     },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (from.name === 'MyCellphone') {
+          vm.getUserInfo();
+        }
+      });
+    },
     beforeRouteLeave(to, from, next) {
       let index = this.$keepAlives.indexOf(this.$options.name);
       if (to.name === 'Explore') {
         this.$keepAlives.splice(index, 1);
       }
       next();
+    },
+    mounted() {
+      this.getUserInfo();
     },
     methods: {
       initOpts() {
@@ -271,6 +283,16 @@
         this.balconyOpts = DICT.house.balcony;
         this.petOpts = DICT.house.pet;
         this.facilitiesOpts = DICT.house.facilities;
+      },
+      getUserInfo() {
+        UserService.getUserInfo(res => {
+          this.contact_name = res.data.name;
+          let phones = res.data.extra.phones,
+            index = phones.findIndex(item => {
+              return item.default === '1';
+            });
+          this.contact_phone = phones[index].phone;
+        })
       },
       facOn(item) {
         let flag = false;
@@ -298,7 +320,35 @@
           this.facilities.push(item.value);
         }
       },
+      validate() {
+        if (this.type !== 'land' && this.estateName === '') {
+          this.$toast.info('请填写小区/商铺/写字楼名称');
+          return false;
+        }
+        if (this.type === 'land' && this.address === '') {
+          this.$toast.info('请填写地址');
+          return false;
+        }
+        if (this.type === 'apartment' || this.type === 'villa' || this.type === 'homestay') {
+          if (this.bedroom === '' || this.hall === '' || this.toilet === '') {
+            this.$toast.info('请完善户型');
+            return false;
+          }
+        }
+        if (this.price === '') {
+          if (this.trade === 'rent') {
+            this.$toast.info('请填写租金');
+          } else {
+            this.$toast.info('请填写售价');
+          }
+          return false;
+        }
+        return true;
+      },
       publish() {
+        if (!this.validate()) {
+          return false;
+        }
         let params = {
           is_new: 0,
           galleries: this.uploadPics.join(','),
@@ -331,7 +381,9 @@
           balcony: this.balcony,
           pet: this.pet,
           facilities: this.facilities.join(','),
-          description: this.description
+          description: this.description,
+          contact_name: this.contact_name,
+          contact_phone: this.contact_phone
         };
         let house = new HouseAdaptor(params).getEffectiveObject();
         HouseService.publish(house, res => {

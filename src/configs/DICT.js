@@ -96,6 +96,13 @@ const DICT = {
       "label": "出售",
       "value": "sale"
     }],
+    "trade2": [{
+      "label": "租赁",
+      "value": "rent"
+    }, {
+      "label": "购置",
+      "value": "sale"
+    }],
     "type": [{
       "label": "公寓",
       "value": "apartment"
@@ -111,6 +118,22 @@ const DICT = {
     }, {
       "label": "车位",
       "value": "carport"
+    }, {
+      "label": "土地",
+      "value": "land"
+    }],
+    "type2": [{
+      "label": "公寓",
+      "value": "apartment"
+    }, {
+      "label": "别墅",
+      "value": "villa"
+    }, {
+      "label": "民宿",
+      "value": "homestay"
+    }, {
+      "label": "商铺/写字楼",
+      "value": "office"
     }, {
       "label": "土地",
       "value": "land"

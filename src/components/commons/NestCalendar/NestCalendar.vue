@@ -220,10 +220,12 @@
         flex: 1;
         text-align: center;
         &.left {
-          background-color: #0f9183;
+          background: url('../../../assets/images/calendar-left.png') no-repeat left center;
+          background-size: .17rem .3rem;
         }
         &.right {
-          background-color: #0f9183;
+          background: url('../../../assets/images/calendar-right.png') no-repeat right center;
+          background-size: .17rem .3rem;
         }
       }
     }

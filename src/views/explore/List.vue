@@ -49,7 +49,7 @@
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">付款</div>
-            <nest-radio v-model="payWay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="rentPay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">设施</div>
@@ -111,8 +111,8 @@
             </div>
           </div>
           <div class="collect" slot="controls">
-            <div class="heart"></div>
-            <div class="share"></div>
+            <div class="heart" @click="doFavorite"></div>
+            <div class="share" @click="doShare"></div>
           </div>
         </nest-swipe-cell>
       </div>
@@ -147,7 +147,7 @@
         range: [],
         purpose: '',
         rent_type: '',
-        payWay: '',
+        rentPay: '',
         facilities: [],
         balcony: '',
         centiare: '',
@@ -277,11 +277,19 @@
       filterConfirm() {
         this.filters.type = this.type;
         this.filters.is_new = this.is_new;
-        // this.filters.price = this.price
-        // this.filters.range
+        let rangeLower = this.range[0] === -this.rangeStep ? 0 : this.range[0],
+          rangeUpper = this.range[1] === this.rangeMax + this.rangeStep ? 0 : this.range[1];
+        this.filters.price = this.price;
+        if (rangeLower !== 0 || rangeUpper !== 0) {
+          this.filters.price = rangeLower + '-' + rangeUpper;
+        }
         this.filters.purpose = this.purpose;
         this.filters.rent_type = this.rent_type;
-        // this.filters.payWay
+        if (this.rentPay && this.rentPay !== '2') {
+          let selectedObj = getSelecteds(DICT.filters.rent_pay, this.rentPay)[0];
+          this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
+          this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
+        }
         this.filters.facilities_ids = this.facilities;
         this.filters.balcony = this.balcony;
         this.filters.centiare = this.centiare;
@@ -293,12 +301,11 @@
       },
       filterClear() {
         this.type = '';
-        this.is_new = '';
-        // this.filters.price = this.price
-        // this.filters.range
+        this.price = '';
+        this.range = [0, this.rangeMax + this.rangeStep];
         this.purpose = '';
         this.rent_type = '';
-        // this.filters.payWay
+        this.rentPay = '';
         this.facilities = [];
         this.balcony = '';
         this.centiare = '';
@@ -325,7 +332,11 @@
           HouseService.getList(params, res => {
             this.dataList = res.data;
             this.$refs.scroll.scrollTo(0, 0, 300);
-            this.$refs.scroll.forceUpdate(true);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
           }, true);
         } else {
           this.filters.page += 1;
@@ -339,6 +350,12 @@
             }
           }, false);
         }
+      },
+      doFavorite() {
+        this.$toast.info('收藏了')
+      },
+      doShare() {
+        this.$toast.info('分享了')
       }
     }
   }

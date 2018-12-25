@@ -1,11 +1,11 @@
 <template>
   <div class="message">
     <div class="title border-bottom">
-        <div class="re-img"></div>
+        <div class="re-img" @click="$router.go(-1)"></div>
         我的消息
       </div>
     <nest-swipe-cell v-for="(item,i) in msgList" :key="i">
-      <div class="msg-item" slot="content">
+      <div class="msg-item" slot="content" @click="$router.push({ name: 'MyMessageDetail' })">
         <div class="left"></div>
         <div class="right">
           <div class="text">
