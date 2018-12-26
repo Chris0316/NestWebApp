@@ -122,6 +122,7 @@
 
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
+  import Utils from '../../utils/Utils';
   import HouseService from '../../services/HouseService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
 
@@ -313,20 +314,8 @@
         this.floor = '';
         this.decor = '';
       },
-      filterParams(params) {
-        for(let key in params) {
-          if (params.hasOwnProperty(key)) {
-            if (params[key] === "" || params[key] === null || params[key] === undefined) {
-              delete params[key];
-            } else if (params[key] instanceof Array && params[key].length === 0) {
-              delete params[key];
-            }
-          }
-        }
-        return params;
-      },
       onPullingUp(loading = false) {
-        let params = this.filterParams(this.filters);
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
           HouseService.getList(params, res => {

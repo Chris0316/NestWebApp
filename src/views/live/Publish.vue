@@ -10,30 +10,32 @@
           <div class="title">您的需求</div>
           <div class="title-desc">给我您的需求，帮您淘满意的房子</div>
           <div class="item-label top required">我需要</div>
-          <nest-radio class="mt20" :options="DICT.house.trade2" :count-in-row="4"></nest-radio>
+          <nest-radio class="mt20" v-model="trade" :options="DICT.house.trade2" :count-in-row="4"></nest-radio>
           <div class="item-label">类型</div>
-          <nest-check class="mt20" :options="DICT.house.type2" :count-in-row="3"></nest-check>
+          <nest-check class="mt20" v-model="type" :options="DICT.house.type2" :count-in-row="3"></nest-check>
           <div class="item-label required">区域</div>
-          <nest-check class="mt20" :options="DICT.region"></nest-check>
+          <nest-check class="mt20" v-model="region_ids" :options="DICT.region"></nest-check>
           <div class="item-label required">预算范围</div>
           <div class="form-group border-bottom">
-            <nest-field type="tel" placeholder="最小金额" text-align="center"></nest-field>
+            <nest-field type="tel" placeholder="最小金额" text-align="center" v-model="budget_min"></nest-field>
             <span class="split"></span>
-            <nest-field type="tel" placeholder="最大金额" text-align="center"></nest-field>
+            <nest-field type="tel" placeholder="最大金额" text-align="center" v-model="budget_max"></nest-field>
             <span class="unit">万(Peso)</span>
           </div>
           <template v-if="detailShow">
-            <div class="item-label">方式</div>
-            <nest-radio class="mt20" :options="DICT.house.rent_type" :count-in-row="4"></nest-radio>
+            <template v-show="showRentType">
+              <div class="item-label">方式</div>
+              <nest-radio class="mt20" v-model="rent_type" :options="DICT.house.rent_type" :count-in-row="4"></nest-radio>
+            </template>
             <div class="item-label">面积</div>
             <div class="form-group border-bottom">
-              <nest-field placeholder="最小面积" text-align="center"></nest-field>
+              <nest-field placeholder="最小面积" text-align="center" v-model="centiare_min"></nest-field>
               <span class="split"></span>
-              <nest-field placeholder="最大面积" text-align="center"></nest-field>
+              <nest-field placeholder="最大面积" text-align="center" v-model="centiare_max"></nest-field>
               <span class="unit">平米</span>
             </div>
             <div class="item-label">户型</div>
-            <nest-check class="mt20" :options="DICT.filters.bedroom" :count-in-row="4"></nest-check>
+            <nest-check class="mt20" :options="DICT.filters.bedroom" :count-in-row="4" v-model="bedroom"></nest-check>
             <div class="item-label">可入住时间</div>
             <div class="form-group border-bottom" @click="calendarShow = true">
               <nest-field placeholder="起始日期" text-align="center" :readonly="true" v-model="startDate"></nest-field>
@@ -46,11 +48,11 @@
           </div>
           <div class="form-group mt80 border-top border-bottom">
             <span class="label">联系人</span>
-            <div>{{ contact_name }}</div>
+            <div class="value">{{ contact_name }}</div>
           </div>
-          <div class="form-group border-bottom arrow-right">
+          <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'Cellphone' })">
             <span class="label">手机号</span>
-            <div>{{ contact_phone }}</div>
+            <div class="value">{{ contact_phone }}</div>
           </div>
           <div class="form-textarea">
             <span class="label">其他需求</span>
@@ -58,7 +60,7 @@
           </div>
         </div>
         <div class="btn-wrapper">
-          <nest-button type="primary" size="full">提交</nest-button>
+          <nest-button type="primary" size="full" @click="publish">提交</nest-button>
         </div>
       </div>
     </nest-scroll>
@@ -70,19 +72,38 @@
 
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
+  import Utils from '../../utils/Utils';
+  import UserService from '../../services/UserService';
+  import WantsService from '../../services/WantsService';
 
   export default {
     name: "LivePublish",
     data() {
       return {
-        // regionVal: [],
         detailShow: false,
         calendarShow: false,
+        trade: '',
+        type: [],
+        region_ids: [],
+        budget_min: '',
+        budget_max: '',
+        rent_type: '',
+        centiare_min: '',
+        centiare_max: '',
+        bedroom: [],
         selectedDate: [],
         startDate: '',
         endDate: '',
         contact_name: '',
         contact_phone: ''
+      }
+    },
+    computed: {
+      showRentType() {
+        if (this.trade === 'sale') {
+          return false;
+        }
+        return true;
       }
     },
     watch: {
@@ -92,14 +113,78 @@
       }
     },
     created() {
-      this.DICT = DICT;
-      this.getSelecteds = getSelecteds;
+      if (this.$keepAlives.indexOf(this.$options.name) === -1)
+        this.$keepAlives.push(this.$options.name);
+      this.initConsts();
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if (from.name === 'Cellphone') {
+          vm.getUserInfo();
+        }
+      });
+    },
+    beforeRouteLeave(to, from, next) {
+      let index = this.$keepAlives.indexOf(this.$options.name);
+      if (to.name === 'Live') {
+        this.$keepAlives.splice(index, 1);
+      }
+      next();
+    },
+    mounted() {
+      this.getUserInfo();
     },
     methods: {
+      initConsts() {
+        this.DICT = DICT;
+        this.getSelecteds = getSelecteds;
+      },
       validate() {
-        // trade
-        // budget
-        // region
+        if (this.trade === '') {
+          this.$toast.info('请确定您的需要租赁或是购置');
+          return false;
+        }
+        if (this.region_ids.length === 0) {
+          this.$toast.info('请选择区域');
+          return false;
+        }
+        if (this.budget_min === '' || this.budget_max === '') {
+          this.$toast.info('请填写您的预算范围');
+          return false;
+        }
+        return true;
+      },
+      getUserInfo() {
+        UserService.getUserInfo(res => {
+          this.contact_name = res.data.name;
+          let phones = res.data.extra.phones,
+            index = phones.findIndex(item => {
+              return item.default === '1';
+            });
+          this.contact_phone = phones[index].phone;
+        })
+      },
+      publish() {
+        if (!this.validate()) {
+          return false;
+        }
+        let wantsObj = {};
+        wantsObj.trade = this.trade;
+        wantsObj.type = this.type;
+        wantsObj.region_ids = this.region_ids;
+        wantsObj.budget_min = this.budget_min;
+        wantsObj.budget_max = this.budget_max;
+        wantsObj.rent_type = this.rent_type;
+        wantsObj.centiare_min = this.centiare_min;
+        wantsObj.centiare_max = this.centiare_max;
+        wantsObj.available_time_start = this.startDate;
+        wantsObj.available_time_end = this.endDate;
+        wantsObj.contact_name = this.contact_name;
+        wantsObj.contact_phone = this.contact_phone;
+        wantsObj = Utils.getEffectiveAttrsByObj(wantsObj);
+        WantsService.publish(wantsObj, res => {
+          console.log(res);
+        });
       }
     }
   }
@@ -175,6 +260,10 @@
     }
     .label {
       width: 1.9rem;
+      font-size: .28rem;
+      color: #333;
+    }
+    .value {
       font-size: .28rem;
       color: #333;
     }

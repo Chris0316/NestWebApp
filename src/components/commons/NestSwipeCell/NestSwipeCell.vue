@@ -38,7 +38,6 @@
         this._swipeY = true;
       },
       handleTouchMove(event) {
-        this.flag = true;
         let currentX = event.touches[0].clientX,
           currentY = event.touches[0].clientY,
           absPos = (currentX - this.startX) + this.distance;
@@ -48,6 +47,7 @@
           absPos = 0 - this.controlWidth;
         if (this._swipeX && Math.abs(currentX - this.startX) >= Math.abs(currentY - this.startY)) {
           // 左右滑动
+          this.flag = true;
           event.stopPropagation();
           event.preventDefault();
           this._swipeY = false;

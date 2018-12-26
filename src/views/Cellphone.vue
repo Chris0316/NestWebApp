@@ -2,7 +2,7 @@
   <div class="cellphone">
     <div class="header">
       <div class="back" @click="$router.go(-1);"></div>
-      <div class="right" @click="$router.push({ name: 'MyAddCellphone' });">添加手机号</div>
+      <div class="right" @click="$router.push({ name: 'AddCellphone' });">添加手机号</div>
     </div>
     <div class="title">手机号</div>
     <nest-radio class="mt60" :options="contacts" v-model="phone"
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import UserService from '../../services/UserService';
+  import UserService from '../services/UserService';
 
   export default {
     name: "Cellphone",
@@ -78,7 +78,7 @@
       .back {
         width: .9rem;
         height: 100%;
-        background: url('../../assets/images/return-icon.png') no-repeat left center;
+        background: url('../assets/images/return-icon.png') no-repeat left center;
         background-size: .42rem .32rem;
       }
       .right {
