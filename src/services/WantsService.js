@@ -5,6 +5,13 @@ const api = {
 };
 
 let WantsService = {
+  getList(params, callback, loading) {
+    axios.get(api.wants, {
+      loading: loading
+    }).then(res => {
+      callback(res);
+    });
+  },
   publish(wantsObj, callback) {
     axios.post(api.wants, wantsObj).then(res => {
       callback(res);

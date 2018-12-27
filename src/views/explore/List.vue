@@ -84,7 +84,7 @@
     <nest-scroll class="app-body"
                  ref="scroll"
                  :pullUpLoad="pullUpLoadObj"
-                 @pullingUp="onPullingUp">
+                 @pullingUp="getData">
       <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
           <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: listType, id: item.id }})">
@@ -202,7 +202,7 @@
         let selectedObj = getSelecteds(DICT.filters.sort[this.listType], val)[0];
         this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
         this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       range(val) {
         if (val !== [0, this.rangeMax + this.rangeStep]) {
@@ -217,7 +217,7 @@
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;
-      this.onPullingUp(true);
+      this.getData(true);
     },
     methods: {
       initConsts() {
@@ -268,12 +268,12 @@
       regionConfirm() {
         this.regionShow = false;
         this.filters.region_id = this.region;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       bedroomConfirm() {
         this.bedroomShow = false;
         this.filters.bedroom = this.bedroom;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       filterConfirm() {
         this.filters.type = this.type;
@@ -298,7 +298,7 @@
         this.filters.floor = this.floor;
         this.filters.decor = this.decor;
         this.filtersShow = false;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       filterClear() {
         this.type = '';
@@ -314,7 +314,7 @@
         this.floor = '';
         this.decor = '';
       },
-      onPullingUp(loading = false) {
+      getData(loading = false) {
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;

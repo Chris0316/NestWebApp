@@ -377,7 +377,7 @@
         let house = Utils.getEffectiveAttrsByObj(new HouseAdaptor(params));
         HouseService.publish(house, res => {
           this.$toast.success('发布成功！');
-          this.$router.go(-1);
+          this.$router.push({ name: 'Explore' });
         })
       }
     }

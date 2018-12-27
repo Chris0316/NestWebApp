@@ -4,21 +4,16 @@
       <div class="back" @click="$router.go(-1);"></div>
       帮住广场
     </div>
-    <div class="row-wrapper">
-      <div class="control-bar">
-        <button class="control-btn" @click="typeShow = true">类型</button>
-        <button class="control-btn" @click="locationShow = true">区域</button>
-      </div>
+    <div class="control-bar">
+      <nest-button :type="tradeBtn" class="mr28" @click="tradeShow = !tradeShow">{{ tradeBtnTxt }}</nest-button>
+      <nest-button :type="regionBtn" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
     </div>
-    <nest-scroll class="scroll-wrapper"
+    <nest-scroll class="app-body"
                  ref="scroll"
-                 :pullDownRefresh="pullDownRefreshObj"
                  :pullUpLoad="pullUpLoadObj"
-                 :startY="parseInt(startY)"
-                 @pullingDown="onPullingDown"
-                 @pullingUp="onPullingUp">
+                 @pullingUp="getData">
       <div class="list">
-        <nest-swipe-cell v-for="(item, index) in options" :key="index" class="list-item">
+        <nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">
           <div class="item"
                slot="content"
                :class="item.type">
@@ -39,91 +34,121 @@
         </nest-swipe-cell>
       </div>
     </nest-scroll>
-    <nest-modal title="类型" modal-confirm-txt="确定" @close="typeShow = false" :status="typeShow">
-      <nest-check v-model="typeVal" :options="typeOpts"></nest-check>
+    <nest-modal title="类型" modal-confirm-txt="确定" @close="tradeShow = false" :status="tradeShow">
+      <nest-check v-model="trade" :options="DICT.house.trade2"></nest-check>
     </nest-modal>
-    <nest-modal title="地点" modal-confirm-txt="确定" @close="locationShow = false" :status="locationShow">
-      <nest-check v-model="locationVal" :options="locationOpts"></nest-check>
+    <nest-modal title="地点" modal-confirm-txt="确定" @close="regionShow = false" :status="regionShow">
+      <nest-check v-model="region_ids" :options="DICT.region"></nest-check>
     </nest-modal>
   </div>
 </template>
 
 <script>
+  import DICT, {getSelecteds} from '../../configs/DICT';
+  import Utils from '../../utils/Utils';
+  import WantsService from '../../services/WantsService';
+
   export default {
     name: "MyGround",
     data() {
       return {
-        locationShow: false,
-        typeShow: false,
-        locationVal: [],
-        locationOpts: ['马卡提(Makati)', '帕赛(Pasay)', '马尼拉市(City of Manila)', '曼达卢永(Mandaluyong)', '奎松(Quezon)', 'BGC(BGC, Taguig)', '帕西市(Pasig)'],
-        typeVal: [],
-        typeOpts: ['购置', '租赁'],
-        options: [
+        tradeBtn: 'default',
+        regionBtn: 'default',
+        tradeBtnTxt: '类型',
+        regionBtnTxt: '区域',
+        regionShow: false,
+        tradeShow: false,
+        region_ids: [],
+        trade: [],
+        dataList: [
           { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
           { title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
           { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
+          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
+          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
           { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' }
         ],
-        // 这个配置用于做下拉刷新功能，默认为 false。当设置为 true 或者是一个 Object 的时候，可以开启下拉刷新，可以配置顶部下拉的距离（threshold） 来决定刷新时机以及回弹停留的距离（stop）
-        pullDownRefreshObj: {
-          threshold: 90,
-          stop: 40
+        filters: {
+          page: 0,
+          per_page: 10
         },
-        // 这个配置用于做上拉加载功能，默认为 false。当设置为 true 或者是一个 Object 的时候，可以开启上拉加载，可以配置离底部距离阈值（threshold）来决定开始加载的时机
         pullUpLoadObj: {
           threshold: 0,
           txt: {
             more: '加载更多',
             noMore: '没有更多数据了'
           }
-        },
-        startY: 0,  // 纵轴方向初始化位置
-        scrollToX: 0,
-        scrollToY: 0,
-        scrollToTime: 700,
+        }
       }
     },
-    mounted () {
-      this.onPullingDown()
+    watch: {
+      trade(val) {
+        if (val.length === 0) {
+          this.tradeBtn = 'default';
+          this.tradeBtnTxt = '类型';
+        } else {
+          this.tradeBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.house.trade2, val[0])[0].label;
+            this.tradeBtnTxt = label;
+          } else {
+            this.tradeBtnTxt = '类型(' + val.length + ')';
+          }
+        }
+      },
+      region_ids(val) {
+        if (val.length === 0) {
+          this.regionBtn = 'default';
+          this.regionBtnTxt = '区域';
+        } else {
+          this.regionBtn = 'primary';
+          if (val.length === 1) {
+            let label = getSelecteds(DICT.region, val[0])[0].label;
+            this.regionBtnTxt = label.split('(')[0];
+          } else {
+            this.regionBtnTxt = '区域(' + val.length + ')';
+          }
+        }
+      }
+    },
+    created() {
+      this.initConsts();
+    },
+    mounted() {
+      this.getData(true);
     },
     methods: {
-      // 滚动到页面顶部
-      scrollTo () {
-        this.$refs.scroll.scrollTo(this.scrollToX, this.scrollToY, this.scrollToTime)
+      initConsts() {
+        this.DICT = DICT;
+        this.getSelecteds = getSelecteds;
       },
-      // 模拟数据请求
-      getData () {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            const arr = []
-            for (let i = 0; i < 20; i++) {
-              arr.push({ title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' })
-            }
-            resolve(arr)
-          }, 1000)
-        })
-      },
-      onPullingDown () {
-        // 模拟下拉刷新
-        console.log('下拉刷新')
-        // count = 0
-        this.getData().then(res => {
-          this.options = res
-          this.$refs.scroll.forceUpdate(true)
-        })
-      },
-      onPullingUp () {
-        // 模拟上拉 加载更多数据
-        console.log('上拉加载')
-        this.getData().then(res => {
-          this.options = this.options.concat(res)
-          if(this.options.length<50){
-            this.$refs.scroll.forceUpdate(true)
-          }else{
-            this.$refs.scroll.forceUpdate(false)
-          }
-        })
+      getData (loading = false) {
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          WantsService.getList(params, res => {
+            // this.dataList = res.data;
+            // this.$refs.scroll.scrollTo(0, 0, 300);
+            // if (this.dataList.length < res.meta.pagination.total) {
+            //   this.$refs.scroll.forceUpdate(true);
+            // } else {
+            //   this.$refs.scroll.forceUpdate(false);
+            // }
+            console.log(res);
+          }, true);
+        } else {
+          this.filters.page += 1;
+          WantsService.getList(params, res => {
+          //   this.filters.page = res.meta.pagination.current_page;
+          //   this.dataList = this.dataList.concat(res.data);
+          //   if (this.dataList.length < res.meta.pagination.total) {
+          //     this.$refs.scroll.forceUpdate(true);
+          //   } else {
+          //     this.$refs.scroll.forceUpdate(false);
+          //   }
+            console.log(res);
+          }, false);
+        }
       }
     }
   }
@@ -131,6 +156,9 @@
 
 <style lang="scss" scoped>
   .live-ground {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     background-color: #fff;
     .header {
       position: relative;
@@ -149,11 +177,12 @@
       background: url('../../assets/images/return-icon.png') no-repeat left center;
       background-size: .42rem .32rem;
     }
-    .row-wrapper {
-      padding: 0 .28rem;
-    }
     .control-bar {
-      padding: .2rem 0 .6rem;
+      display: flex;
+      padding: .2rem .28rem .6rem;
+    }
+    .mr28 {
+      margin-right: .28rem;
     }
     .control-btn {
       position: relative;
@@ -189,9 +218,9 @@
         transform-origin: left top;
       }
     }
-    .scroll-wrapper {
+    .app-body {
       position: relative;
-      height: 300px;
+      flex: 1;
       overflow: hidden;
     }
     .list-item {

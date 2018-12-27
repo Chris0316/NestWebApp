@@ -20,18 +20,18 @@
             <nest-field type="tel" placeholder="最小金额" text-align="center" v-model="budget_min"></nest-field>
             <span class="split"></span>
             <nest-field type="tel" placeholder="最大金额" text-align="center" v-model="budget_max"></nest-field>
-            <span class="unit">万(Peso)</span>
+            <span class="unit">{{ unit }}</span>
           </div>
           <template v-if="detailShow">
-            <template v-show="showRentType">
+            <template v-if="showRentType">
               <div class="item-label">方式</div>
               <nest-radio class="mt20" v-model="rent_type" :options="DICT.house.rent_type" :count-in-row="4"></nest-radio>
             </template>
             <div class="item-label">面积</div>
             <div class="form-group border-bottom">
-              <nest-field placeholder="最小面积" text-align="center" v-model="centiare_min"></nest-field>
+              <nest-field type="tel" placeholder="最小面积" text-align="center" v-model="centiare_min"></nest-field>
               <span class="split"></span>
-              <nest-field placeholder="最大面积" text-align="center" v-model="centiare_max"></nest-field>
+              <nest-field type="tel" placeholder="最大面积" text-align="center" v-model="centiare_max"></nest-field>
               <span class="unit">平米</span>
             </div>
             <div class="item-label">户型</div>
@@ -56,7 +56,7 @@
           </div>
           <div class="form-textarea">
             <span class="label">其他需求</span>
-            <nest-field type="textarea"></nest-field>
+            <nest-field type="textarea" v-model="description"></nest-field>
           </div>
         </div>
         <div class="btn-wrapper">
@@ -64,7 +64,7 @@
         </div>
       </div>
     </nest-scroll>
-    <nest-modal :status="calendarShow" title="选择日期" :body-full="true" @close="calendarShow = false">
+    <nest-modal :status="calendarShow" title="选择日期" :body-full="true" @close="calendarShow = false" @confirm="calendarShow = false">
       <nest-calendar :range="true" v-model="selectedDate"></nest-calendar>
     </nest-modal>
   </div>
@@ -94,6 +94,7 @@
         selectedDate: [],
         startDate: '',
         endDate: '',
+        description: '',
         contact_name: '',
         contact_phone: ''
       }
@@ -104,6 +105,12 @@
           return false;
         }
         return true;
+      },
+      unit() {
+        if (this.trade === 'sale') {
+          return '万(Peso)';
+        }
+        return 'Peso';
       }
     },
     watch: {
@@ -172,18 +179,21 @@
         wantsObj.trade = this.trade;
         wantsObj.type = this.type;
         wantsObj.region_ids = this.region_ids;
-        wantsObj.budget_min = this.budget_min;
-        wantsObj.budget_max = this.budget_max;
+        wantsObj.budget_min = this.trade === 'sale' ? this.budget_min * 10000 : this.budget_min;
+        wantsObj.budget_max = this.trade === 'sale' ? this.budget_max * 10000 : this.budget_max;
         wantsObj.rent_type = this.rent_type;
         wantsObj.centiare_min = this.centiare_min;
         wantsObj.centiare_max = this.centiare_max;
+        wantsObj.bedroom = this.bedroom;
         wantsObj.available_time_start = this.startDate;
         wantsObj.available_time_end = this.endDate;
         wantsObj.contact_name = this.contact_name;
         wantsObj.contact_phone = this.contact_phone;
+        wantsObj.description = this.description;
         wantsObj = Utils.getEffectiveAttrsByObj(wantsObj);
         WantsService.publish(wantsObj, res => {
-          console.log(res);
+          this.$toast.success('发布成功！');
+          this.$router.push({ name: 'Live' });
         });
       }
     }
@@ -280,6 +290,8 @@
     }
     .unit {
       margin-left: .3rem;
+      width: 1.12rem;
+      text-align: right;
       font-size: .28rem;
       color: #333;
       white-space: nowrap;
