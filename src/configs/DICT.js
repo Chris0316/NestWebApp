@@ -290,15 +290,14 @@ const DICT = {
 };
 
 let getSelecteds = (array, values) => {
-  let arr = array.filter(item => {
-    let temp = item.value || item;
-    if (values instanceof Array) {
-      return values.indexOf(item) > -1;
-    } else {
-      return values == temp;
-    }
-  });
-  return arr;
+  if (values instanceof Array) {
+    let arr = values.map(value => {
+      return array.filter(item => item.value == value)[0];
+    });
+    return arr;
+  } else {
+    return array.filter(item => item.value == values)
+  }
 };
 
 export default DICT;

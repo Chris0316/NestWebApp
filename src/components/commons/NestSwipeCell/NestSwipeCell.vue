@@ -45,7 +45,7 @@
           absPos = 0;
         else if (absPos < 0 - this.controlWidth)
           absPos = 0 - this.controlWidth;
-        if (this._swipeX && Math.abs(currentX - this.startX) >= Math.abs(currentY - this.startY)) {
+        if (this._swipeX && Math.abs(currentX - this.startX) > Math.abs(currentY - this.startY)) {
           // 左右滑动
           this.flag = true;
           event.stopPropagation();

@@ -16,13 +16,17 @@
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">
           <div class="item"
                slot="content"
-               :class="item.type">
-            <div class="item-img"></div>
+               :class="item.trade">
+            <div class="item-img" :class="[item.type[0]]"></div>
             <div class="item-content">
-              <div class="title"><span class="txt">{{ item.title }}</span><span class="tag">{{ item.type === 'rent'? '租赁' : '购置' }}</span></div>
+              <div class="title">
+                <span class="tag">{{ getSelecteds(DICT.house.trade2, item.trade)[0].label }}</span>
+                <span class="txt">{{ getListTitle(item) }}</span>
+              </div>
               <div class="desc">
-                预算：{{ item.budget }}<br>
-                地区：{{ item.area }}
+                <div v-if="item.trade === 'rent'">预算：{{ item.budget_min }}-{{ item.budget_max }}Peso</div>
+                <div v-else>预算：{{ item.budget_min/10000 }}-{{ item.budget_max/10000 }}万Peso</div>
+                <div>地区：{{ getSelecteds(DICT.region, item.region_ids).map(item2 => item2.label).join(' ') }}</div>
               </div>
               <div class="date">{{ item.date }}</div>
             </div>
@@ -60,14 +64,7 @@
         tradeShow: false,
         region_ids: [],
         trade: [],
-        dataList: [
-          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
-          { title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
-          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
-          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
-          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' },
-          { title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19' }
-        ],
+        dataList: [],
         filters: {
           page: 0,
           per_page: 10
@@ -122,31 +119,36 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
       },
+      getListTitle(item) {
+        let title = getSelecteds(DICT.house.type, item.type).map(item2 => item2.label).join('·');
+        if (title.length > 8) {
+          return title.substring(0, 8);
+        }
+        return title;
+      },
       getData (loading = false) {
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
           WantsService.getList(params, res => {
-            // this.dataList = res.data;
-            // this.$refs.scroll.scrollTo(0, 0, 300);
-            // if (this.dataList.length < res.meta.pagination.total) {
-            //   this.$refs.scroll.forceUpdate(true);
-            // } else {
-            //   this.$refs.scroll.forceUpdate(false);
-            // }
-            console.log(res);
+            this.dataList = res.data;
+            this.$refs.scroll.scrollTo(0, 0, 300);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
           }, true);
         } else {
           this.filters.page += 1;
           WantsService.getList(params, res => {
-          //   this.filters.page = res.meta.pagination.current_page;
-          //   this.dataList = this.dataList.concat(res.data);
-          //   if (this.dataList.length < res.meta.pagination.total) {
-          //     this.$refs.scroll.forceUpdate(true);
-          //   } else {
-          //     this.$refs.scroll.forceUpdate(false);
-          //   }
-            console.log(res);
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataList = this.dataList.concat(res.data);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
           }, false);
         }
       }
@@ -231,16 +233,54 @@
       padding: 0 .28rem;
       &.rent {
         .item-img {
-          background-color: rgba(139,181,223,.15);
+          &.apartment {
+            background: rgba(139,181,223,.15) url('../../assets/images/my/apartment-rent.png') no-repeat center center;
+            background-size: .66rem .65rem;
+          }
+          &.villa {
+            background: rgba(139,181,223,.15) url('../../assets/images/my/villa-rent.png') no-repeat center center;
+            background-size: .69rem .6rem;
+          }
+          &.office {
+            background: rgba(139,181,223,.15) url('../../assets/images/my/office-rent.png') no-repeat center center;
+            background-size: .75rem .75rem;
+          }
+          &.homestay {
+            background: rgba(139,181,223,.15) url('../../assets/images/my/homestay-rent.png') no-repeat center center;
+            background-size: .69rem .71rem;
+          }
+          &.land {
+            background: rgba(139,181,223,.15) url('../../assets/images/my/land-rent.png') no-repeat center center;
+            background-size: .73rem .61rem;
+          }
         }
         .tag {
           color: #8BB5DF;
           background-color: rgba(139,181,223,.15);
         }
       }
-      &.buy {
+      &.sale {
         .item-img {
-          background: rgba(213,190,136,.15);
+          &.apartment {
+            background: rgba(213,190,136,.15) url('../../assets/images/my/apartment-sale.png') no-repeat center center;
+            background-size: .66rem .65rem;
+          }
+          &.villa {
+            background: rgba(213,190,136,.15) url('../../assets/images/my/villa-sale.png') no-repeat center center;
+            background-size: .69rem .6rem;
+          }
+          &.office {
+            background: rgba(213,190,136,.15) url('../../assets/images/my/office-sale.png') no-repeat center center;
+            background-size: .75rem .75rem;
+          }
+          &.homestay {
+            background: rgba(213,190,136,.15) url('../../assets/images/my/homestay-sale.png') no-repeat center center;
+            background-size: .69rem .71rem;
+          }
+          &.land {
+            background: rgba(213,190,136,.15) url('../../assets/images/my/land-sale.png') no-repeat center center;
+            background-size: .73rem .61rem;
+          }
         }
         .tag {
           color: #D5BE88;
@@ -270,7 +310,7 @@
           .tag {
             display: inline-block;
             vertical-align: middle;
-            margin-left: .2rem;
+            margin-right: .2rem;
             width: .8rem;
             height: .36rem;
             line-height: .36rem;

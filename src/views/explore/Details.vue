@@ -21,7 +21,7 @@
         </div>
         <div class="main-info">
           <div class="item">
-            <div class="txt-1 bold" v-if="detailsType === 'rent'">{{ house.price }} P/㎡</div>
+            <div class="txt-1 bold" v-if="detailsType === 'rent'">{{ house.price }} P/月</div>
             <div class="txt-1 bold" v-else-if="detailsType === 'new'">{{ house.avg_price }} P/㎡</div>
             <div class="txt-1 bold" v-else>{{ house.total_amount / 10000 }} 万</div>
             <div class="label" v-if="detailsType === 'new'">均价</div>

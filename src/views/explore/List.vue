@@ -464,7 +464,7 @@
       overflow: hidden;
     }
     .list-container {
-      padding: 0.5rem 0;
+      padding: 0.5rem 0 0;
     }
     .search-item {
       display: flex;

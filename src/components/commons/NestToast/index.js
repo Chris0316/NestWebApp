@@ -7,7 +7,7 @@ let instance;
 let showToast = (type, message, options = {}) => {
   options.type = type;
   options.visible = true;
-  options.message = message;
+  options.message = message.toString();
   instance = instance || new ToastConstructor({
     propsData: options
   }).$mount(document.createElement('div'));
