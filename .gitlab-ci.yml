@@ -1,3 +1,8 @@
+#自动化部署
+stages:
+  - build
+  - deploy
+
 #build过程
 build:
    stage: build
@@ -14,11 +19,10 @@ build:
    only:
    - master
 
-stages:
-  - deploy
 deploy:
     stage: deploy
     image: alpine:latest
+
     script:
       - mv -Rf dist/* /home/wwwroot/www.ohmynest.com
     only:
