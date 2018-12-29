@@ -24,7 +24,8 @@ deploy:
     stage: deploy
     image: alpine:latest
     script:
-      - mv dist/* /home/wwwroot/www.ohmynest.com
+      - rm -Rf /home/wwwroot/www.ohmynest.com/*
+      - cp -Rf dist/* /home/wwwroot/www.ohmynest.com/
     only:
       - master
     tags:
