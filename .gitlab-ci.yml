@@ -23,7 +23,6 @@ build:
 deploy:
     stage: deploy
     image: alpine:latest
-
     script:
       - mv dist/* /home/wwwroot/www.ohmynest.com
     only:
