@@ -19,6 +19,7 @@ build:
    only:
    - master
 
+#deploy过程
 deploy:
     stage: deploy
     image: alpine:latest
