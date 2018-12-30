@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="live-ground border-bottom">
-          <div class="banner" @click="$router.push({ name: 'MyGround' })">帮住广场</div>
+          <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->
           <!--<div class="label">我的信息</div>-->

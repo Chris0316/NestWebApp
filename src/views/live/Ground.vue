@@ -16,7 +16,8 @@
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">
           <div class="item"
                slot="content"
-               :class="item.trade">
+               :class="item.trade"
+               @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
             <div class="item-img" :class="[item.type[0]]"></div>
             <div class="item-content">
               <div class="title">

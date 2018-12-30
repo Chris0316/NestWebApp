@@ -1,7 +1,5 @@
 import My from '@/views/My'
-import MyGround from '@/views/my/Ground'
 import MyLive from '@/views/my/Live'
-import MyDetails from '@/views/my/Details'
 import MyProfile from '@/views/my/Profile'
 import MyEdit from '@/views/my/Edit'
 import Message from '@/views/my/Message'
@@ -10,8 +8,6 @@ import MyPublish from '@/views/my/Publish'
 
 export default [
   { path: '/my', name: 'My', component: My, meta: { slideLevel: 1 } },
-  { path: '/my/details', name: 'MyDetails', component: MyDetails, meta: { slideLevel: 1 } },
-  { path: '/my/ground', name: 'MyGround', component: MyGround, meta: { slideLevel: 1 } },
   { path: '/my/live', name: 'MyLive', component: MyLive, meta: { slideLevel: 1 } },
   { path: '/my/profile', name: 'MyProfile', component: MyProfile, meta: { slideLevel: 1 } },
   { path: '/my/edit', name: 'MyEdit', component: MyEdit, meta: { slideLevel: 1 } },

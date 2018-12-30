@@ -16,6 +16,11 @@ let WantsService = {
     axios.post(api.wants, wantsObj).then(res => {
       callback(res);
     });
+  },
+  getDetailsById(id, callback) {
+    axios.get(api.wants + '/' + id).then(res => {
+      callback(res);
+    });
   }
 };
 
