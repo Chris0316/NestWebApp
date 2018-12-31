@@ -37,13 +37,7 @@
       return {
         countryShow: false,
         userType: '',
-        userTypeOpts: [{
-          label: '用户',
-          value: '0'
-        }, {
-          label: '房产经纪人',
-          value: '1'
-        }],
+        userTypeOpts: DICT.user.is_agent,
         country: '',
         name: '',
         account: '',

@@ -190,7 +190,7 @@
       trade(val) {
         this.tradeShow = false;
         setTimeout(() => {
-          this.$router.push({name: 'ExplorePublish', params: {type: val}});
+          this.$router.push({ name: 'ExplorePublish', params: { type: val, id: 'new' } });
         }, 500);
       },
       region(val) {

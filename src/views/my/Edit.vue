@@ -92,6 +92,7 @@
     },
     mounted() {
       UserService.getUserInfo(res => {
+        this.portrait = res.data.avatar;
         this.signature = res.data.introduction;
         this.country = res.data.nation;
         this.gender = res.data.gender;

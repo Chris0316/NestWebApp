@@ -1,7 +1,7 @@
 <template>
   <div class="publish">
     <div class="header border-bottom">
-      <div class="back" @click="$router.go(-1);"></div>
+      <div class="back" @click="goBack();"></div>
       发布{{ getSelecteds(DICT.house.trade, this.trade)[0].label }}信息
     </div>
     <nest-scroll class="app-body">
@@ -255,7 +255,7 @@
     beforeRouteEnter(to, from, next) {
       next(vm => {
         if (from.name === 'Cellphone') {
-          vm.getUserInfo();
+          vm.getData();
         }
       });
     },
@@ -267,15 +267,24 @@
       next();
     },
     mounted() {
-      this.getUserInfo();
+      this.getData();
     },
     methods: {
       initConsts() {
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
-        this.trade = this.$route.params.type;
+        let params = this.$route.params;
+        if (params) {
+          this.trade = this.$route.params.type;
+          this.houseId = this.$route.params.id;
+        }
       },
-      getUserInfo() {
+      getData() {
+        if (this.houseId && this.houseId !== 'new') {
+          HouseService.getDetailsById(this.houseId, res => {
+            console.log(res.data)
+          });
+        }
         UserService.getUserInfo(res => {
           this.contact_name = res.data.name;
           let phones = res.data.extra.phones,
@@ -287,20 +296,24 @@
       },
       facOn(item) {
         let flag = false;
-        this.facilities.forEach(item2 => {
-          if (item2 == item.value) {
-            flag = true;
-          }
-        });
+        if (this.facilities && this.facilities.length !== 0) {
+          this.facilities.forEach(item2 => {
+            if (item2 == item.value) {
+              flag = true;
+            }
+          });
+        }
         return flag;
       },
       facIcon(item) {
         let icon = item.icon;
-        this.facilities.forEach(item2 => {
-          if (item2 == item.value) {
-            icon = item.icon_selected;
-          }
-        });
+        if (this.facilities && this.facilities.length !== 0) {
+          this.facilities.forEach(item2 => {
+            if (item2 == item.value) {
+              icon = item.icon_selected;
+            }
+          });
+        }
         return icon;
       },
       selectFac(item) {
@@ -379,6 +392,11 @@
           this.$toast.success('发布成功！');
           this.$router.push({ name: 'Explore' });
         })
+      },
+      goBack() {
+        let index = this.$keepAlives.indexOf(this.$options.name);
+        this.$keepAlives.splice(index, 1);
+        this.$router.go(-1);
       }
     }
   }
@@ -418,7 +436,7 @@
       line-height: 2rem;
     }
     .tag {
-      margin: 0rem 0.28rem;
+      margin: 0 0.28rem;
       padding: 0.2rem 0;
     }
     .app-body {
@@ -427,11 +445,13 @@
     }
     .realm {
       position: relative;
-      margin: 0rem 0.28rem;
+      padding: .26rem 0;
+      margin: 0 0.28rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 1rem;
+      min-height: 1rem;
+      box-sizing: border-box;
       .realm-name {
         width: 1.92rem;
         &.required {
@@ -457,7 +477,7 @@
           height: 0.6rem;
           text-align: center;
           line-height: 0.6rem;
-          border: 0rem;
+          border: 0;
         }
       }
     }
@@ -473,7 +493,7 @@
         width: 0.9rem;
         height: 0.6rem;
         line-height: 0.6rem;
-        border: 0rem;
+        border: 0;
         text-align: center;
       }
     }
@@ -512,7 +532,7 @@
     }
     .facilities {
       box-sizing: border-box;
-      padding: 0rem 0.28rem;
+      padding: 0 0.28rem;
       display: flex;
       flex-direction: column;
       .title {
@@ -535,7 +555,7 @@
         width: 1.2rem;
         height: 1.2rem;
         &:nth-child(5n) {
-          margin-right: 0rem;
+          margin-right: 0;
         }
         &.on {
           .item-name {
@@ -554,9 +574,8 @@
     }
     .description {
       display: flex;
-      padding: 0.36rem 0.28rem 0rem;
+      padding: 0.36rem 0.28rem 0;
       box-sizing: border-box;
-      overflow: hidden;
       height: 3.8rem;
       background: #fff;
       overflow: hidden;

@@ -223,6 +223,13 @@ const DICT = {
     }, {
       "label": "其他",
       "value": "3"
+    }],
+    "is_agent": [{
+      "label": "用户",
+      "value": "0"
+    }, {
+      "label": "经纪人",
+      "value": "1"
     }]
   },
   "country": [{
@@ -292,11 +299,11 @@ const DICT = {
 let getSelecteds = (array, values) => {
   if (values instanceof Array) {
     let arr = values.map(value => {
-      return array.filter(item => item.value == value)[0];
+      return array.filter(item => (item.value || item) == value)[0];
     });
     return arr;
   } else {
-    return array.filter(item => item.value == values)
+    return array.filter(item => (item.value || item) == values)
   }
 };
 

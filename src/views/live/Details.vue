@@ -5,7 +5,7 @@
       帮住广场-{{ getSelecteds(DICT.house.trade2, trade)[0].label }}信息
     </div>
     <div class="content">
-      <div class="banner">给我您的需求，帮您淘满意的房子</div>
+      <div class="banner"></div>
       <div class="card">
         <div class="card-top" :class="trade">
           <span class="title">公寓</span>
@@ -98,8 +98,7 @@
       getData() {
         let userId = Storage.getLocalStorage('nest_user_id');
         WantsService.getDetailsById(this.liveId, res => {
-          let user_id = res.data.user.id;
-          if (userId == user_id) {
+          if (userId == res.data.user.id) {
             this.isMine = true;
           }
           this.trade = res.data.trade;
@@ -151,8 +150,9 @@
       height: 1.4rem;
       line-height: 1.4rem;
       text-align: center;
-      background-color: #f2f2f2;
       border-radius: .2rem;
+      background: url('../../assets/images/live/live-details-adv.png') no-repeat;
+      background-size: 100% 100%;
     }
     .card {
       margin-top: .2rem;
@@ -191,7 +191,8 @@
         .share {
           width: .38rem;
           height: .38rem;
-          background-color: #fff;
+          background: url('../../assets/images/live/share-white.png') no-repeat;
+          background-size: 100% 100%;
         }
       }
       .card-body {
@@ -262,7 +263,7 @@
       font-size: .28rem;
       text-align: center;
       z-index: 1;
-      box-shadow:0px -1px 5px 0px rgba(234,234,234,1);
+      box-shadow: 0 -1px 5px 0 rgba(234,234,234,1);
       .controls {
         flex: 1;
         font-size: 0;

@@ -43,170 +43,138 @@
         </div>
         <div class="details-module" v-if="detailsType === 'new' || detailsType === 'second'">
           <div class="module-title">基本信息</div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">单价:</div>
-              <div class="value">{{ house.price }}P/㎡</div>
-            </div>
-            <div class="cell">
-              <div class="label">发布时间:</div>
-              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">单价:</div>
+            <div class="value">{{ house.price }}P/㎡</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">用途:</div>
-              <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">电梯:</div>
-              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">发布时间:</div>
+            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">楼层:</div>
-              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
-            </div>
-            <div class="cell">
-              <div class="label">主卧朝向:</div>
-              <div class="value" v-if="house.master_direction">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">用途:</div>
+            <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">装修:</div>
-              <div class="value" v-if="house.decor">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">阳台:</div>
-              <div class="value" v-if="house.balcony">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
-            </div>
+          <div class="cell" v-if="house.lift">
+            <div class="label">电梯:</div>
+            <div class="value">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">宠物:</div>
-              <div class="value" v-if="house.pet">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">车位:</div>
-              <div class="value" v-if="house.carport">{{ getSelecteds(DICT.house.carport, house.pet)[0].carport }}</div>
-            </div>
+          <div class="cell" v-if="house.floor">
+            <div class="label">楼层:</div>
+            <div class="value">{{ house.floor }}层</div>
+          </div>
+          <div class="cell" v-if="house.master_direction">
+            <div class="label">主卧朝向:</div>
+            <div class="value">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.decor">
+            <div class="label">装修:</div>
+            <div class="value">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.balcony">
+            <div class="label">阳台:</div>
+            <div class="value">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.pet">
+            <div class="label">宠物:</div>
+            <div class="value">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.carport">
+            <div class="label">车位:</div>
+            <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
         <div class="details-module" v-if="detailsType === 'rent'">
           <div class="module-title">基本信息</div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">用途:</div>
-              <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">发布时间:</div>
-              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">用途:</div>
+            <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">租期:</div>
-              <div class="value" v-if="house.min_stay_month && house.max_stay_month">{{ house.min_stay_month }}-{{ house.max_stay_month }}个月</div>
-            </div>
-            <div class="cell">
-              <div class="label">可入住时间:</div>
-              <div class="value" v-if="house.available_time">{{ house.available_time.split(' ')[0] }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">发布时间:</div>
+            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">电梯:</div>
-              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">楼层:</div>
-              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
-            </div>
+          <div class="cell" v-if="house.min_stay_month && house.max_stay_month">
+            <div class="label">租期:</div>
+            <div class="value">{{ house.min_stay_month }}-{{ house.max_stay_month }}个月</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">装修:</div>
-              <div class="value" v-if="house.decor">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">主卧朝向:</div>
-              <div class="value" v-if="house.master_direction">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
-            </div>
+          <div class="cell" v-if="house.available_time">
+            <div class="label">可入住时间:</div>
+            <div class="value">{{ house.available_time.split(' ')[0] }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">阳台:</div>
-              <div class="value" v-if="house.balcony">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">宠物:</div>
-              <div class="value" v-if="house.pet">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
-            </div>
+          <div class="cell" v-if="house.lift">
+            <div class="label">电梯:</div>
+            <div class="value">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">车位:</div>
-              <div class="value" v-if="house.carport">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
-            </div>
+          <div class="cell" v-if="house.floor">
+            <div class="label">楼层:</div>
+            <div class="value">{{ house.floor }}层</div>
+          </div>
+          <div class="cell" v-if="house.decor">
+            <div class="label">装修:</div>
+            <div class="value">{{ getSelecteds(DICT.house.decor, house.decor)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.master_direction">
+            <div class="label">主卧朝向:</div>
+            <div class="value">{{ getSelecteds(DICT.house.master_direction, house.master_direction)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.balcony">
+            <div class="label">阳台:</div>
+            <div class="value">{{ getSelecteds(DICT.house.balcony, house.balcony)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.pet">
+            <div class="label">宠物:</div>
+            <div class="value">{{ getSelecteds(DICT.house.pet, house.pet)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.carport">
+            <div class="label">车位:</div>
+            <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
         <div class="details-module" v-if="detailsType === 'carport'">
           <div class="module-title">基本信息</div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">单价:</div>
-              <div class="value">{{ house.price }}P/㎡</div>
-            </div>
-            <div class="cell">
-              <div class="label">发布时间:</div>
-              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">单价:</div>
+            <div class="value">{{ house.price }}P/㎡</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">用途:</div>
-              <div class="value" v-if="house.purpose">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">电梯:</div>
-              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">发布时间:</div>
+            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">楼层:</div>
-              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
-            </div>
+          <div class="cell" v-if="house.purpose">
+            <div class="label">用途:</div>
+            <div class="value">{{ getSelecteds(DICT.house.purpose, house.purpose)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.lift">
+            <div class="label">电梯:</div>
+            <div class="value">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.floor">
+            <div class="label">楼层:</div>
+            <div class="value">{{ house.floor }}层</div>
           </div>
         </div>
         <div class="details-module" v-if="detailsType === 'land'">
           <div class="module-title">基本信息</div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">单价:</div>
-              <div class="value">{{ house.price }}P/㎡</div>
-            </div>
-            <div class="cell">
-              <div class="label">发布时间:</div>
-              <div class="value">{{ house.created_at.split(' ')[0] }}</div>
-            </div>
+          <div class="cell">
+            <div class="label">单价:</div>
+            <div class="value">{{ house.price }}P/㎡</div>
           </div>
-          <div class="info-line">
-            <div class="cell">
-              <div class="label">电梯:</div>
-              <div class="value" v-if="house.lift">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
-            </div>
-            <div class="cell">
-              <div class="label">楼层:</div>
-              <div class="value" v-if="house.floor">{{ house.floor }}层</div>
-            </div>
+          <div class="cell">
+            <div class="label">发布时间:</div>
+            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+          </div>
+          <div class="cell" v-if="house.lift">
+            <div class="label">电梯:</div>
+            <div class="value">{{ getSelecteds(DICT.house.lift, house.lift)[0].label }}</div>
+          </div>
+          <div class="cell" v-if="house.floor">
+            <div class="label">楼层:</div>
+            <div class="value">{{ house.floor }}层</div>
           </div>
         </div>
-        <div class="details-module details-spe" v-if="detailsType === 'new'">
-          <div class="module-title title-spe">户型介绍</div>
+        <div class="details-module scroll" v-if="detailsType === 'new'">
+          <div class="module-title">户型介绍</div>
           <nest-scroll direction="horizontal" class="info-list">
             <div class="info-list-wrap">
               <div class="info-item">
@@ -233,26 +201,25 @@
         <div class="details-module">
           <div class="module-title">介绍</div>
           <div class="publisher-introduce">
-            <div class="portrait"></div>
+            <div class="portrait" :style="{ backgroundImage: 'url(' + house.user.avatar + ')'}"></div>
             <div class="publisher-info">
-              <div class="publisher-name">Govern</div>
-              <div class="publisher-desc"><span class="type">经纪人</span><span>语言：汉语/英语/韩语/日语</span></div>
+              <div class="publisher-name">{{ house.user.name }}</div>
+              <div class="publisher-desc">
+                <span class="type">{{ getSelecteds(DICT.user.is_agent, house.user.is_agent)[0].label }}</span>
+                <span>语言：{{ getSelecteds(DICT.languages, house.user.languages).join('/') }}</span>
+              </div>
             </div>
             <div class="focus-btn">关注</div>
           </div>
           <div class="paragraph">
-            位于普吉岛的长泰 (Choeng Thale) 地区，我们的四卧室豪华别墅距离该地区的所有主要海滩都很近，非常方便。该别墅提供多达 1100 平方米的巨大生活空间，有私人泳池，充满活力。
+            {{ house.user.introduction }}
           </div>
         </div>
         <!--地图-->
         <!--<div class="details-map"></div>-->
-        <div class="others">
-          <div class="details-module">
-            <div class="module-title">周边楼盘</div>
-          </div>
-
-          <!--new second-->
-          <nest-scroll direction="horizontal" v-if="propnew" class="similar">
+        <div class="details-module scroll">
+          <div class="module-title">{{ detailsType === 'new' ? '周边楼盘' : '同小区在售' }}</div>
+          <nest-scroll direction="horizontal" class="similar">
             <div class="similar-wrap">
               <div class="item">
                 <div class="item-img"></div>
@@ -276,37 +243,37 @@
               </div>
             </div>
           </nest-scroll>
-          <nest-scroll direction="horizontal" v-if="propsecond" class="similar">
-            <div class="similar-wrap">
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers at Circuit Makati</div>
-                <div class="unit-size">
-                  <div class="left">10F</div>
-                  <div class="left">150.55㎡</div>
-                </div>
-                <div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>
-              </div>
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers at Circuit Makati</div>
-                <div class="unit-size">
-                  <div class="left">10F</div>
-                  <div class="left">150.55㎡</div>
-                </div>
-                <div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>
-              </div>
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers at Circuit Makati</div>
-                <div class="unit-size">
-                  <div class="left">10F</div>
-                  <div class="left">150.55㎡</div>
-                </div>
-                <div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>
-              </div>
-            </div>
-          </nest-scroll>
+          <!--<nest-scroll direction="horizontal" class="similar">-->
+            <!--<div class="similar-wrap">-->
+              <!--<div class="item">-->
+                <!--<div class="item-img"></div>-->
+                <!--<div class="item-title">Callisto Towers at Circuit Makati</div>-->
+                <!--<div class="unit-size">-->
+                  <!--<div class="left">10F</div>-->
+                  <!--<div class="left">150.55㎡</div>-->
+                <!--</div>-->
+                <!--<div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>-->
+              <!--</div>-->
+              <!--<div class="item">-->
+                <!--<div class="item-img"></div>-->
+                <!--<div class="item-title">Callisto Towers at Circuit Makati</div>-->
+                <!--<div class="unit-size">-->
+                  <!--<div class="left">10F</div>-->
+                  <!--<div class="left">150.55㎡</div>-->
+                <!--</div>-->
+                <!--<div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>-->
+              <!--</div>-->
+              <!--<div class="item">-->
+                <!--<div class="item-img"></div>-->
+                <!--<div class="item-title">Callisto Towers at Circuit Makati</div>-->
+                <!--<div class="unit-size">-->
+                  <!--<div class="left">10F</div>-->
+                  <!--<div class="left">150.55㎡</div>-->
+                <!--</div>-->
+                <!--<div class="item-desc"><span class="tag-main">40万</span><span class="tag-sub">210,000 P/平</span></div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</nest-scroll>-->
         </div>
         <div class="publish">
           <div class="tips">我也要出售？</div>
@@ -316,18 +283,17 @@
     </nest-scroll>
     <div class="control-bar">
       <div class="controls">
-        <a href="javascript:;" class="favorite"></a>
+        <a href="javascript:;" class="favorite" v-if="!isMine"></a>
         <a href="javascript:;" class="share"></a>
       </div>
-      <a href="javascript:;" class="msg-btn">短信咨询</a>
-      <a href="javascript:;" class="phone-btn">电话咨询</a>
-    </div>
-    <div class="foot-end" v-if="editShow">
-      <div class="end-item">
-        <img class="share-icon" src="../../assets/images/share.png" alt="">
-      </div>
-      <div class="end-item center">编辑</div>
-      <div class="end-item last">删除</div>
+      <template v-if="isMine">
+        <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { type: house.trade, id: house.id } })">编辑</a>
+        <a href="javascript:;" class="control-btn danger">删除</a>
+      </template>
+      <template v-else>
+        <a href="javascript:;" class="control-btn info">短信咨询</a>
+        <a href="javascript:;" class="control-btn primary">电话咨询</a>
+      </template>
     </div>
   </div>
 </template>
@@ -338,27 +304,10 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import DICT, {getSelecteds} from "../../configs/DICT";
   import HouseService from '../../services/HouseService';
+  import Storage from "../../utils/Storage";
 
   export default {
     name: 'ExploreDetails',
-    props: {
-      rent: {
-        type: Boolean,
-        default: false
-      },
-      second: {
-        type: Boolean,
-        default: false
-      },
-      new: {
-        type: Boolean,
-        default: true
-      },
-      parking: {
-        type: Boolean,
-        default: false
-      }
-    },
     data() {
       return {
         house: null,
@@ -368,23 +317,14 @@
             el: '.swiper-pagination',
             type: 'fraction'
           }
-        },
-        editShow: false,
-        proprent: this.rent,
-        propsecond: this.second,
-        propnew: this.new,
-        propparking: this.parking,
+        }
       }
     },
     created() {
       this.initConsts();
     },
     mounted() {
-      if (this.houseId) {
-        HouseService.getDetailsById(this.houseId, res => {
-          this.house = res.data;
-        })
-      }
+      this.getData();
     },
     methods: {
       initConsts() {
@@ -395,6 +335,7 @@
         }
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
+        this.isMine = false;
       },
       getLabelTags() {
         let arr = [];
@@ -411,6 +352,17 @@
           arr.push('押' + this.house.deposit_month + '付' + this.house.pay_month);
         }
         return arr.join(' / ');
+      },
+      getData() {
+        if (this.houseId) {
+          HouseService.getDetailsById(this.houseId, res => {
+            this.house = res.data;
+            let userId = Storage.getLocalStorage('nest_user_id');
+            if (userId == res.data.user.id) {
+              this.isMine = true;
+            }
+          })
+        }
       }
     },
     components: {
@@ -534,9 +486,18 @@
       }
     }
     .details-module {
+      display: flex;
+      flex-wrap: wrap;
       padding: 0 .28rem .6rem;
+      &.scroll {
+        padding: 0 0 .6rem 0;
+        .module-title {
+          margin: 0 .28rem;
+        }
+      }
     }
     .module-title {
+      width: 100%;
       position: relative;
       padding-top: .4rem;
       line-height: 1;
@@ -554,16 +515,13 @@
         transform: scaleY(0.5);
       }
     }
-    .info-line {
+    .cell {
       margin-top: .35rem;
       display: flex;
+      width: 50%;
+      color: #333;
       font-size: .28rem;
       line-height: 1;
-      .cell {
-        display: flex;
-        flex: 1;
-        color: #333;
-      }
       .label {
         width: 1.5rem;
         color: #b2b2b2;
@@ -575,13 +533,15 @@
     .publisher-introduce {
       margin: .4rem 0 .26rem;
       display: flex;
+      width: 100%;
       align-items: center;
       .portrait {
         margin-right: .2rem;
         width: 1rem;
         height: 1rem;
         border-radius: 50%;
-        background-color: #dfdfdf;
+        background: #dfdfdf center center no-repeat;
+        background-size: cover;
       }
       .publisher-info {
         flex: 1;
@@ -592,9 +552,12 @@
         }
         .publisher-desc {
           margin-top: .18rem;
-          font-size: .24rem;
+          font-size: 0;
           color: #b3b3b3;
           line-height: 1;
+          span {
+            font-size: .24rem;
+          }
           .type {
             margin-right: .35rem;
           }
@@ -638,15 +601,16 @@
       line-height: .48rem;
     }
     .details-map {
+      margin-bottom: .7rem;
       height: 4rem;
       background-color: #dcdcdc;
     }
     .others {
       position: relative;
-      margin-top: .7rem;
       padding-bottom: .85rem;
     }
     .similar {
+      margin-top: .4rem;
       display: flex;
       overflow: hidden;
       .similar-wrap {
@@ -737,48 +701,45 @@
       background-color: #fff;
       font-size: .28rem;
       text-align: center;
+      box-shadow: 0 -1px 5px 0 rgba(234,234,234,1);
       .controls {
+        padding: 0 .25rem;
+        display: flex;
+        justify-content: space-around;
         flex: 1;
-        font-size: 0;
-        text-align: left;
-        line-height: 1rem;
+        align-items: center;
         .favorite {
-          margin: 0 .6rem 0 .65rem;
-          display: inline-block;
-          vertical-align: middle;
           width: .42rem;
           height: .38rem;
           background: url("../../assets/images/favorite.png") no-repeat;
           background-size: 100% 100%;
         }
         .share {
-          display: inline-block;
-          vertical-align: middle;
           width: .38rem;
           height: .38rem;
           background: url("../../assets/images/share.png") no-repeat;
           background-size: 100% 100%;
         }
       }
-      .msg-btn {
+      .control-btn {
         display: block;
         width: 2.4rem;
         height: 1rem;
         line-height: 1rem;
         color: #fff;
-        background-color: #f99c91;
-      }
-      .phone-btn {
-        display: block;
-        width: 2.4rem;
-        height: 1rem;
-        line-height: 1rem;
-        color: #fff;
-        background-color: #0F9183;
+        &.primary {
+          background-color: #0F9183;
+        }
+        &.info {
+          background-color: #f99c91;
+        }
+        &.danger {
+          background-color: #F54545;
+        }
       }
     }
     .info-list {
-      margin-top: 0.2rem;
+      margin-top: 0.4rem;
       display: flex;
       overflow: hidden;
       .info-list-wrap {
@@ -814,42 +775,6 @@
         font-size: 0.28rem;
         color: #0F9183;
         font-weight: bold;
-      }
-    }
-    .details-spe {
-      padding: 0rem 0rem 0.6rem 0rem;
-      .title-spe {
-        margin-left: 0.28rem;
-      }
-    }
-    .foot-end{
-      position: fixed;
-      left: 0rem;
-      right: 0rem;
-      bottom: 0rem;
-      display: flex;
-      z-index: 2;
-      .end-item{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-        height: 1rem;
-        background: #fff;
-        .share-icon{
-          width: 0.38rem;
-          height: 0.38rem;
-        }
-      }
-      .center{
-        font-size: 0.28rem;
-        color: #fff;
-        background: #0F9183;
-      }
-      .last{
-        font-size: 0.28rem;
-        color: #fff;
-        background: #F54545;
       }
     }
   }
