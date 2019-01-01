@@ -86,6 +86,9 @@
       }
     },
     watch: {
+      value(val) {
+        this.currentVal = val;
+      },
       fullYear() {
         this.options = this.render();
       },

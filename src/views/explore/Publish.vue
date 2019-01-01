@@ -2,7 +2,7 @@
   <div class="publish">
     <div class="header border-bottom">
       <div class="back" @click="goBack();"></div>
-      发布{{ getSelecteds(DICT.house.trade, this.trade)[0].label }}信息
+      {{ houseId === 'new' ? '发布' : '编辑' }}{{ getSelecteds(DICT.house.trade, trade)[0].label }}信息
     </div>
     <nest-scroll class="app-body">
       <div>
@@ -167,14 +167,17 @@
           <span>点击填写详细信息，轻松方便出租</span>
         </div>
         <div class="pub-bottom">
-          <nest-button type="primary" size="full" @click="publish">发布</nest-button>
+          <nest-button type="primary" size="full" @click="publish">{{ houseId === 'new' ? '发布' : '保存' }}</nest-button>
         </div>
       </div>
     </nest-scroll>
     <nest-modal title="区域" :has-clear="false" :has-footer="false" @close="regionShow = false" :status="regionShow">
       <nest-radio v-model="region" :options="DICT.region" @input="regionShow = false"></nest-radio>
     </nest-modal>
-    <nest-modal :status="calendarShow" title="选择日期" :body-full="true" @close="calendarShow = false"
+    <nest-modal :status="calendarShow" title="选择日期" :body-full="true"
+                @close="calendarShow = false"
+                @confirm="calendarShow = false"
+                @clear="selectedDate = []"
                 v-if="trade === 'rent'">
       <nest-calendar v-model="selectedDate"></nest-calendar>
     </nest-modal>
@@ -282,7 +285,34 @@
       getData() {
         if (this.houseId && this.houseId !== 'new') {
           HouseService.getDetailsById(this.houseId, res => {
-            console.log(res.data)
+            this.uploadPics = res.data.galleries.data.map(item => item.url);
+            this.type = res.data.type ? res.data.type.toString() : '';
+            this.purpose = res.data.purpose ? res.data.purpose.toString() : '';
+            this.rentType = res.data.rent_type ? res.data.rent_type.toString() : '';
+            this.estateName = res.data.building_name ? res.data.building_name.toString() : '';
+            this.address = res.data.address ? res.data.address.toString() : '';
+            this.region = res.data.region_id ? res.data.region_id.toString() : '';
+            this.buildingNo = res.data.building_no ? res.data.building_no.toString() : '';
+            this.floor = res.data.floor ? res.data.floor.toString() : '';
+            this.floorMax = res.data.floor_max ? res.data.floor_max.toString() : '';
+            this.bedroom = res.data.bedroom ? res.data.bedroom.toString() : '';
+            this.hall = res.data.hall ? res.data.hall.toString() : '';
+            this.toilet = res.data.toilet ? res.data.toilet.toString() : '';
+            this.centiare = res.data.centiare ? res.data.centiare.toString() : '';
+            this.price = res.data.price ? res.data.price.toString() : '';
+            this.depositMonth = res.data.deposit_month ? res.data.deposit_month.toString() : '';
+            this.payMonth = res.data.pay_month ? res.data.pay_month.toString() : '';
+            this.selectedDate = res.data.available_time ? [new Date(res.data.available_time)] : [];
+            this.minStayMonth = res.data.min_stay_month ? res.data.min_stay_month.toString() : '';
+            this.maxStayMonth = res.data.max_stay_month ? res.data.max_stay_month.toString() : '';
+            this.carport = res.data.carport.toString();
+            this.lift = res.data.lift.toString();
+            this.decor = res.data.decor.toString();
+            this.masterDirection = res.data.master_direction.toString();
+            this.balcony = res.data.balcony.toString();
+            this.pet = res.data.pet.toString();
+            this.facilities = res.data.facilities || [];
+            this.description = res.data.description ? res.data.description.toString() : '';
           });
         }
         UserService.getUserInfo(res => {
@@ -388,10 +418,17 @@
           description: this.description
         };
         let house = Utils.getEffectiveAttrsByObj(new HouseAdaptor(params));
-        HouseService.publish(house, res => {
-          this.$toast.success('发布成功！');
-          this.$router.push({ name: 'Explore' });
-        })
+        if (this.houseId === 'new') {
+          HouseService.publish(house, res => {
+            this.$toast.success('发布成功！');
+            this.$router.push({ name: 'Explore' });
+          });
+        } else {
+          HouseService.updateById(this.houseId, house, res => {
+            this.$toast.success('编辑成功！');
+            this.goBack();
+          })
+        }
       },
       goBack() {
         let index = this.$keepAlives.indexOf(this.$options.name);

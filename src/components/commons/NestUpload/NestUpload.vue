@@ -40,6 +40,11 @@
         currentVal: this.value
       }
     },
+    watch: {
+      value(val) {
+        this.currentVal = val;
+      }
+    },
     methods: {
       mediaInCell(rowIndex, cellIndex) {
         let mediaIndex = rowIndex * 4 + cellIndex;

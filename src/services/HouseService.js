@@ -10,6 +10,11 @@ let HouseService = {
       callback(res);
     });
   },
+  updateById(houseId, houseObj, callback) {
+    axios.patch(api.house + '/' + houseId, houseObj).then(res => {
+      callback(res);
+    });
+  },
   getList(params, callback, loading) {
     axios.get(api.house, {
       params: params,
