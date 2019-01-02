@@ -110,7 +110,10 @@
               </div>
             </div>
           </div>
-          <div class="collect" slot="controls">
+          <div class="collect" slot="controls" v-if="userId == item.user_id">
+            <div class="share" @click="doShare"></div>
+          </div>
+          <div class="collect" slot="controls" v-else>
             <div class="heart" @click="doFavorite"></div>
             <div class="share" @click="doShare"></div>
           </div>
@@ -125,6 +128,7 @@
   import Utils from '../../utils/Utils';
   import HouseService from '../../services/HouseService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
+  import Storage from '../../utils/Storage';
 
   export default {
     name: 'ExploreList',
@@ -232,6 +236,7 @@
             this.type = 'land';
           }
         }
+        this.userId = Storage.getLocalStorage('nest_user_id');
         this.DICT = DICT;
         if (this.listType === 'rent') {
           this.trade = 'rent';

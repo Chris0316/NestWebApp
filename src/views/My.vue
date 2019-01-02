@@ -24,14 +24,16 @@
             <div class="item-label">我的资讯</div>
           </div>
         </div>
-        <div class="live-ground border-bottom" v-if="isAgent">
+        <div class="live-ground" v-if="isAgent">
           <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->
           <!--<div class="label">我的信息</div>-->
         <!--</div>-->
-        <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessage' })">
-          <div class="label">我的消息</div>
+        <div class="border-top mt80">
+          <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessage' })">
+            <div class="label">我的消息</div>
+          </div>
         </div>
         <div class="form-group border-bottom"></div>
         <div class="form-group border-bottom arrow-right">
@@ -190,7 +192,7 @@
       line-height: 1;
     }
     .live-ground {
-      padding: .6rem 0 .8rem;
+      padding-top: .6rem;
     }
     .banner {
       font-size: .34rem;
@@ -213,6 +215,9 @@
         font-size: .28rem;
         color: #333;
       }
+    }
+    .mt80 {
+      margin-top: .8rem;
     }
     .footer-links {
       margin-top: 1rem;

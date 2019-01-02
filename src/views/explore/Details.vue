@@ -173,6 +173,15 @@
             <div class="value">{{ house.floor }}层</div>
           </div>
         </div>
+        <div class="details-module" v-if="['apartment', 'villa', 'homestay'].indexOf(house.type) > -1">
+          <div class="module-title">房屋配套</div>
+          <div class="content">
+            <div class="item" v-for="item in DICT.house.facilities" :class="{'on': facOn(item)}">
+              <img class="item-icon" :src="facIcon(item)" />
+              <div class="item-name">{{ item.label }}</div>
+            </div>
+          </div>
+        </div>
         <div class="details-module scroll" v-if="detailsType === 'new'">
           <div class="module-title">户型介绍</div>
           <nest-scroll direction="horizontal" class="info-list">
@@ -358,6 +367,28 @@
         }
         return arr.join(' / ');
       },
+      facOn(item) {
+        let flag = false;
+        if (this.house.facilities && this.house.facilities.length !== 0) {
+          this.house.facilities.forEach(item2 => {
+            if (item2 == item.value) {
+              flag = true;
+            }
+          });
+        }
+        return flag;
+      },
+      facIcon(item) {
+        let icon = item.icon;
+        if (this.house.facilities && this.house.facilities.length !== 0) {
+          this.house.facilities.forEach(item2 => {
+            if (item2 == item.value) {
+              icon = item.icon_selected;
+            }
+          });
+        }
+        return icon;
+      },
       getData() {
         if (this.houseId) {
           HouseService.getDetailsById(this.houseId, res => {
@@ -540,6 +571,36 @@
       }
       .value {
         flex: 1;
+      }
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      .item {
+        margin-top: 0.4rem;
+        margin-right: 0.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 1.2rem;
+        height: 1.2rem;
+        &:nth-child(5n) {
+          margin-right: 0;
+        }
+        &.on {
+          .item-name {
+            color: #0f9183;
+          }
+        }
+      }
+      .item-name {
+        font-size: 0.24rem;
+        color: #B2B2B2;
+      }
+      .item-icon {
+        width: 0.8rem;
+        height: 0.8rem;
       }
     }
     .publisher-introduce {

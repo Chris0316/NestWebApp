@@ -36,11 +36,11 @@
             </div>
             <div class="item-label">户型</div>
             <nest-check class="mt20" :options="DICT.filters.bedroom" :count-in-row="4" v-model="bedroom"></nest-check>
-            <div class="item-label">可入住时间</div>
-            <div class="form-group border-bottom" @click="calendarShow = true">
-              <nest-field placeholder="起始日期" text-align="center" :readonly="true" v-model="startDate"></nest-field>
-              <span class="split"></span>
-              <nest-field placeholder="截止日期" text-align="center" :readonly="true" v-model="endDate"></nest-field>
+            <div class="border-top mt40">
+              <div class="form-group arrow-right border-bottom" @click="calendarShow = true">
+                <div class="label">可入住时间</div>
+                <div class="value">{{ availableTime }}</div>
+              </div>
             </div>
           </template>
           <div class="detail-link" @click="detailShow = !detailShow">
@@ -66,7 +66,7 @@
     </nest-scroll>
     <nest-modal :status="calendarShow" title="选择日期" modal-type="calendar"
                 @close="calendarShow = false" @confirm="calendarShow = false">
-      <nest-calendar :range="true" v-model="selectedDate"></nest-calendar>
+      <nest-calendar v-model="selectedDate"></nest-calendar>
     </nest-modal>
   </div>
 </template>
@@ -93,8 +93,6 @@
         centiare_max: '',
         bedroom: [],
         selectedDate: [],
-        startDate: '',
-        endDate: '',
         description: '',
         contact_name: '',
         contact_phone: ''
@@ -112,12 +110,12 @@
           return '万(Peso)';
         }
         return 'Peso';
-      }
-    },
-    watch: {
-      selectedDate(val) {
-        this.startDate = val[0].getFullYear() + '-' + (val[0].getMonth() + 1) + '-' + val[0].getDate();
-        this.endDate = val[1].getFullYear() + '-' + (val[1].getMonth() + 1) + '-' + val[1].getDate();
+      },
+      availableTime() {
+        if (this.selectedDate.length > 0) {
+          return this.selectedDate[0].getFullYear() + '-' + (this.selectedDate[0].getMonth() + 1) + '-' + this.selectedDate[0].getDate();
+        }
+        return '';
       }
     },
     created() {
@@ -186,8 +184,7 @@
         wantsObj.centiare_min = this.centiare_min;
         wantsObj.centiare_max = this.centiare_max;
         wantsObj.bedroom = this.bedroom;
-        wantsObj.available_time_start = this.startDate;
-        wantsObj.available_time_end = this.endDate;
+        wantsObj.avilable_time_start = this.availableTime;
         wantsObj.contact_name = this.contact_name;
         wantsObj.contact_phone = this.contact_phone;
         wantsObj.description = this.description;
@@ -260,6 +257,9 @@
     }
     .mt20 {
       margin-top: .2rem;
+    }
+    .mt40 {
+      margin-top: .4rem;
     }
     .mt80 {
       margin-top: .8rem;

@@ -38,17 +38,27 @@
       <div class="label">注册时间</div>
       <div>{{ regDate }}</div>
     </div>
+    <div class="form-group logout">
+      <div class="label" @click="logoutShow = true">退出登录</div>
+    </div>
+    <nest-modal modal-type="confirm" :has-clear="false" :has-cancel="true" modal-cancel-txt="按错了" :status="logoutShow"
+                @cancel="logoutShow = false" @close="logoutShow = false" @confirm="logout">
+      确定要退出登录吗？
+    </nest-modal>
   </div>
 </template>
 
 <script>
   import UserService from '../../services/UserService';
   import DICT, { getSelecteds } from '../../configs/DICT';
+  import AuthService from "../../services/AuthService";
+  import Storage from "../../utils/Storage";
 
   export default {
     name: "MyProfile",
     data() {
       return {
+        logoutShow: false,
         name: '',
         account: '',
         country: '',
@@ -74,6 +84,15 @@
         this.email = res.data.email;
         this.regDate = res.data.created_at;
       })
+    },
+    methods: {
+      logout() {
+        AuthService.logout(res => {
+          this.logoutShow = false;
+          Storage.removeLocalStorage('nest_access_token');
+          this.$router.push({ name: 'Explore' });
+        });
+      }
     }
   }
 </script>
@@ -123,8 +142,7 @@
       width: 1.2rem;
       height: 1.2rem;
       border-radius: 1.2rem;
-      background-color: #e6e6e6;
-      background-repeat: no-repeat;
+      background: #e6e6e6 no-repeat;
       background-size: 100% 100%;
       .country {
         position: absolute;
@@ -134,9 +152,7 @@
         height: .44rem;
         border-radius: .44rem;
         border: 1px solid #fff;
-        background-color: #a1a1a1;
-        background-repeat: no-repeat;
-        background-position: center center;
+        background: #a1a1a1 no-repeat center center;
         background-size: .44rem .44rem;
         box-sizing: border-box;
       }
@@ -178,6 +194,11 @@
         .value {
           padding: .29rem 0;
           line-height: .42rem;
+        }
+      }
+      &.logout {
+        .label {
+          color: #999;
         }
       }
     }

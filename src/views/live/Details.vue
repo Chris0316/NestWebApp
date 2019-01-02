@@ -32,9 +32,9 @@
             <div class="info-label">户型:</div>
             <div class="info-value">{{ getSelecteds(DICT.filters.bedroom, live.bedroom).map(item => item.label).join('、') }}</div>
           </div>
-          <div class="info-row">
+          <div class="info-row" v-if="live.available_time">
             <div class="info-label">可入住时间:</div>
-            <div class="info-value">{{ live.available_time_start }}-{{ live.available_time_end }}</div>
+            <div class="info-value">{{ live.available_time.split(' ')[0] }}</div>
           </div>
           <div class="info-row" v-if="live.description">
             <div class="info-label">其他需求:</div>
@@ -58,8 +58,8 @@
         <a href="javascript:;" class="favorite"></a>
         <a href="javascript:;" class="share"></a>
       </div>
-      <a href="javascript:;" class="msg-btn">短信</a>
-      <a href="javascript:;" class="phone-btn">电话</a>
+      <a href="javascript:;" class="msg-btn">短信咨询</a>
+      <a href="javascript:;" class="phone-btn">电话咨询</a>
     </div>
   </div>
 </template>
