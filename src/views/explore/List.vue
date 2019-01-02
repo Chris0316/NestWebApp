@@ -25,7 +25,7 @@
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
-      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
+      <nest-modal modal-type="full" :has-clear="false" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
                   @close="filtersShow = false"
                   @confirm="filterConfirm"
                   @cancel="filterClear">
@@ -487,8 +487,7 @@
         width: 2.7rem;
         height: 1.74rem;
         border-radius: 0.1rem;
-        background-color: #e8e8ea;
-        background-repeat: no-repeat;
+        background: #e8e8ea no-repeat;
         background-size: cover;
       }
       .msg-wrap {

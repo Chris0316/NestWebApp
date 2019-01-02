@@ -288,13 +288,17 @@
       </div>
       <template v-if="isMine">
         <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { type: house.trade, id: house.id } })">编辑</a>
-        <a href="javascript:;" class="control-btn danger">删除</a>
+        <a href="javascript:;" class="control-btn danger" @click="deleteShow = true">删除</a>
       </template>
       <template v-else>
         <a href="javascript:;" class="control-btn info">短信咨询</a>
         <a href="javascript:;" class="control-btn primary">电话咨询</a>
       </template>
     </div>
+    <nest-modal modal-type="confirm" :has-clear="false" :has-cancel="true" modal-cancel-txt="按错了" :status="deleteShow" v-if="isMine"
+      @cancel="deleteShow = false" @close="deleteShow = false" @confirm="deleteHouseInfo">
+      确定要删除该 <span class="hl">房源</span> 吗？
+    </nest-modal>
   </div>
 </template>
 
@@ -311,6 +315,7 @@
     data() {
       return {
         house: null,
+        deleteShow: false,
         swiperOption: {
           loop: true,
           pagination: {
@@ -362,6 +367,13 @@
               this.isMine = true;
             }
           })
+        }
+      },
+      deleteHouseInfo() {
+        if (this.houseId) {
+          HouseService.deleteById(this.houseId, res => {
+            this.$router.go(-1);
+          });
         }
       }
     },

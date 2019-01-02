@@ -7,6 +7,7 @@ const api = {
 let WantsService = {
   getList(params, callback, loading) {
     axios.get(api.wants, {
+      params: params,
       loading: loading
     }).then(res => {
       callback(res);

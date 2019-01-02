@@ -174,7 +174,7 @@
     <nest-modal title="区域" :has-clear="false" :has-footer="false" @close="regionShow = false" :status="regionShow">
       <nest-radio v-model="region" :options="DICT.region" @input="regionShow = false"></nest-radio>
     </nest-modal>
-    <nest-modal :status="calendarShow" title="选择日期" :body-full="true"
+    <nest-modal :status="calendarShow" title="选择日期" modal-type="calendar"
                 @close="calendarShow = false"
                 @confirm="calendarShow = false"
                 @clear="selectedDate = []"

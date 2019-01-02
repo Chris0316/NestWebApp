@@ -64,7 +64,8 @@
         </div>
       </div>
     </nest-scroll>
-    <nest-modal :status="calendarShow" title="选择日期" :body-full="true" @close="calendarShow = false" @confirm="calendarShow = false">
+    <nest-modal :status="calendarShow" title="选择日期" modal-type="calendar"
+                @close="calendarShow = false" @confirm="calendarShow = false">
       <nest-calendar :range="true" v-model="selectedDate"></nest-calendar>
     </nest-modal>
   </div>

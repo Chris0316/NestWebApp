@@ -129,7 +129,7 @@
     <!--弹框确认取消-->
     <nest-modal
       :hasClear="false" :hasCancel="true" modalCancelTxt="按错了" :hasFooter="true"
-      :status="false" title="" :oneline="true"
+      :status="false" modal-type="confirm"
       class="textali">
       确定要取消关注该 <span class="keyword">房源 </span> 吗？
     </nest-modal>

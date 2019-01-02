@@ -20,17 +20,17 @@
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon3" @click="$router.push({ name: 'MyMessage' })"></div>
+            <div class="item-icon icon3"></div>
             <div class="item-label">我的资讯</div>
           </div>
         </div>
-        <div class="live-ground border-bottom">
+        <div class="live-ground border-bottom" v-if="isAgent">
           <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->
           <!--<div class="label">我的信息</div>-->
         <!--</div>-->
-        <div class="form-group border-bottom arrow-right">
+        <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessage' })">
           <div class="label">我的消息</div>
         </div>
         <div class="form-group border-bottom"></div>

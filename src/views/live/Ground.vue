@@ -39,10 +39,12 @@
         </nest-swipe-cell>
       </div>
     </nest-scroll>
-    <nest-modal title="类型" modal-confirm-txt="确定" @close="tradeShow = false" :status="tradeShow">
+    <nest-modal title="类型" modal-confirm-txt="确定" :status="tradeShow"
+                @close="tradeShow = false" @clear="trade = []" @confirm="tradeConfirm">
       <nest-check v-model="trade" :options="DICT.house.trade2"></nest-check>
     </nest-modal>
-    <nest-modal title="地点" modal-confirm-txt="确定" @close="regionShow = false" :status="regionShow">
+    <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
+                @close="regionShow = false" @clear="region_ids = []" @confirm="regionConfirm">
       <nest-check v-model="region_ids" :options="DICT.region"></nest-check>
     </nest-modal>
   </div>
@@ -126,6 +128,16 @@
           return title.substring(0, 8);
         }
         return title;
+      },
+      tradeConfirm() {
+        this.tradeShow = false;
+        this.filters.trade = this.trade;
+        this.getData(true);
+      },
+      regionConfirm() {
+        this.regionShow = false;
+        this.filters.region_ids = this.region_ids;
+        this.getData(true);
       },
       getData (loading = false) {
         let params = Utils.getEffectiveAttrsByObj(this.filters);
