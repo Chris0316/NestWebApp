@@ -8,7 +8,11 @@ let showToast = (type, message, options = {}) => {
   options.type = type;
   options.visible = true;
   options.message = message.toString();
-  instance = instance || new ToastConstructor({
+  if (instance) {
+    instance.clearTimeout();
+    instance.close();
+  }
+  instance = new ToastConstructor({
     propsData: options
   }).$mount(document.createElement('div'));
   document.body.appendChild(instance.$el);
@@ -34,8 +38,8 @@ const Toast = {
   },
   hide() {
     if (instance) {
+      instance.clearTimeout();
       instance.close();
-      instance = null;
     }
   }
 };

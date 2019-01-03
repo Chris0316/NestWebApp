@@ -11,34 +11,68 @@
     <div class="btn-wrap">
       <nest-button>发布中</nest-button>
     </div>
-    <div class="list">
-      <nest-tab-container v-model="tabSelected">
-        <nest-tab-container-item id="my">
-          <nest-swipe-cell v-for="(item, index) in options" :key="index" class="list-item">
-            <div class="item"
-                 slot="content"
-                 :class="item.type">
-              <div class="item-img"></div>
-              <div class="item-content">
-                <div class="title">
-                  <span class="txt">{{ item.title }}</span><span class="tag">{{ item.type === 'rent'? '租赁' : '购置' }}</span>
+    <!--<nest-scroll class="app-body"-->
+                 <!--ref="scroll"-->
+                 <!--:pullUpLoad="pullUpLoadObj"-->
+                 <!--@pullingUp="getData">-->
+      <!--<div class="list">-->
+        <!--<nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">-->
+          <!--<div class="item"-->
+               <!--slot="content"-->
+               <!--:class="item.trade"-->
+               <!--@click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">-->
+            <!--<div class="item-img" :class="[item.type[0]]"></div>-->
+            <!--<div class="item-content">-->
+              <!--<div class="title">-->
+                <!--<span class="tag">{{ getSelecteds(DICT.house.trade2, item.trade)[0].label }}</span>-->
+                <!--<span class="txt">{{ getListTitle(item) }}</span>-->
+              <!--</div>-->
+              <!--<div class="desc">-->
+                <!--<div v-if="item.trade === 'rent'">预算：{{ item.budget_min }}-{{ item.budget_max }}Peso</div>-->
+                <!--<div v-else>预算：{{ item.budget_min/10000 }}-{{ item.budget_max/10000 }}万Peso</div>-->
+                <!--<div>地区：{{ getSelecteds(DICT.region, item.region_ids).map(item2 => item2.label).join(' ') }}</div>-->
+              <!--</div>-->
+              <!--<div class="date">{{ item.date }}</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<template slot="controls">-->
+            <!--<div class="follow"></div>-->
+            <!--<div class="share"></div>-->
+          <!--</template>-->
+        <!--</nest-swipe-cell>-->
+      <!--</div>-->
+    <!--</nest-scroll>-->
+    <nest-scroll class="app-body"
+                 ref="scroll">
+      <div class="list">
+        <nest-tab-container v-model="tabSelected">
+          <nest-tab-container-item id="my">
+            <nest-swipe-cell v-for="(item, index) in options" :key="index" class="list-item">
+              <div class="item"
+                   slot="content"
+                   :class="item.type">
+                <div class="item-img"></div>
+                <div class="item-content">
+                  <div class="title">
+                    <span class="txt">{{ item.title }}</span><span class="tag">{{ item.type === 'rent' ? '租赁' : '购置' }}</span>
+                  </div>
+                  <div class="desc">
+                    预算：{{ item.budget }}<br>
+                    地区：{{ item.area }}
+                  </div>
+                  <div class="date">{{ item.date }}</div>
                 </div>
-                <div class="desc">
-                  预算：{{ item.budget }}<br>
-                  地区：{{ item.area }}
-                </div>
-                <div class="date">{{ item.date }}</div>
               </div>
-            </div>
-            <div slot="controls" class="item-control">
-              <div class="share"></div>
-              <div class="delete"></div>
-            </div>
-          </nest-swipe-cell>
-        </nest-tab-container-item>
-        <nest-tab-container-item id="collect">456</nest-tab-container-item>
-      </nest-tab-container>
-    </div>
+              <div slot="controls" class="item-control">
+                <div class="share"></div>
+                <div class="delete"></div>
+              </div>
+            </nest-swipe-cell>
+          </nest-tab-container-item>
+          <nest-tab-container-item id="collect">456</nest-tab-container-item>
+        </nest-tab-container>
+      </div>
+    </nest-scroll>
   </div>
 </template>
 
@@ -51,6 +85,9 @@
         options: [
           {title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
           {title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
+          {title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
+          {title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
+          {title: '公寓', type: 'buy', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
           {title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'},
           {title: '公寓', type: 'rent', budget: '400-500万Peso', area: '马卡提（Makati）', date: '2018-08-19'}
         ]
@@ -61,6 +98,9 @@
 
 <style lang="scss" scoped>
   .live {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     background-color: #fff;
     .header {
       position: relative;
@@ -85,8 +125,13 @@
     .btn-wrap {
       padding: .4rem .28rem 0;
     }
+    .app-body {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+    }
     .list {
-      margin-top: .6rem;
+      padding-top: .6rem;
     }
     .list-item {
       margin-bottom: .4rem;
