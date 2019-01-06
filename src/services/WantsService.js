@@ -1,8 +1,7 @@
 import axios from '../utils/Request';
 
 const api = {
-  wants: '/wants',
-  myWants: '/user/wants'
+  wants: '/wants'
 };
 
 let WantsService = {
@@ -23,14 +22,6 @@ let WantsService = {
     axios.get(api.wants + '/' + id).then(res => {
       callback(res);
     });
-  },
-  getMyWants(params, callback, loading) {
-    axios.get(api.myWants, {
-      params: params,
-      loading: loading
-    }).then(res => {
-      callback(res);
-    })
   },
   updateMyWantsStatus(wantsId, status, callback) {
     axios.put(api.wants + '/' + wantsId + '/status', {

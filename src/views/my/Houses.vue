@@ -64,7 +64,7 @@
 
 <script>
   export default {
-    name: "MyPublish",
+    name: "MyHouses",
     props: {
       recommends: {
         type: Array,

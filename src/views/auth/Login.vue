@@ -8,7 +8,7 @@
       <div class="form-group border-bottom">
         <div class="left" @click="countryShow = !countryShow">{{ country }} <span class="flag" :style="{ backgroundImage: 'url(' + flag + ')' }"></span><div class="arrow-down"></div></div>
         <div class="right">
-          <nest-field type="tel" class="form-input" placeholder="请输入手机号" v-model="phone"></nest-field>
+          <nest-field type="tel" class="form-input" placeholder="请输入手机号" max-length="11" v-model="phone"></nest-field>
         </div>
       </div>
       <div class="form-tip">

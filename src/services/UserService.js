@@ -2,7 +2,9 @@ import axios from '../utils/Request';
 
 const api = {
   userInfo: '/user',
-  agent:'/agents'
+  agent: '/agents',
+  myWants: '/user/wants',
+  myHouses: '/users/houses'
 };
 
 let UserService = {
@@ -16,11 +18,27 @@ let UserService = {
       callback(res);
     })
   },
-  getAgentList(params,callback){
-    axios.get(api.agent,{
-      params:params
-    }).then(res=>{
+  getAgentList(params, callback) {
+    axios.get(api.agent, {
+      params: params
+    }).then(res => {
       callback(res)
+    })
+  },
+  getMyWants(params, callback, loading) {
+    axios.get(api.myWants, {
+      params: params,
+      loading: loading
+    }).then(res => {
+      callback(res);
+    })
+  },
+  getMyHouses(params, callback, loading) {
+    axios.get(api.myHouses, {
+      params: params,
+      loading: loading
+    }).then(res => {
+      callback(res);
     })
   }
 };

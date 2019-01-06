@@ -11,12 +11,12 @@
         </div>
         <div class="personal-sign arrow-right" v-if="isLogin" @click="login">{{ signature }}</div>
         <div class="menu-panel">
-          <div class="menu-item" @click="$router.push({ name: 'MyPublish' })">
+          <div class="menu-item" @click="$router.push({ name: 'MyHouses' })">
             <div class="item-icon icon1"></div>
             <div class="item-label">我的发布</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon2" @click="$router.push({ name: 'MyLive' })"></div>
+            <div class="item-icon icon2" @click="$router.push({ name: 'MyLives' })"></div>
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">

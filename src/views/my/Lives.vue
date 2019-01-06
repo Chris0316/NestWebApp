@@ -83,7 +83,7 @@
 <script>
   import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
-  import WantsService from '../../services/WantsService';
+  import UserService from '../../services/UserService';
   import Storage from "../../utils/Storage";
 
   export default {
@@ -140,7 +140,7 @@
         return title;
       },
       updateStatus(wantsId, status) {
-        WantsService.updateMyWantsStatus(wantsId, status, res => {
+        UserService.updateMyWantsStatus(wantsId, status, res => {
           this.getMyData(true);
         })
       },
@@ -148,7 +148,7 @@
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
-          WantsService.getMyWants(params, res => {
+          UserService.getMyWants(params, res => {
             this.dataList = res.data;
             this.$refs.myScroll.scrollTo(0, 0, 300);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -159,7 +159,7 @@
           }, true);
         } else {
           this.filters.page += 1;
-          WantsService.getMyWants(params, res => {
+          UserService.getMyWants(params, res => {
             this.filters.page = res.meta.pagination.current_page;
             this.dataList = this.dataList.concat(res.data);
             if (this.dataList.length < res.meta.pagination.total) {
