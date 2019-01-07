@@ -27,8 +27,8 @@
 </template>
 
 <script>
-  import AuthService from '../../services/AuthService';
-  import UserService from '../../services/UserService';
+  import AuthService from '../services/AuthService';
+  import UserService from '../services/UserService';
 
   export default {
     name: "AddCellphone",
@@ -128,7 +128,7 @@
       .back {
         width: .9rem;
         height: 100%;
-        background: url('../../assets/images/return-icon.png') no-repeat left center;
+        background: url('../assets/images/return-icon.png') no-repeat left center;
         background-size: .42rem .32rem;
       }
     }

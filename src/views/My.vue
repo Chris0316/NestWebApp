@@ -11,27 +11,29 @@
         </div>
         <div class="personal-sign arrow-right" v-if="isLogin" @click="login">{{ signature }}</div>
         <div class="menu-panel">
-          <div class="menu-item" @click="$router.push({ name: 'MyPublish' })">
+          <div class="menu-item" @click="$router.push({ name: 'MyHouses' })">
             <div class="item-icon icon1"></div>
             <div class="item-label">我的发布</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon2" @click="$router.push({ name: 'MyLive' })"></div>
+            <div class="item-icon icon2" @click="$router.push({ name: 'MyLives' })"></div>
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon3" @click="$router.push({ name: 'MyMessage' })"></div>
+            <div class="item-icon icon3"></div>
             <div class="item-label">我的资讯</div>
           </div>
         </div>
-        <div class="live-ground border-bottom">
-          <div class="banner" @click="$router.push({ name: 'MyGround' })">帮住广场</div>
+        <div class="live-ground" v-if="isAgent">
+          <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->
           <!--<div class="label">我的信息</div>-->
         <!--</div>-->
-        <div class="form-group border-bottom arrow-right">
-          <div class="label">我的消息</div>
+        <div class="border-top mt80">
+          <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessage' })">
+            <div class="label">我的消息</div>
+          </div>
         </div>
         <div class="form-group border-bottom"></div>
         <div class="form-group border-bottom arrow-right">
@@ -190,7 +192,7 @@
       line-height: 1;
     }
     .live-ground {
-      padding: .6rem 0 .8rem;
+      padding-top: .6rem;
     }
     .banner {
       font-size: .34rem;
@@ -213,6 +215,9 @@
         font-size: .28rem;
         color: #333;
       }
+    }
+    .mt80 {
+      margin-top: .8rem;
     }
     .footer-links {
       margin-top: 1rem;

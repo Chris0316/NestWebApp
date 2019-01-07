@@ -96,6 +96,13 @@ const DICT = {
       "label": "出售",
       "value": "sale"
     }],
+    "trade2": [{
+      "label": "租赁",
+      "value": "rent"
+    }, {
+      "label": "购置",
+      "value": "sale"
+    }],
     "type": [{
       "label": "公寓",
       "value": "apartment"
@@ -111,6 +118,22 @@ const DICT = {
     }, {
       "label": "车位",
       "value": "carport"
+    }, {
+      "label": "土地",
+      "value": "land"
+    }],
+    "type2": [{
+      "label": "公寓",
+      "value": "apartment"
+    }, {
+      "label": "别墅",
+      "value": "villa"
+    }, {
+      "label": "民宿",
+      "value": "homestay"
+    }, {
+      "label": "商铺/写字楼",
+      "value": "office"
     }, {
       "label": "土地",
       "value": "land"
@@ -200,6 +223,13 @@ const DICT = {
     }, {
       "label": "其他",
       "value": "3"
+    }],
+    "is_agent": [{
+      "label": "用户",
+      "value": "0"
+    }, {
+      "label": "经纪人",
+      "value": "1"
     }]
   },
   "country": [{
@@ -267,15 +297,14 @@ const DICT = {
 };
 
 let getSelecteds = (array, values) => {
-  let arr = array.filter(item => {
-    let temp = item.value || item;
-    if (values instanceof Array) {
-      return values.indexOf(item) > -1;
-    } else {
-      return values == temp;
-    }
-  });
-  return arr;
+  if (values instanceof Array) {
+    let arr = values.map(value => {
+      return array.filter(item => (item.value || item) == value)[0];
+    });
+    return arr;
+  } else {
+    return array.filter(item => (item.value || item) == values)
+  }
 };
 
 export default DICT;

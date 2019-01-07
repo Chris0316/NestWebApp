@@ -2,7 +2,7 @@
   <div class="lease-list">
     <div class="nest-header">
       <div class="search-wrap">
-        <div class="back" @click="$router.go(-1);"></div>
+        <div class="back" @click="$router.go(-1)"></div>
         <div class="search-box">
           <div class="input" @click="$router.push({ name: 'Search', params: { type: 'list'}})"></div>
         </div>
@@ -25,7 +25,7 @@
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
-      <nest-modal :is-full="true" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
+      <nest-modal modal-type="full" :has-clear="false" :has-cancel="true" modal-cancel-txt="清空条件" :status="filtersShow"
                   @close="filtersShow = false"
                   @confirm="filterConfirm"
                   @cancel="filterClear">
@@ -49,7 +49,7 @@
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">付款</div>
-            <nest-radio v-model="payWay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="rentPay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
           </div>
           <div class="condition" v-if="listType === 'rent'">
             <div class="condition-title">设施</div>
@@ -84,7 +84,7 @@
     <nest-scroll class="app-body"
                  ref="scroll"
                  :pullUpLoad="pullUpLoadObj"
-                 @pullingUp="onPullingUp">
+                 @pullingUp="getData">
       <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
           <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: listType, id: item.id }})">
@@ -110,9 +110,12 @@
               </div>
             </div>
           </div>
-          <div class="collect" slot="controls">
-            <div class="heart"></div>
-            <div class="share"></div>
+          <div class="collect" slot="controls" v-if="userId == item.user_id">
+            <div class="share" @click="doShare"></div>
+          </div>
+          <div class="collect" slot="controls" v-else>
+            <div class="heart" @click="doFavorite"></div>
+            <div class="share" @click="doShare"></div>
           </div>
         </nest-swipe-cell>
       </div>
@@ -122,8 +125,10 @@
 
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
+  import Utils from '../../utils/Utils';
   import HouseService from '../../services/HouseService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
+  import Storage from '../../utils/Storage';
 
   export default {
     name: 'ExploreList',
@@ -147,7 +152,7 @@
         range: [],
         purpose: '',
         rent_type: '',
-        payWay: '',
+        rentPay: '',
         facilities: [],
         balcony: '',
         centiare: '',
@@ -201,7 +206,7 @@
         let selectedObj = getSelecteds(DICT.filters.sort[this.listType], val)[0];
         this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
         this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       range(val) {
         if (val !== [0, this.rangeMax + this.rangeStep]) {
@@ -216,7 +221,7 @@
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;
-      this.onPullingUp(true);
+      this.getData(true);
     },
     methods: {
       initConsts() {
@@ -231,6 +236,7 @@
             this.type = 'land';
           }
         }
+        this.userId = Storage.getLocalStorage('nest_user_id');
         this.DICT = DICT;
         if (this.listType === 'rent') {
           this.trade = 'rent';
@@ -267,21 +273,29 @@
       regionConfirm() {
         this.regionShow = false;
         this.filters.region_id = this.region;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       bedroomConfirm() {
         this.bedroomShow = false;
         this.filters.bedroom = this.bedroom;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       filterConfirm() {
         this.filters.type = this.type;
         this.filters.is_new = this.is_new;
-        // this.filters.price = this.price
-        // this.filters.range
+        let rangeLower = this.range[0] === -this.rangeStep ? 0 : this.range[0],
+          rangeUpper = this.range[1] === this.rangeMax + this.rangeStep ? 0 : this.range[1];
+        this.filters.price = this.price;
+        if (rangeLower !== 0 || rangeUpper !== 0) {
+          this.filters.price = rangeLower + '-' + rangeUpper;
+        }
         this.filters.purpose = this.purpose;
         this.filters.rent_type = this.rent_type;
-        // this.filters.payWay
+        if (this.rentPay && this.rentPay !== '2') {
+          let selectedObj = getSelecteds(DICT.filters.rent_pay, this.rentPay)[0];
+          this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
+          this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
+        }
         this.filters.facilities_ids = this.facilities;
         this.filters.balcony = this.balcony;
         this.filters.centiare = this.centiare;
@@ -289,16 +303,15 @@
         this.filters.floor = this.floor;
         this.filters.decor = this.decor;
         this.filtersShow = false;
-        this.onPullingUp(true);
+        this.getData(true);
       },
       filterClear() {
         this.type = '';
-        this.is_new = '';
-        // this.filters.price = this.price
-        // this.filters.range
+        this.price = '';
+        this.range = [0, this.rangeMax + this.rangeStep];
         this.purpose = '';
         this.rent_type = '';
-        // this.filters.payWay
+        this.rentPay = '';
         this.facilities = [];
         this.balcony = '';
         this.centiare = '';
@@ -306,26 +319,18 @@
         this.floor = '';
         this.decor = '';
       },
-      filterParams(params) {
-        for(let key in params) {
-          if (params.hasOwnProperty(key)) {
-            if (params[key] === "" || params[key] === null || params[key] === undefined) {
-              delete params[key];
-            } else if (params[key] instanceof Array && params[key].length === 0) {
-              delete params[key];
-            }
-          }
-        }
-        return params;
-      },
-      onPullingUp(loading = false) {
-        let params = this.filterParams(this.filters);
+      getData(loading = false) {
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
           HouseService.getList(params, res => {
             this.dataList = res.data;
             this.$refs.scroll.scrollTo(0, 0, 300);
-            this.$refs.scroll.forceUpdate(true);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
           }, true);
         } else {
           this.filters.page += 1;
@@ -339,6 +344,12 @@
             }
           }, false);
         }
+      },
+      doFavorite() {
+        this.$toast.info('收藏了')
+      },
+      doShare() {
+        this.$toast.info('分享了')
       }
     }
   }
@@ -371,7 +382,7 @@
         height: .8rem;
         border: 1px solid #e8e8ea;
         border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
+        box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
         box-sizing: border-box;
         z-index: 1;
         &::before {
@@ -458,7 +469,7 @@
       overflow: hidden;
     }
     .list-container {
-      padding: 0.5rem 0;
+      padding: 0.5rem 0 0;
     }
     .search-item {
       display: flex;
@@ -468,8 +479,8 @@
       margin-bottom: 0.4rem;
       .move-wrap {
         position: absolute;
-        top: 0rem;
-        left: 0rem;
+        top: 0;
+        left: 0;
         z-index: 1;
         display: flex;
         background: #fff;
@@ -481,8 +492,7 @@
         width: 2.7rem;
         height: 1.74rem;
         border-radius: 0.1rem;
-        background-color: #e8e8ea;
-        background-repeat: no-repeat;
+        background: #e8e8ea no-repeat;
         background-size: cover;
       }
       .msg-wrap {

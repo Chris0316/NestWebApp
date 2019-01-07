@@ -1,5 +1,11 @@
+#自动化部署
+#2018-12-30 01:49:07
+stages:
+  - build
+  - deploy
+
 #build过程
- build:
+build:
    stage: build
    image: node:9.4.0
    cache:
@@ -14,15 +20,14 @@
    only:
    - master
 
- #发布过程
- pages:
-   stage: deploy
-   image: alpine:latest
-   script:
-   - mkdir public
-   - mv dist/* public
-   artifacts:
-     paths:
-     - public
-   only:
-   - master
+#deploy过程
+deploy:
+    stage: deploy
+    image: alpine:latest
+    script:
+      - rm -Rf /home/wwwroot/www.ohmynest.com/*
+      - cp -Rf dist/* /home/wwwroot/www.ohmynest.com/
+    only:
+      - master
+    tags:
+      - devops

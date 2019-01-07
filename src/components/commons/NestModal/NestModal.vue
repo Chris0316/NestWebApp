@@ -1,13 +1,13 @@
 <template>
-  <div class="nest-modal" :class="{ full: isFull }">
+  <div class="nest-modal" :class="modalType">
     <transition :name="dialogTranName">
       <div class="modal-dialog" v-show="status">
-        <div class="modal-header" v-if="!isFull">{{ title }}</div>
-        <a href="javascript:;" class="modal-close" v-if="hasClear && !isFull" @click="$emit('clear')">清空</a>
-        <div class="modal-body" :class="{ full: bodyFull }">
+        <div class="modal-header" v-if="modalType === '' || modalType === 'calendar'">{{ title }}</div>
+        <a href="javascript:;" class="modal-close" v-if="hasClear" @click="$emit('clear')">清空</a>
+        <div class="modal-body">
           <slot></slot>
         </div>
-        <div :class="oneline?'modal-oneline':'modal-footer'" v-if="hasFooter">
+        <div class="modal-footer" v-if="hasFooter">
           <button class="modal-btn cancel" v-if="hasCancel" @click="$emit('cancel')">{{ modalCancelTxt }}</button>
           <button class="modal-btn confirm" @click="$emit('confirm')">{{ modalConfirmTxt }}</button>
         </div>
@@ -31,9 +31,9 @@
         type: String,
         default: '标题'
       },
-      isFull: {
-        type: Boolean,
-        default: false
+      modalType: {
+        type: String,
+        default: '' // confirm、calendar、full
       },
       modalCancelTxt: {
         type: String,
@@ -54,19 +54,11 @@
       hasFooter: {
         type: Boolean,
         default: true
-      },
-      bodyFull: {
-        type: Boolean,
-        default: false
-      },
-      oneline: {
-        type: Boolean,
-        default: false
       }
     },
     computed: {
       dialogTranName() {
-        if (this.isFull) {
+        if (this.modalType === 'full') {
           return 'dialog-full'
         } else {
           return 'dialog'
@@ -133,24 +125,9 @@
     }
     .modal-body {
       padding: .2rem .4rem .4rem;
-      &.full {
-        padding: 0;
-      }
     }
     .modal-footer {
       padding: .2rem .4rem .4rem;
-    }
-    .modal-oneline{
-      display: flex;
-      justify-content: space-around;
-      padding: .2rem .4rem .4rem;
-      .modal-btn{
-        width:2.5rem;
-      }
-      .cancel{
-        color: #999999;
-        background: #F2F2F2;
-      }
     }
     .modal-btn {
       display: block;
@@ -163,6 +140,39 @@
       font-size: .3rem;
       color: #fff;
       background-color: #0f9183;
+    }
+    &.calendar {
+      .modal-body {
+        padding: 0;
+      }
+    }
+    &.confirm {
+      .modal-dialog {
+        top: 28%;
+        right: .95rem;
+        width: 5.6rem;
+      }
+      .modal-body {
+        padding: 1rem .4rem;
+        font-size: .28rem;
+        color: #333;
+        text-align: center;
+      }
+      .modal-footer {
+        padding: 0 .2rem .2rem;
+        display: flex;
+      }
+      .modal-btn {
+        &.confirm {
+          flex: 1;
+        }
+        &.cancel {
+          margin-right: .2rem;
+          flex: 1;
+          color: #999;
+          background-color: #f2f2f2;
+        }
+      }
     }
     &.full {
       .modal-dialog {

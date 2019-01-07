@@ -30,6 +30,7 @@
     },
     methods: {
       handleTouchStart(event) {
+        this.flag = false; // 标注是否是进行过move操作
         this.startX = event.touches[0].clientX; // 手指触点X位置
         this.startY = event.touches[0].clientY; // 手指触点Y位置
         this.controlWidth = this.$refs.control.offsetWidth; // 操作按钮栏宽度
@@ -44,8 +45,9 @@
           absPos = 0;
         else if (absPos < 0 - this.controlWidth)
           absPos = 0 - this.controlWidth;
-        if (this._swipeX && Math.abs(currentX - this.startX) >= Math.abs(currentY - this.startY)) {
+        if (this._swipeX && Math.abs(currentX - this.startX) > Math.abs(currentY - this.startY)) {
           // 左右滑动
+          this.flag = true;
           event.stopPropagation();
           event.preventDefault();
           this._swipeY = false;
@@ -54,16 +56,19 @@
           // 上下滑动
           this._swipeX = false;
       },
-      handleTouchEnd() {
-        this.transitionClass = 'release';
-        let cond1 = this.offsetX,
-          cond2 = 0 - this.controlWidth;
-        if (cond1 < cond2 || cond1 < cond2 / 2) {
-          this.offsetX = -this.controlWidth;
-        } else if (cond1 > 0 || cond1 >= cond2 / 2) {
-          this.offsetX = 0;
+      handleTouchEnd(event) {
+        if (this.flag) {
+          event.stopPropagation();
+          this.transitionClass = 'release';
+          let cond1 = this.offsetX,
+            cond2 = 0 - this.controlWidth;
+          if (cond1 < cond2 || cond1 < cond2 / 2) {
+            this.offsetX = -this.controlWidth;
+          } else if (cond1 > 0 || cond1 >= cond2 / 2) {
+            this.offsetX = 0;
+          }
+          this.distance = this.offsetX;
         }
-        this.distance = this.offsetX;
       },
       removeTransition() {
         this.transitionClass = '';

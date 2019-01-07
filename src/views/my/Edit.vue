@@ -13,8 +13,10 @@
     <div class="details border-top">
       <div class="form-group auto-height border-bottom">
         <div class="label">个性签名</div>
-        <nest-field type="textarea" class="value textarea" v-model="signature" :area-style="areaStyle"></nest-field>
-        <span class="num">12</span>
+        <div class="value">
+          <nest-field type="textarea" class="textarea" v-model="signature" :area-style="areaStyle"></nest-field>
+          <span class="num">12</span>
+        </div>
       </div>
       <div class="form-group border-bottom arrow-right" @click="countryShow = true">
         <div class="label">国籍</div>
@@ -30,7 +32,7 @@
           <span v-for="item in languages">{{ item }}</span>
         </div>
       </div>
-      <div class="form-group auto-height border-bottom arrow-right" @click="$router.push({ name: 'MyCellphone' })">
+      <div class="form-group auto-height border-bottom arrow-right" @click="$router.push({ name: 'Cellphone' })">
         <div class="label">手机号</div>
         <div class="value">
           <div v-for="item in contacts">{{ item.phone }}</div>
@@ -92,6 +94,7 @@
     },
     mounted() {
       UserService.getUserInfo(res => {
+        this.portrait = res.data.avatar;
         this.signature = res.data.introduction;
         this.country = res.data.nation;
         this.gender = res.data.gender;
@@ -204,11 +207,12 @@
           margin-right: .4rem;
         }
       }
-      .num {
+      span.num {
         position: absolute;
         right: 0;
         top: 50%;
         margin-top: -.12rem;
+        margin-right: 0;
         font-size: .24rem;
         color: #b3b3b3;
         line-height: 1;

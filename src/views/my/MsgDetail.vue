@@ -1,7 +1,7 @@
 <template>
   <div class="msg-detail">
     <div class="title border-bottom">
-      <div class="re-img"></div>
+      <div class="re-img" @click="$router.go(-1)"></div>
       我的消息
     </div>
     <div class="date">2018-08-19  14:30</div>

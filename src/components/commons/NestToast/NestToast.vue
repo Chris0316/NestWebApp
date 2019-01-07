@@ -12,7 +12,8 @@
     name: "nest-toast",
     data() {
       return {
-        toastShow: this.visible
+        toastShow: this.visible,
+        timeout: null
       }
     },
     props: {
@@ -48,9 +49,12 @@
         this.$emit('close');
       },
       setTimer() {
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
           this.close();
         }, this.duration);
+      },
+      clearTimeout() {
+        clearTimeout(this.timeout);
       }
     }
   }

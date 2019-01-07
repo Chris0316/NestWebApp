@@ -3,7 +3,8 @@ import axios from '../utils/Request';
 // const base_api = 'http://api.ohmynest.com/api';
 const api = {
   getSms: '/captchas/sms',
-  smsLogin: '/users/sms/login'
+  smsLogin: '/users/sms/login',
+  logout: '/authorizations/current'
 };
 
 let AuthService = {
@@ -24,6 +25,11 @@ let AuthService = {
     }).then(res => {
       callback(res);
     })
+  },
+  logout(callback) {
+    axios.delete(api.logout).then(res => {
+      callback(res);
+    });
   }
 };
 

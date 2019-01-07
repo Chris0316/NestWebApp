@@ -46,20 +46,6 @@ class House {
     this.contact_phone = params.contact_phone;
     this.description = params.description;
   }
-
-  getEffectiveObject() {
-    let params = this;
-    for(let key in params) {
-      if (params.hasOwnProperty(key)) {
-        if (params[key] === "" || params[key] === null || params[key] === undefined) {
-          delete params[key];
-        } else if (params[key] instanceof Array && params[key].length === 0) {
-          delete params[key];
-        }
-      }
-    }
-    return params;
-  }
 }
 
 class ResidenceImpl extends House {
