@@ -1,152 +1,198 @@
 <template>
   <div class="follow-list">
     <div class="title-wrap">
-      <div class="re-icon"></div>
+      <div class="re-icon" @click="$router.go(-1)"></div>
       <div class="search-box">
         <input class="search-msg" type="text" v-model="searchkey" >
         <div class="search-img" ></div>
         <div class="delete" v-if="deleteShow" @click="clearSearch"></div>
       </div>
     </div>
-    <div class="result">共搜索到3条相关信息</div>
-    <!--房租搜索结果-->
-    <div class="search-list">
-      <nest-swipe-cell  v-for="(recommend,index) in recommends" :key="index">
-        <div class="search-item"  slot="content">
-          <div class="move-wrap">
-            <div class="item-img"></div>
-            <div class="msg-wrap">
-              <div class="title">{{recommend.roomplace}}</div>
-              <div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">
-                <div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
-              </div>
-              <div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">
-                <div class="type-str">{{recommend.roomsizes}}</div>
-              </div>
-              <div class="rent" v-if="!recommend.rentsize">
-                <div class="price">{{recommend.pricem}}</div>
-                <div class="price-msg">P/月</div>
-              </div>
-              <div class="rent" v-else-if="recommend.rentsize">
-                <div class="price">{{recommend.pricem}}</div>
-                <div class="price-msg">P/㎡</div>
-                <div class="room-size">{{recommend.rentsize}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="collect-wrap"  slot="controls">
-          <div class="collect">
-            <div class="heart"></div>
-            <div class="share"></div>
-          </div>
-          <div class="collect-del">
-            <div class="call-icon"></div>
-          </div>
-        </div>
-      </nest-swipe-cell>
-    </div>
-
-    <!--经纪人搜索结果-->
-    <div class="peo-list"  v-if="deleteShow">
-      <nest-swipe-cell  v-for="(peo,index) in peoList" :key="index">
-        <div class="item" slot="content">
-          <div class="item-cont">
-            <div class="top">
-              <div class="top-l">
-                <div class="cli"></div>
-                <div class="det">
-                  <div class="name">Govern</div>
-                  <div class="skill">语言：汉语/英语/韩语/日语</div>
+    <div class="result">共搜索到{{dataList.length}}条相关信息</div>
+    <nest-scroll class="app-body"
+                 ref="scroll"
+                 :pullUpLoad="pullUpLoadObj"
+                 @pullingUp="onPullingUp">
+      <!--房租搜索结果-->
+      <div class="search-list">
+        <nest-swipe-cell  v-for="(recommend,index) in dataList" :key="index">
+          <div class="search-item"  slot="content">
+            <div class="move-wrap">
+              <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
+              <div class="item-img"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+              <div class="msg-wrap">
+                <div class="title">{{recommend.building_name}}</div>
+                <div class="type-wrap" v-if="recommend.trade == 'rent'">
+                  <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                </div>
+                <div class="type-wrap" v-else="recommend.trade != 'rent'">
+                  <div class="type-str">{{recommend.address}}</div>
+                </div>
+                <div class="rent" v-if="recommend.trade == 'rent'">
+                  <div class="price">{{recommend.price}}</div>
+                  <div class="price-msg">P/月</div>
+                </div>
+                <div class="rent" v-else-if="recommend.trade == 'sale'">
+                  <div class="price">{{recommend.price}}</div>
+                  <div class="price-msg">P/㎡</div>
+                  <div class="room-size">{{recommend.centiare}} ㎡</div>
                 </div>
               </div>
-              <div class="top-r">
-                <div class="follow-btn">已关注</div>
-                <div class="follow-num">67人关注</div>
+            </div>
+          </div>
+          <div class="collect-wrap"  slot="controls">
+            <div class="collect">
+              <div class="heart" @click="cancelFollow(recommend,index)"></div>
+              <div class="share" @click="shareFun"></div>
+            </div>
+            <div class="collect-del">
+              <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
+            </div>
+          </div>
+        </nest-swipe-cell>
+      </div>
+      <!--经纪人搜索结果-->
+      <div class="peo-list"  v-if="deleteShow">
+        <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
+          <div class="item" slot="content">
+            <div class="item-cont">
+              <div class="top">
+                <div class="top-l">
+                  <div class="cli" :style="{backgroundImage:'url('+item.avatar+')'}"></div>
+                  <div class="det">
+                    <div class="name">{{item.local_name}}</div>
+                    <div class="skill">语言：
+                      <span v-for="(language, i) in item.languages">{{language}}<span v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="top-r">
+                  <div class="follow-btn" @click="cancelFollow(item,index)">已关注</div>
+                  <div class="follow-num">{{item.follows}}人关注</div>
+                </div>
+              </div>
+              <div class="text1">
+                近一个月：出租 <span class="sp">{{item.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{item.monthly_sold_amount}}</span> 套
+              </div>
+              <div class="text2">
+                {{item.introduction}}
               </div>
             </div>
-            <div class="text1">
-              近一个月：出租 <span class="sp">13</span>套 &nbsp;售卖 <span class="sp">24</span> 套
+          </div>
+          <div class="collect-wrap" slot="controls">
+            <div class="collect-l" @click="shareShow=!shareShow">
+              <img class="icon" src="../../assets/images/s-share.png" alt="">
             </div>
-            <div class="text2">
-              我是来自makati的经纪人，这是个性签名随便写点什么做多两行的
-              最后一行在这里最后用“...“表示就行了最后一行在这里最后用“...“表示就行了
+            <div class="collect-r">
+              <a :href="`tel:${item.phone}`" class="icon"></a>
             </div>
           </div>
-        </div>
-        <div class="collect-wrap" slot="controls">
-          <div class="collect-l">
-            <img class="icon" src="../../assets/images/s-share.png" alt="">
-          </div>
-          <div class="collect-r">
-            <img class="icon" src="../../assets/images/s-call.png" alt="">
-          </div>
-        </div>
-      </nest-swipe-cell>
-    </div>
-    <nest-nav page="follow"></nest-nav>
+        </nest-swipe-cell>
+      </div>
+    </nest-scroll>
+    <NestShare :status="shareShow" @close="shareShow = false"></NestShare>
   </div>
 </template>
 
 <script>
+  import HouseService from '../../services/HouseService'
+  import UserService from '../../services/UserService'
   export default {
     name: "FollowList",
     props:{
-      recommends: {
-        type: Array,
-        default: function () {
-          return [
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型',
-              roomsizes: "新房旧房Makati, 1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "车位Makati, 1207 Metro Manila",
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            }
-          ];
-        }
-      }
+
+    },
+    mounted(){
+      // 跳转传递
+
+      // UserService.getAgentList('',res=>{
+      //   this.peopleArr = res.data
+      //   console.log(this.peopleArr)
+      // });
+      // HouseService.getList('',res=>{
+      //   this.recommends = res.data
+      // });
+      this.onPullingUp(true);
     },
     data(){
       return {
         searchkey:'dsfds',
         deleteShow:false,
-        peoList:['a','b','c','d','e'],
+        // peopleArr:['a','b','c','d','e'],
+        // recommends : [],
+        shareShow:false,
+        dataList: [],
+        filters: {
+          page: 0,
+          per_page: 10
+        },
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        }
       }
     },
     methods: {
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return require('../../assets/images/preview-default.png');
+        }
+      },
+      shareFun(){
+        this.shareShow = !this.shareShow
+      },
+      cancelFollow(item,index){
+        item.favored = !item.favored
+        this.dataList.splice(index,1)
+      },
+      clearSearch(){
+        this.searchkey=''
+      },
+      filterParams(params) {
+        for(let key in params) {
+          if (params.hasOwnProperty(key)) {
+            if (params[key] === "" || params[key] === null || params[key] === undefined) {
+              delete params[key];
+            } else if (params[key] instanceof Array && params[key].length === 0) {
+              delete params[key];
+            }
+          }
+        }
+        return params;
+      },
+      onPullingUp(loading = false) {
+        let params = this.filterParams(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          HouseService.getList(params, res => {
+            this.dataList = res.data;
+            // this.$refs.scroll.scrollTo(0, 0, 300);
+            this.$refs.scroll.forceUpdate(true);
+          }, true);
+        } else {
+          this.filters.page += 1;
+          HouseService.getList(params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataList = this.dataList.concat(res.data);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
+          }, false);
+        }
+      }
+    },
+    watch:{
+      searchkey(nextValue,prevValue){
+        console.log(nextValue.trim(),prevValue.trim());
 
+      }
     }
   }
 </script>
@@ -164,6 +210,13 @@
     align-items: center;
   }
   .follow-list{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .app-body {
+      flex: 1;
+      overflow: hidden;
+    }
     .title-wrap{
       padding: 0.2rem 0.28rem;
       @include rowcenter;
@@ -354,8 +407,10 @@
         height: 2.15rem;
         margin-bottom: 0.4rem;
         .item-cont{
+          box-sizing: border-box;
+          padding: 0 0.28rem;
           position: absolute;
-          margin: 0 0.28rem;
+          width: 100%;
         }
         .top{
           margin-bottom: 0.2rem;
@@ -476,8 +531,11 @@
           height: 2.15rem;
           background: #f9f5ed;
           .icon{
+            display: block;
             width: 0.38rem;
             height: 0.38rem;
+            background: url("../../assets/images/s-call.png") no-repeat;
+            background-size: 100%;
           }
         }
       }
