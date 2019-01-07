@@ -49,7 +49,7 @@
           </div>
           <div class="cell">
             <div class="label">发布时间:</div>
-            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            <div class="value">{{ house.created_at | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="cell">
             <div class="label">用途:</div>
@@ -92,7 +92,7 @@
           </div>
           <div class="cell">
             <div class="label">发布时间:</div>
-            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            <div class="value">{{ house.created_at | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="cell" v-if="house.min_stay_month && house.max_stay_month">
             <div class="label">租期:</div>
@@ -100,7 +100,7 @@
           </div>
           <div class="cell" v-if="house.available_time">
             <div class="label">可入住时间:</div>
-            <div class="value">{{ house.available_time.split(' ')[0] }}</div>
+            <div class="value">{{ house.available_time | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="cell" v-if="house.lift">
             <div class="label">电梯:</div>
@@ -139,7 +139,7 @@
           </div>
           <div class="cell">
             <div class="label">发布时间:</div>
-            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            <div class="value">{{ house.created_at | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="cell" v-if="house.purpose">
             <div class="label">用途:</div>
@@ -162,7 +162,7 @@
           </div>
           <div class="cell">
             <div class="label">发布时间:</div>
-            <div class="value">{{ house.created_at.split(' ')[0] }}</div>
+            <div class="value">{{ house.created_at | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="cell" v-if="house.lift">
             <div class="label">电梯:</div>
@@ -227,7 +227,10 @@
         <!--地图-->
         <!--<div class="details-map"></div>-->
         <div class="details-module scroll">
-          <div class="module-title">{{ detailsType === 'new' ? '周边楼盘' : '同小区在售' }}</div>
+          <div class="module-title" v-if="detailsType === 'new'">周边楼盘</div>
+          <div class="module-title" v-else-if="detailsType === 'rent'">同小区在租</div>
+          <div class="module-title" v-else-if="detailsType === 'land'">同地区在售</div>
+          <div class="module-title" v-else>同小区在售</div>
           <nest-scroll direction="horizontal" class="similar">
             <div class="similar-wrap">
               <div class="item">

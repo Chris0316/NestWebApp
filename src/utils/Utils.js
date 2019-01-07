@@ -17,7 +17,13 @@ export default {
   /**
    * 替换api中的占位符
    * */
-  replaceApiPlaceholder(api, key, value) {
-    return api.replace(':' + key, value);
+  replaceApiPlaceholder(api, keyValueArray) {
+    let varCount = api.split(':').length - 1;
+    if (keyValueArray && keyValueArray.length === varCount) {
+      keyValueArray.forEach(item => {
+        api = api.replace(':' + item.key, item.value);
+      });
+    }
+    return api;
   }
 };

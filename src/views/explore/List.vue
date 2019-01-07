@@ -2,7 +2,7 @@
   <div class="lease-list">
     <div class="nest-header">
       <div class="search-wrap">
-        <div class="back" @click="$router.go(-1);"></div>
+        <div class="back" @click="$router.go(-1)"></div>
         <div class="search-box">
           <div class="input" @click="$router.push({ name: 'Search', params: { type: 'list'}})"></div>
         </div>
@@ -382,7 +382,7 @@
         height: .8rem;
         border: 1px solid #e8e8ea;
         border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
+        box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
         box-sizing: border-box;
         z-index: 1;
         &::before {
@@ -479,8 +479,8 @@
       margin-bottom: 0.4rem;
       .move-wrap {
         position: absolute;
-        top: 0rem;
-        left: 0rem;
+        top: 0;
+        left: 0;
         z-index: 1;
         display: flex;
         background: #fff;

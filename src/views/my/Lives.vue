@@ -8,7 +8,7 @@
       <nest-tab-item id="my">我的</nest-tab-item>
       <nest-tab-item id="favorite">收藏</nest-tab-item>
     </nest-tab-bar>
-    <div class="btn-wrap" v-if="tabSelected === 'my'">
+    <div class="control-wrap" v-if="tabSelected === 'my'">
       <nest-button :type="publishBtn.type" @click="switchPublishStatus">{{ publishBtn.txt }}</nest-button>
     </div>
     <nest-tab-container class="app-body" v-model="tabSelected">
@@ -84,10 +84,11 @@
   import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
   import UserService from '../../services/UserService';
+  import WantsService from '../../services/WantsService';
   import Storage from "../../utils/Storage";
 
   export default {
-    name: "MyLive",
+    name: "MyLives",
     data() {
       return {
         tabSelected: 'my',
@@ -122,15 +123,19 @@
       },
       switchPublishStatus() {
         if (this.publishBtn.txt === '已发布') {
-          this.publishBtn.txt = '待发布';
-          this.publishBtn.type = 'default';
           this.filters.status = 0;
+          this.getMyData(true, () => {
+            this.publishBtn.txt = '待发布';
+            this.publishBtn.type = 'default';
+          });
         } else {
-          this.publishBtn.txt = '已发布';
-          this.publishBtn.type = 'primary';
           this.filters.status = 1;
+          this.getMyData(true, () => {
+            this.publishBtn.txt = '已发布';
+            this.publishBtn.type = 'primary';
+          });
         }
-        this.getMyData(true);
+
       },
       getListTitle(item) {
         let title = getSelecteds(DICT.house.type, item.type).map(item2 => item2.label).join('·');
@@ -140,11 +145,11 @@
         return title;
       },
       updateStatus(wantsId, status) {
-        UserService.updateMyWantsStatus(wantsId, status, res => {
+        WantsService.updateMyWantsStatus(wantsId, status, res => {
           this.getMyData(true);
         })
       },
-      getMyData(loading = false) {
+      getMyData(loading = false, callback) {
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
@@ -156,6 +161,8 @@
             } else {
               this.$refs.myScroll.forceUpdate(false);
             }
+            if (callback)
+              callback();
           }, true);
         } else {
           this.filters.page += 1;
@@ -167,6 +174,8 @@
             } else {
               this.$refs.myScroll.forceUpdate(false);
             }
+            if (callback)
+              callback();
           }, false);
         }
       }
@@ -200,7 +209,7 @@
     .tabs {
       padding: 0 .28rem .2rem;
     }
-    .btn-wrap {
+    .control-wrap {
       padding: .2rem .28rem;
     }
     .app-body {

@@ -1,7 +1,9 @@
 import axios from '../utils/Request';
+import Utils from '../utils/Utils'
 
 const api = {
-  wants: '/wants'
+  wants: '/wants',
+  wants_update: '/wants/:wantId/status'
 };
 
 let WantsService = {
@@ -23,8 +25,13 @@ let WantsService = {
       callback(res);
     });
   },
-  updateMyWantsStatus(wantsId, status, callback) {
-    axios.put(api.wants + '/' + wantsId + '/status', {
+  updateMyWantsStatus(wantId, status, callback) {
+    let keyValueArray = [{
+      key: 'wantId',
+      value: wantId
+    }];
+    let this_api = Utils.replaceApiPlaceholder(api.wants_update, keyValueArray);
+    axios.put(this_api, {
       status: status,
       loading: false
     }).then(res => {

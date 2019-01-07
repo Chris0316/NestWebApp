@@ -13,7 +13,7 @@
             <span class="title-sub">{{ getSubTitle() }}</span>
             <span class="share" v-if="isMine"></span>
           </div>
-          <div class="line-sub">{{ live.created_at.split(' ')[0] }}</div>
+          <div class="line-sub">{{ live.created_at | dateFormat('yyyy-MM-dd') }}</div>
         </div>
         <div class="card-body">
           <div class="info-row">
@@ -34,7 +34,7 @@
           </div>
           <div class="info-row" v-if="live.available_time">
             <div class="info-label">可入住时间:</div>
-            <div class="info-value">{{ live.available_time.split(' ')[0] }}</div>
+            <div class="info-value">{{ live.available_time | dateFormat('yyyy-MM-dd') }}</div>
           </div>
           <div class="info-row" v-if="live.description">
             <div class="info-label">其他需求:</div>

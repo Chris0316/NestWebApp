@@ -5,6 +5,7 @@ import components from './components'
 import App from './App'
 import router from './router'
 import './libs/remadaptor'
+import filters from './utils/Filters'
 // import HistoryCache from './utils/HistoryCache';
 
 Vue.use(components)
@@ -12,6 +13,10 @@ Vue.use(components)
 Vue.config.productionTip = false
 
 // router.beforeEach(HistoryCache);
+
+Object.keys(filters).forEach((key) => {
+  Vue.filter(key, filters[key])
+});
 
 /* eslint-disable no-new */
 new Vue({
