@@ -11,7 +11,7 @@
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
         <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow"
-                     v-if="listType !== 'carport' || listType !== 'land'">{{ bedroomBtnTxt }}
+                     v-if="pageType !== 'carport' || pageType !== 'land'">{{ bedroomBtnTxt }}
         </nest-button>
         <nest-button class="mr28" @click="filtersShow = !filtersShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
@@ -21,7 +21,7 @@
         <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
       <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
-                  v-if="listType !== 'carport' || listType !== 'land'"
+                  v-if="pageType !== 'carport' || pageType !== 'land'"
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
@@ -31,54 +31,54 @@
                   @cancel="filterClear">
         <div class="conditions">
           <div class="condition">
-            <div class="condition-title">{{ listType === 'rent' ? '租金' : '价格' }}</div>
-            <nest-radio v-model="price" :options="DICT.filters.price[listType]" size="small"></nest-radio>
+            <div class="condition-title">{{ pageType === 'rent' ? '租金' : '价格' }}</div>
+            <nest-radio v-model="price" :options="DICT.filters.price[pageType]" size="small"></nest-radio>
             <nest-range class="range-container" v-model="range" :max="rangeMax" :step="rangeStep"></nest-range>
           </div>
-          <div class="condition" v-if="listType !== 'carport' && listType !== 'land'">
+          <div class="condition" v-if="pageType !== 'carport' && pageType !== 'land'">
             <div class="condition-title">房型</div>
-            <nest-radio v-model="type" :options="DICT.filters.type[listType]" size="small" :count-in-row="3"></nest-radio>
+            <nest-radio v-model="type" :options="DICT.filters.type[pageType]" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'rent'">
+          <div class="condition" v-if="pageType === 'rent'">
             <div class="condition-title">用途</div>
             <nest-radio v-model="purpose" :options="DICT.house.purpose" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'rent'">
+          <div class="condition" v-if="pageType === 'rent'">
             <div class="condition-title">方式</div>
             <nest-radio v-model="rent_type" :options="DICT.house.rent_type" size="small"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'rent'">
+          <div class="condition" v-if="pageType === 'rent'">
             <div class="condition-title">付款</div>
             <nest-radio v-model="rentPay" :options="DICT.filters.rent_pay" size="small" :count-in-row="3"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'rent'">
+          <div class="condition" v-if="pageType === 'rent'">
             <div class="condition-title">设施</div>
             <nest-check v-model="facilities" :options="DICT.filters.facilities" size="small" :count-in-row="3"></nest-check>
           </div>
-          <div class="condition" v-if="listType === 'rent'">
+          <div class="condition" v-if="pageType === 'rent'">
             <div class="condition-title">阳台</div>
             <nest-radio v-model="balcony" :options="DICT.house.balcony" size="small"></nest-radio>
           </div>
-          <div class="condition" v-if="listType !== 'rent' && listType !== 'carport'">
+          <div class="condition" v-if="pageType !== 'rent' && pageType !== 'carport'">
             <div class="condition-title">面积</div>
-            <nest-radio v-model="centiare" :options="DICT.filters.centiare[listType]" size="small"></nest-radio>
+            <nest-radio v-model="centiare" :options="DICT.filters.centiare[pageType]" size="small"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'rent' || listType === 'second'">
+          <div class="condition" v-if="pageType === 'rent' || pageType === 'second'">
             <div class="condition-title">车位</div>
             <nest-radio v-model="carport" :options="DICT.filters.carport" size="small"></nest-radio>
           </div>
-          <div class="condition" v-if="listType !== 'rent' && listType !== 'land'">
+          <div class="condition" v-if="pageType !== 'rent' && pageType !== 'land'">
             <div class="condition-title">楼层</div>
-            <nest-radio v-model="floor" :options="DICT.filters.floor[this.listType]" size="small"></nest-radio>
+            <nest-radio v-model="floor" :options="DICT.filters.floor[this.pageType]" size="small"></nest-radio>
           </div>
-          <div class="condition" v-if="listType === 'new' || listType === 'second'">
+          <div class="condition" v-if="pageType === 'new' || pageType === 'second'">
             <div class="condition-title">装修</div>
             <nest-radio v-model="decor" :options="DICT.house.decor" size="small" :count-in-row="3"></nest-radio>
           </div>
         </div>
       </nest-modal>
       <nest-modal title="排序" :has-clear="false" :has-footer="false" @close="sortShow = false" :status="sortShow">
-        <nest-radio v-model="sort" :count-in-row="1" :options="DICT.filters.sort[listType]"></nest-radio>
+        <nest-radio v-model="sort" :count-in-row="1" :options="DICT.filters.sort[pageType]"></nest-radio>
       </nest-modal>
     </div>
     <nest-scroll class="app-body"
@@ -87,25 +87,25 @@
                  @pullingUp="getData">
       <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-          <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: listType, id: item.id }})">
+          <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: pageType, id: item.id }})">
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
                 <div class="title">{{ item.building_name }}</div>
-                <div class="type-wrap" v-if="listType === 'new'">
+                <div class="type-wrap" v-if="pageType === 'new'">
                   <div class="type-str">{{ item.address }}</div>
                 </div>
                 <div class="type-wrap" v-else>
                   <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
                 </div>
                 <div class="rent">
-                  <div class="price" v-if="listType === 'new' || listType === 'rent'">{{ item.price }}</div>
+                  <div class="price" v-if="pageType === 'new' || pageType === 'rent'">{{ item.price }}</div>
                   <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
-                  <div class="price-msg" v-if="listType === 'new'">P/㎡</div>
-                  <div class="price-msg" v-else-if="listType === 'rent'">P/月</div>
+                  <div class="price-msg" v-if="pageType === 'new'">P/㎡</div>
+                  <div class="price-msg" v-else-if="pageType === 'rent'">P/月</div>
                   <div class="price-msg" v-else>万</div>
-                  <div class="room-size" v-if="listType === 'new'">{{ item.centiare }} ㎡</div>
-                  <div class="room-size" v-else-if="listType === 'second'">{{ item.price }} P/㎡</div>
+                  <div class="room-size" v-if="pageType === 'new'">{{ item.centiare }} ㎡</div>
+                  <div class="room-size" v-else-if="pageType === 'second'">{{ item.price }} P/㎡</div>
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@
       },
       sort(val) {
         this.sortShow = false;
-        let selectedObj = getSelecteds(DICT.filters.sort[this.listType], val)[0];
+        let selectedObj = getSelecteds(DICT.filters.sort[this.pageType], val)[0];
         this.filters[selectedObj.dbkey1] = selectedObj.dbvalue1;
         this.filters[selectedObj.dbkey2] = selectedObj.dbvalue2;
         this.getData(true);
@@ -227,35 +227,35 @@
       initConsts() {
         let params = this.$route.params;
         if (params) {
-          this.listType = params.type;
-          if (this.listType === 'rent' || this.listType === 'new' || this.listType === 'second') {
+          this.pageType = params.type;
+          if (this.pageType === 'rent' || this.pageType === 'new' || this.pageType === 'second') {
             this.type = '';
-          } else if (this.listType === 'carport') {
+          } else if (this.pageType === 'carport') {
             this.type = 'carport';
-          } else if (this.listType === 'land') {
+          } else if (this.pageType === 'land') {
             this.type = 'land';
           }
         }
         this.userId = Storage.getLocalStorage('nest_user_id');
         this.DICT = DICT;
-        if (this.listType === 'rent') {
+        if (this.pageType === 'rent') {
           this.trade = 'rent';
           this.rangeMax = 400000;
           this.rangeStep = 5000;
-        } else if (this.listType === 'second') {
+        } else if (this.pageType === 'second') {
           this.trade = 'sale';
           this.is_new = '0';
           this.rangeMax = 20000000;
           this.rangeStep = 100000;
-        } else if (this.listType === 'carport') {
+        } else if (this.pageType === 'carport') {
           this.trade = 'sale';
           this.rangeMax = 5000000;
           this.rangeStep = 50000;
-        } else if (this.listType === 'land') {
+        } else if (this.pageType === 'land') {
           this.trade = 'sale';
           this.rangeMax = 200000000;
           this.rangeStep = 1000000;
-        } else if (this.listType === 'new') {
+        } else if (this.pageType === 'new') {
           this.trade = 'sale';
           this.is_new = '1';
           this.rangeMax = 20000000;

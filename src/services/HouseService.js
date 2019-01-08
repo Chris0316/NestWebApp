@@ -1,7 +1,8 @@
 import axios from '../utils/Request';
 
 const api = {
-  house: '/houses'
+  house: '/houses',
+  house_same: '/house/same'
 };
 
 let HouseService = {
@@ -23,13 +24,21 @@ let HouseService = {
       callback(res);
     });
   },
-  getDetailsById(id, callback) {
-    axios.get(api.house + '/' + id).then(res => {
+  getDetailsById(houseId, callback) {
+    axios.get(api.house + '/' + houseId).then(res => {
       callback(res);
     });
   },
   deleteById(houseId, callback) {
     axios.delete(api.house + '/' + houseId).then(res => {
+      callback(res);
+    });
+  },
+  getSameHouse(params, callback, loading) {
+    axios.get(api.house_same, {
+      params: params,
+      loading: loading
+    }).then(res => {
       callback(res);
     });
   }

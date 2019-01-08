@@ -21,18 +21,18 @@
         </div>
         <div class="main-info">
           <div class="item">
-            <div class="txt-1 bold" v-if="detailsType === 'rent'">{{ house.price }} P/月</div>
-            <div class="txt-1 bold" v-else-if="detailsType === 'new'">{{ house.avg_price }} P/㎡</div>
+            <div class="txt-1 bold" v-if="pageType === 'rent'">{{ house.price }} P/月</div>
+            <div class="txt-1 bold" v-else-if="pageType === 'new'">{{ house.avg_price }} P/㎡</div>
             <div class="txt-1 bold" v-else>{{ house.total_amount / 10000 }} 万</div>
-            <div class="label" v-if="detailsType === 'new'">均价</div>
-            <div class="label" v-else-if="detailsType === 'rent'">租金</div>
+            <div class="label" v-if="pageType === 'new'">均价</div>
+            <div class="label" v-else-if="pageType === 'rent'">租金</div>
             <div class="label" v-else>售价</div>
           </div>
-          <div class="item" v-if="detailsType === 'second'">
+          <div class="item" v-if="pageType === 'second'">
             <div class="txt-1 bold">{{ house.bedroom }}室{{ house.hall }}厅</div>
             <div class="label">户型</div>
           </div>
-          <div class="item" v-if="detailsType === 'new'">
+          <div class="item" v-if="pageType === 'new'">
             <div class="txt-2">{{ house.available_time }}</div>
             <div class="label">开盘时间</div>
           </div>
@@ -41,7 +41,7 @@
             <div class="label">面积</div>
           </div>
         </div>
-        <div class="details-module" v-if="detailsType === 'new' || detailsType === 'second'">
+        <div class="details-module" v-if="pageType === 'new' || pageType === 'second'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -84,7 +84,7 @@
             <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
-        <div class="details-module" v-if="detailsType === 'rent'">
+        <div class="details-module" v-if="pageType === 'rent'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">用途:</div>
@@ -131,7 +131,7 @@
             <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
-        <div class="details-module" v-if="detailsType === 'carport'">
+        <div class="details-module" v-if="pageType === 'carport'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -154,7 +154,7 @@
             <div class="value">{{ house.floor }}层</div>
           </div>
         </div>
-        <div class="details-module" v-if="detailsType === 'land'">
+        <div class="details-module" v-if="pageType === 'land'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -182,7 +182,7 @@
             </div>
           </div>
         </div>
-        <div class="details-module scroll" v-if="detailsType === 'new'">
+        <div class="details-module scroll" v-if="pageType === 'new'">
           <div class="module-title">户型介绍</div>
           <nest-scroll direction="horizontal" class="info-list">
             <div class="info-list-wrap">
@@ -227,31 +227,22 @@
         <!--地图-->
         <!--<div class="details-map"></div>-->
         <div class="details-module scroll">
-          <div class="module-title" v-if="detailsType === 'new'">周边楼盘</div>
-          <div class="module-title" v-else-if="detailsType === 'rent'">同小区在租</div>
-          <div class="module-title" v-else-if="detailsType === 'land'">同地区在售</div>
+          <div class="module-title" v-if="pageType === 'new'">周边楼盘</div>
+          <div class="module-title" v-else-if="pageType === 'rent'">同小区在租</div>
+          <div class="module-title" v-else-if="pageType === 'land'">同地区在售</div>
           <div class="module-title" v-else>同小区在售</div>
           <nest-scroll direction="horizontal" class="similar">
             <div class="similar-wrap">
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers at Circuit Makati</div>
-                <div class="item-sub">Makati, 1207 Metro Manila</div>
-                <div class="item-desc"><span class="tag-main">210,000 P/㎡</span><span class="tag-sub">28.00-100.55 ㎡</span>
+              <div class="item" v-for="item in dataList">
+                <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
+                <div class="item-title">{{ item.building_name }}</div>
+                <div class="item-title mt0" v-if="['apartment', 'villa', 'homestay'].indexOf(item.type) > -1">{{ item.bedroom }}室{{ item.hall }}厅</div>
+                <div class="unit-size">
+                  <div class="left" v-for="item2 in item.tags">{{ item2 }}</div>
                 </div>
-              </div>
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers</div>
-                <div class="item-sub">Makati, 1207 Metro Manila</div>
-                <div class="item-desc"><span class="tag-main">210,000 P/㎡</span><span class="tag-sub">28.00-100.55 ㎡</span>
+                <div class="item-desc">
+                  <span class="tag-main">210000 P/㎡</span><span class="tag-sub">28-100 ㎡</span>
                 </div>
-              </div>
-              <div class="item">
-                <div class="item-img"></div>
-                <div class="item-title">Callisto Towers at Circuit Makati</div>
-                <div class="item-sub">Makati, 1207 Metro Manila</div>
-                <div class="item-desc"><span class="tag-main">210,000 P/㎡</span><span class="tag-sub">28.00-100</span></div>
               </div>
             </div>
           </nest-scroll>
@@ -288,8 +279,9 @@
           <!--</nest-scroll>-->
         </div>
         <div class="publish">
-          <div class="tips">我也要出售？</div>
-          <a href="javascript:;" class="publish-btn">立即发布</a>
+          <div class="tips">{{ pageType === 'rent' ? '我也要出租？' : '我也要出售？' }}</div>
+          <a href="javascript:;" class="publish-btn" v-if="pageType === 'rent'" @click="$router.push({ name: 'ExplorePublish', params: { trade: 'rent', id: 'new' } })">立即发布</a>
+          <a href="javascript:;" class="publish-btn" v-else @click="$router.push({ name: 'ExplorePublish', params: { trade: 'sale', id: 'new' } })">立即发布</a>
         </div>
       </div>
     </nest-scroll>
@@ -299,7 +291,7 @@
         <a href="javascript:;" class="share"></a>
       </div>
       <template v-if="isMine">
-        <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { type: house.trade, id: house.id } })">编辑</a>
+        <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { trade: house.trade, id: house.id } })">编辑</a>
         <a href="javascript:;" class="control-btn danger" @click="deleteShow = true">删除</a>
       </template>
       <template v-else>
@@ -315,9 +307,9 @@
 </template>
 
 <script>
-  // require styles
   import 'swiper/dist/css/swiper.css'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
+  import PreviewDefaultImg from '../../assets/images/preview-default.png';
   import DICT, {getSelecteds} from "../../configs/DICT";
   import HouseService from '../../services/HouseService';
   import Storage from "../../utils/Storage";
@@ -334,7 +326,8 @@
             el: '.swiper-pagination',
             type: 'fraction'
           }
-        }
+        },
+        dataList: []
       }
     },
     created() {
@@ -347,7 +340,7 @@
       initConsts() {
         let params = this.$route.params;
         if (params) {
-          this.detailsType = params.type;
+          this.pageType = params.type;
           this.houseId = params.id;
         }
         this.DICT = DICT;
@@ -369,6 +362,13 @@
           arr.push('押' + this.house.deposit_month + '付' + this.house.pay_month);
         }
         return arr.join(' / ');
+      },
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return PreviewDefaultImg;
+        }
       },
       facOn(item) {
         let flag = false;
@@ -400,6 +400,13 @@
             if (userId == res.data.user.id) {
               this.isMine = true;
             }
+          });
+          let trade = this.pageType === 'rent' ? 'rent' : 'sale';
+          HouseService.getSameHouse({
+            trade: trade,
+            house_id: this.houseId
+          }, res => {
+            this.dataList = res.data;
           })
         }
       },
@@ -701,7 +708,8 @@
           width: 100%;
           height: 2.56rem;
           border-radius: .1rem;
-          background-color: #e8e8ea;
+          background: #e8e8ea center center no-repeat;
+          background-size: cover;
         }
         .item-title {
           margin-top: .2rem;
@@ -710,6 +718,9 @@
           color: #333;
           line-height: .3rem;
           white-space: initial;
+          &.mt0 {
+            margin-top: 0;
+          }
         }
         .unit-size {
           display: flex;

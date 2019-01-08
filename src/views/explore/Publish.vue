@@ -278,7 +278,7 @@
         this.getSelecteds = getSelecteds;
         let params = this.$route.params;
         if (params) {
-          this.trade = this.$route.params.type;
+          this.trade = this.$route.params.trade;
           this.houseId = this.$route.params.id;
         }
       },
