@@ -3,7 +3,7 @@ import Utils from '../utils/Utils'
 
 const api = {
   wants: '/wants',
-  wants_update: '/wants/:wantId/status'
+  wants_update: '/wants/:want_id/status'
 };
 
 let WantsService = {
@@ -27,7 +27,7 @@ let WantsService = {
   },
   updateMyWantsStatus(wantId, status, callback) {
     let keyValueArray = [{
-      key: 'wantId',
+      key: 'want_id',
       value: wantId
     }];
     let this_api = Utils.replaceApiPlaceholder(api.wants_update, keyValueArray);

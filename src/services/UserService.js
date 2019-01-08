@@ -4,7 +4,7 @@ const api = {
   userInfo: '/user',
   agent: '/agents',
   myWants: '/user/wants',
-  myHouses: '/users/houses'
+  myHouses: '/user/houses'
 };
 
 let UserService = {
