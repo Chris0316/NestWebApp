@@ -1,6 +1,6 @@
 <template>
   <div class="follow">
-    <div class="search">
+    <div class="search" @click="$router.push({path:'/follow/list'})">
       <div class="search-img"></div>
       <div class="search-text">搜索经纪人或房源编号</div>
     </div>
@@ -55,16 +55,15 @@
             </div>
             <div class="collect-wrap"  slot="controls">
               <div class="collect">
-                <div class="heart"></div>
-                <div class="share"></div>
+                <div class="heart" @click="cancelFollow(recommend,index,'recommends')"></div>
+                <div class="share" @click="shareFun"></div>
               </div>
               <div class="collect-del">
-                <div class="call-icon"></div>
+                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
               </div>
             </div>
           </nest-swipe-cell>
         </nest-tab-container-item>
-
 
 
         <nest-tab-container-item id="econman">
@@ -73,17 +72,16 @@
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
-                    <div class="cli" :style="{backgroundImage:item.avatar}"></div>
+                    <div class="cli" :style="{backgroundImage:'url('+item.avatar+')'}"></div>
                     <div class="det">
                       <div class="name">{{item.local_name}}</div>
                       <div class="skill">语言：
                         <span v-for="(language, i) in item.languages">{{language}}<span v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
-                        <!--汉语/英语/韩语/日语-->
                       </div>
                     </div>
                   </div>
                   <div class="top-r">
-                    <div class="follow-btn">已关注</div>
+                    <div class="follow-btn" @click="cancelFollow(item,index,'peopleArr')">已关注</div>
                     <div class="follow-num">{{item.follows}}人关注</div>
                   </div>
                 </div>
@@ -92,17 +90,15 @@
                 </div>
                 <div class="text2">
                   {{item.introduction}}
-                  <!--我是来自makati的经纪人，这是个性签名随便写点什么做多两行的-->
-                  <!--最后一行在这里最后用“...“表示就行了最后一行在这里最后用“...“表示就行了-->
                 </div>
               </div>
             </div>
             <div class="collect-wrap" slot="controls">
-              <div class="collect-l">
+              <div class="collect-l" @click="shareShow=!shareShow">
                 <img class="icon" src="../assets/images/s-share.png" alt="">
               </div>
               <div class="collect-r">
-                <img class="icon" src="../assets/images/s-call.png" alt="">
+                <a :href="`tel:${item.phone}`" class="icon"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -133,6 +129,7 @@
       class="textali">
       确定要取消关注该 <span class="keyword">房源 </span> 吗？
     </nest-modal>
+    <NestShare :status="shareShow" @close="shareShow = false"></NestShare>
   </div>
 </template>
 
@@ -202,15 +199,16 @@
         followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
         followtimeShow: false,
         followtimeVal: '默认',
-        recommends : null
+        recommends : null,
+        shareShow:false
       }
     },
     created(){
       UserService.getAgentList('',res=>{
         this.peopleArr = res.data
+        console.log(this.peopleArr);
       });
       HouseService.getList('',res=>{
-        console.log(res.data);
         this.recommends = res.data;
       });
     },
@@ -228,8 +226,19 @@
         if (item.galleries.data.length > 0) {
           return item.galleries.data[0].url;
         } else {
-          return '';
+          return require('../assets/images/preview-default.png');
         }
+      },
+      cancelFollow(item,index,list){
+        item.favored = !item.favored
+        if (list=='recommends'){
+          this.recommends.splice(index,1)
+        }else {
+          this.peopleArr.splice(index,1)
+        }
+      },
+      shareFun(){
+        this.shareShow = !this.shareShow
       }
     }
   }
@@ -484,6 +493,7 @@
           width: 1rem;
           height: 1rem;
           background: #DFDFDF;
+          background-size: 100%;
           border-radius: 50%;
         }
         .det {
@@ -588,8 +598,11 @@
         height: 2.15rem;
         background: #f9f5ed;
         .icon {
+          display: block;
           width: 0.38rem;
           height: 0.38rem;
+          background: url("../assets/images/s-call.png") no-repeat;
+          background-size: 100%;
         }
       }
     }
