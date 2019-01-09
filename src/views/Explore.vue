@@ -348,8 +348,7 @@
           width: 1.1rem;
           height: 1.1rem;
           border-radius: 50%;
-          background-color: #e8e8ea;
-          background-repeat: no-repeat;
+          background: #e8e8ea no-repeat;
           background-size: 100% 100%;
           &.icon1 {
             background-image: url('../assets/images/explore/publish.png');
@@ -386,10 +385,8 @@
         margin-right: 0.1rem;
         width: 2.8rem;
         height: 2rem;
-        background-color: #f5f5f7;
         border-radius: 0.1rem;
-        background-repeat: no-repeat;
-        background-position: bottom right;
+        background: #f5f5f7 no-repeat bottom right;
         &:first-child {
           margin-left: 0;
         }
@@ -478,9 +475,8 @@
         width: 3.3rem;
         height: 2.36rem;
         border-radius: 0.1rem;
-        background-color: #e8e8ea;
         background-size: 100% 100%;
-        background-repeat: no-repeat;
+        background: #e8e8ea no-repeat;
       }
       .unit-place {
         word-break: break-all;
