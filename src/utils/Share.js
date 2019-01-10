@@ -1,4 +1,4 @@
-import Request from './Request';
+import axios from 'Request';
 
 //封装的微信分享的初始化方式
 function wxInit(shareData, config) {
@@ -32,11 +32,10 @@ export default {
       "imgUrl": cover, // 分享显示的缩略图地址 ,根据自己情况而定
       "link": url,     // 分享地址
     };
-    let parms = { url: url , shareData: shareData.toString()};
-    Request.get('/api/shares/token').then((res, err) => {
+    axios.get('https://api.dev.ohmynest.com/api/shares/token' + '?url='+ encodeURIComponent(url)).then((res) => {
       console.log(res);
-      wxInit(res);
-      callback(res, err);
+      // wxInit(res);
+      callback(res);
     });
   }
 
