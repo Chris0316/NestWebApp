@@ -302,7 +302,7 @@
             this.price = res.data.price ? res.data.price.toString() : '';
             this.depositMonth = res.data.deposit_month ? res.data.deposit_month.toString() : '';
             this.payMonth = res.data.pay_month ? res.data.pay_month.toString() : '';
-            this.selectedDate = res.data.available_time ? [new Date(res.data.available_time)] : [];
+            this.selectedDate = res.data.available_time ? [new Date(res.data.available_time.replace(/-/g, '/'))] : [];
             this.minStayMonth = res.data.min_stay_month ? res.data.min_stay_month.toString() : '';
             this.maxStayMonth = res.data.max_stay_month ? res.data.max_stay_month.toString() : '';
             this.carport = res.data.carport.toString();
