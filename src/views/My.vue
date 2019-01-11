@@ -79,7 +79,7 @@
         account: '',
         signature: '',
         portrait: '',
-        isAgent: false,
+        isAgent: true,
         msgSwitch: false,
         joinSwitch: false
       }
