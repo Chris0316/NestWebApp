@@ -122,7 +122,6 @@
 </template>
 <script>
   import DICT, {getSelecteds} from '../configs/DICT';
-  Share.weixin("我的鸟窝，您的专业租售房服务平台！", "即可加入，尽享菲律宾投资生活。", window.location.href, "https://api.dev.ohmynest.com/storage/uploads/images/avatars/201901/05//1_1546682838_xwnEaadTbl.jpg");
   export default {
     name: 'Explore',
     data() {
