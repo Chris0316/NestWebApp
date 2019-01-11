@@ -237,20 +237,11 @@
                 <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="item-title">{{ item.building_name }}</div>
                 <div class="item-title mt0" v-if="['apartment', 'villa', 'homestay'].indexOf(item.type) > -1">{{ item.bedroom }}室{{ item.hall }}厅</div>
-                <div class="item-sub" v-if="matchCustomType(item) === 'new'">{{ item.address }}</div>
-                <div class="unit-size" v-else>
+                <div class="unit-size">
                   <div class="left" v-for="item2 in item.tags">{{ item2 }}</div>
                 </div>
                 <div class="item-desc">
-                  <span class="tag-main">
-                    <template v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</template>
-                    <template v-else>{{ item.total_amount / 10000 }}</template>
-                    <template v-if="matchCustomType(item) === 'new'">P/㎡</template>
-                    <template v-else-if="matchCustomType(item) === 'rent'">P/月</template>
-                    <template v-else>万</template>
-                  </span>
-                  <span class="tag-sub" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</span>
-                  <span class="tag-sub" v-else-if="matchCustomType(item) === 'second' || matchCustomType(item) === 'carport' || matchCustomType(item) === 'land'">{{ item.price }} P/平</span>
+                  <span class="tag-main">210000 P/㎡</span><span class="tag-sub">28-100 ㎡</span>
                 </div>
               </div>
             </div>
@@ -322,7 +313,6 @@
   import DICT, {getSelecteds} from "../../configs/DICT";
   import HouseService from '../../services/HouseService';
   import Storage from "../../utils/Storage";
-  import Utils from '../../utils/Utils';
 
   export default {
     name: 'ExploreDetails',
@@ -355,7 +345,6 @@
         }
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
-        this.matchCustomType = Utils.matchCustomType;
         this.isMine = false;
       },
       getLabelTags() {

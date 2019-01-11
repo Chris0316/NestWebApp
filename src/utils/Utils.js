@@ -25,29 +25,5 @@ export default {
       });
     }
     return api;
-  },
-  /**
-   * 通过房屋对象匹配自定义房屋类型
-   * */
-  matchCustomType(house) {
-    if (house && house instanceof Object) {
-      let type = house.type,
-        trade = house.trade,
-        isNew = house.is_new,
-        finalResult = '';
-      if (trade === 'rent') {
-        finalResult = 'rent';
-      } else if (trade === 'sale' && isNew == '1' && (['apartment', 'villa', 'homestay', 'office'].indexOf(type) > -1)) {
-        finalResult = 'new';
-      } else if (trade === 'sale' && isNew == '0' && (['apartment', 'villa', 'homestay', 'office'].indexOf(type) > -1)) {
-        finalResult = 'second';
-      } else if (trade === 'sale' && type === 'carport') {
-        finalResult = 'carport';
-      } else if (trade === 'sale' && type === 'land') {
-        finalResult = 'land';
-      }
-      return finalResult;
-    }
-    return null;
   }
 };

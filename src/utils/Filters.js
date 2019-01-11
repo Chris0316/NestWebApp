@@ -1,7 +1,6 @@
 export default {
   dateFormat(date, template) {
     if (!(date instanceof Date)) {
-      date = date.replace(/-/g, '/');
       date = new Date(date);
     }
     let o = {

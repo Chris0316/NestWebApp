@@ -17,7 +17,7 @@
                      @pullingUp="getMyData"
                      ref="myScroll">
           <div class="list">
-            <nest-swipe-cell v-for="item in dataList" :key="item.id" class="list-item">
+            <nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">
               <div class="item" slot="content" :class="item.trade"
                    @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
                 <div class="item-img" :class="[item.type[0]]"></div>
@@ -51,7 +51,7 @@
                      @pullingUp="getMyData"
                      ref="favoriteScroll">
           <div class="list">
-            <nest-swipe-cell v-for="item in dataList" :key="item.id" class="list-item">
+            <nest-swipe-cell v-for="(item, index) in dataList" :key="index" class="list-item">
               <div class="item" slot="content" :class="item.trade"
                    @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
                 <div class="item-img" :class="[item.type[0]]"></div>
