@@ -1,5 +1,5 @@
 import axios from 'Request';
-
+return;
 //封装的微信分享的初始化方式
 function wxInit(shareData, config) {
   wx.config({
