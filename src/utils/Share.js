@@ -1,4 +1,7 @@
-import axios from 'Request';
+import axios from 'axios';
+import wx from 'weixin-js-sdk'
+
+const ua = window.navigator.userAgent.toLowerCase();
 
 //封装的微信分享的初始化方式
 function wxInit(shareData, config) {
@@ -21,22 +24,28 @@ function wxInit(shareData, config) {
   });
 }
 
-export default {
+
+let Share = {
   /**
    * 微信分享组件
    * */
   weixin(title, desc, url, cover, callback) {
+    url = url.split('#')[0];
     let shareData = {
       "title": title,  // 分享标题
       "desc": desc,    // 分享描述
       "imgUrl": cover, // 分享显示的缩略图地址 ,根据自己情况而定
       "link": url,     // 分享地址
     };
-    axios.get('https://api.dev.ohmynest.com/api/shares/token' + '?url='+ encodeURIComponent(url)).then((res) => {
-      console.log(res);
-      // wxInit(res);
-      callback(res);
-    });
+
+    axios.get('https://api.dev.ohmynest.com/api/shares/token' + '?url='+ encodeURIComponent(url))
+      .then(res => {
+        if(res && res.data){
+          wxInit(shareData, res);
+        }
+        callback && callback(res);
+      });
   }
 
 };
+export default Share;
