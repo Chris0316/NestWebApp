@@ -47,33 +47,19 @@
         </div>
         <nest-scroll direction="horizontal" class="topics">
           <div class="topics-wrap">
-            <div class="topic icon1">
-              <div class="title">温馨一居室</div>
-              <div class="msg">属于你的独享空间</div>
-            </div>
-            <div class="topic icon2">
-              <div class="title">温馨一居室</div>
-              <div class="msg">属于你的独享空间</div>
-            </div>
-            <div class="topic icon3">
-              <div class="title">温馨一居室</div>
-              <div class="msg">属于你的独享空间</div>
+            <div class="topic" v-for="(item, index) in topAdvertisements">
+              <div class="title">{{item.title}}</div>
+              <div class="msg">{{item.content}}</div>
+              <img class="cover" :src="item.cover" />
             </div>
           </div>
         </nest-scroll>
         <nest-scroll direction="horizontal" class="topics budget">
           <div class="topics-wrap">
-            <div class="topic icon4">
-              <div class="title">500万预算</div>
-              <div class="msg">小资一族上车</div>
-            </div>
-            <div class="topic icon5">
-              <div class="title">500万预算</div>
-              <div class="msg">小资一族上车</div>
-            </div>
-            <div class="topic icon6">
-              <div class="title">500万预算</div>
-              <div class="msg">小资一族上车</div>
+            <div class="topic" v-for="(item, index) in middleAdvertisements">
+              <div class="title">{{item.title}}</div>
+              <div class="msg">{{item.content}}</div>
+              <img class="cover" :src="item.cover" />
             </div>
           </div>
         </nest-scroll>
@@ -81,34 +67,34 @@
           <div class="left">为你推荐</div>
           <div class="right">
             <nest-tab-bar class="tabs" v-model="tabSelected" align="right">
-              <nest-tab-item id="rent">出租</nest-tab-item>
-              <nest-tab-item id="sale">售卖</nest-tab-item>
+              <nest-tab-item id="rent" @click="getRecommends">出租</nest-tab-item>
+              <nest-tab-item id="sale" @click="getRecommends">售卖</nest-tab-item>
             </nest-tab-bar>
           </div>
         </div>
         <div class="list-wrap">
-          <div class="unit" v-for="(recommend,index) in recommends">
-            <div class="unit-img"></div>
-            <div class="unit-place">{{recommend.roomplace}}</div>
-            <div class="unit-size" v-if="recommend.roomsizes.constructor === Array">
-              <div class="left" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
+          <div class="unit" v-for="(house,index) in recommends">
+            <div class="unit-img"><img :src="house.cover"></div>
+            <div class="unit-place">{{house.title}}</div>
+            <div class="unit-size" v-if="typeof house.tags === 'object'">
+              <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
             </div>
-            <div class="unit-size" v-else="!recommend.roomsizes.constructor === Array">
-              <div class="left-str">{{recommend.roomsizes}}</div>
+            <div class="unit-size" v-else="typeof house.tags !== 'object'">
+              <div class="left-str">{{house.tags}}</div>
             </div>
-            <div class="price-m" v-if="proprent">
-              <div class="num">{{recommend.pricem}}</div>
+            <div class="price-m" v-if="house.trade == 'rent'">
+              <div class="num">{{house.price}}</div>
               <div class="month">P/月</div>
             </div>
-            <div class="price-m" v-if="propnew">
-              <div class="num">{{recommend.pricem}}</div>
+            <div class="price-m" v-if="house.trade == 'sale' && house.is_new">
+              <div class="num">{{house.price}}</div>
               <div class="month">P/㎡</div>
-              <div class="size">28.00-100.55 ㎡</div>
+              <div class="size">{{house.centiare_min}}-{{house.centiare_max}} ㎡</div>
             </div>
-            <div class="price-m" v-if="propsecond">
-              <div class="num">{{recommend.pricem}}</div>
+            <div class="price-m" v-if="house.trade == 'sale' && !house.is_new">
+              <div class="num">{{house.total_amount}}</div>
               <div class="month">万</div>
-              <div class="size">210,000 P/平</div>
+              <div class="size">{{house.price}} P/平</div>
             </div>
           </div>
         </div>
@@ -122,6 +108,8 @@
 </template>
 <script>
   import DICT, {getSelecteds} from '../configs/DICT';
+  import {getItemsList} from  '../services/AdvertisementService';
+  import {getHouseList} from  '../services/RecommendService';
   export default {
     name: 'Explore',
     data() {
@@ -138,50 +126,10 @@
         tradeShow: false,
         trade: '',
         tabSelected: 'rent',
-        proprent: true,
-        propsecond: false,
-        propnew: false,
         propparking: false,
-        recommends: [
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-            roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-            pricem: 23000,
-            rentsize: '28.00-100.55 ㎡'
-          },
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型',
-            roomsizes: "新房旧房Makati, 1207 Metro Manila",
-            pricem: 23000,
-            rentsize: '28.00-100.55 ㎡'
-          },
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-            roomsizes: "车位Makati, 1207 Metro Manila",
-            pricem: 23000
-          },
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-            roomsizes: ['10F', '100.55 ㎡'],
-            pricem: 23000
-          },
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-            roomsizes: ['10F', '100.55 ㎡'],
-            pricem: 23000
-          },
-          {
-            roomimg: '',
-            roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-            roomsizes: ['10F', '100.55 ㎡'],
-            pricem: 23000
-          }
-        ]
+        topAdvertisements: [],
+        middleAdvertisements: [],
+        recommends: []
       }
     },
     watch: {
@@ -222,6 +170,9 @@
     },
     created() {
       this.initOpts();
+      this.getRecommends();
+      this.getTopAdvertisements();
+      this.getMiddleAdvertisements();
     },
     methods: {
       initOpts() {
@@ -234,6 +185,31 @@
       bedroomConfirm() {
         this.bedroomShow = false;
         // todo 筛选发请求
+      },
+      getTopAdvertisements(){
+        getItemsList(1, res => {
+          this.topAdvertisements = res.data;
+        });
+      },
+      getMiddleAdvertisements(){
+        getItemsList(2, res => {
+         this.middleAdvertisements = res.data;
+        });
+      },
+      getRecommends(){
+        getHouseList(this.tabSelected, res => {
+          let recommends = [];
+          if(res.data){
+            for(var i in res.data){
+              if(!res.data[i].title){
+                res.data[i].title = res.data[i].building_name;
+              }
+              recommends.push(res.data[i]);
+            }
+          }
+
+          this.recommends = recommends;
+        });
       }
     }
   }
