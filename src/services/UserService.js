@@ -25,6 +25,16 @@ let UserService = {
       callback(res)
     })
   },
+  getAgentInfo(id, callback) {
+    axios.get(api.agent+"/"+id).then(res => {
+      callback(res)
+    })
+  },
+  getAgentInfoHouses(id,params, callback) {
+    axios.get(`users/${id}/houses?trade=${params.trade}`).then(res => {
+      callback(res)
+    })
+  },
   getMyWants(params, callback, loading) {
     axios.get(api.myWants, {
       params: params,

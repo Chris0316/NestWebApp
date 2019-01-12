@@ -14,12 +14,12 @@
                  :pullUpLoad="pullUpLoadObj"
                  @pullingUp="onPullingUp">
       <!--房租搜索结果-->
-      <div class="search-list">
+      <div class="search-list" v-if="deleteShow">
         <nest-swipe-cell  v-for="(recommend,index) in dataList" :key="index">
           <div class="search-item"  slot="content">
             <div class="move-wrap">
               <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
-              <div class="item-img"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+              <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
               <div class="msg-wrap">
                 <div class="title">{{recommend.building_name}}</div>
                 <div class="type-wrap" v-if="recommend.trade == 'rent'">
@@ -42,8 +42,8 @@
           </div>
           <div class="collect-wrap"  slot="controls">
             <div class="collect">
-              <div class="heart" @click="cancelFollow(recommend,index)"></div>
-              <div class="share" @click="shareFun"></div>
+              <div class="heart" @click.stop="cancelFollow(recommend,index)"></div>
+              <div class="share" @click.stop="shareFun"></div>
             </div>
             <div class="collect-del">
               <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
@@ -52,9 +52,9 @@
         </nest-swipe-cell>
       </div>
       <!--经纪人搜索结果-->
-      <div class="peo-list"  v-if="deleteShow">
+      <div class="peo-list"  v-if="!deleteShow">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-          <div class="item" slot="content">
+          <div class="item" slot="content" @click="$router.push({ path: `/follow/agent/${item.id}` }) ">
             <div class="item-cont">
               <div class="top">
                 <div class="top-l">
@@ -67,7 +67,7 @@
                   </div>
                 </div>
                 <div class="top-r">
-                  <div class="follow-btn" @click="cancelFollow(item,index)">已关注</div>
+                  <div class="follow-btn" @click.stop="cancelFollow(item,index)">已关注</div>
                   <div class="follow-num">{{item.follows}}人关注</div>
                 </div>
               </div>
@@ -97,31 +97,21 @@
 <script>
   import HouseService from '../../services/HouseService'
   import UserService from '../../services/UserService'
+  import Utils from '../../utils/Utils';
   export default {
     name: "FollowList",
     props:{
 
     },
     mounted(){
-      // 跳转传递
 
-      // UserService.getAgentList('',res=>{
-      //   this.peopleArr = res.data
-      //   console.log(this.peopleArr)
-      // });
-      // HouseService.getList('',res=>{
-      //   this.recommends = res.data
-      // });
-      this.onPullingUp(true);
     },
     data(){
       return {
-        searchkey:'dsfds',
+        searchkey:'',
         deleteShow:false,
-        // peopleArr:['a','b','c','d','e'],
-        // recommends : [],
         shareShow:false,
-        dataList: [],
+        dataList:[],
         filters: {
           page: 0,
           per_page: 10
@@ -153,45 +143,68 @@
       clearSearch(){
         this.searchkey=''
       },
-      filterParams(params) {
-        for(let key in params) {
-          if (params.hasOwnProperty(key)) {
-            if (params[key] === "" || params[key] === null || params[key] === undefined) {
-              delete params[key];
-            } else if (params[key] instanceof Array && params[key].length === 0) {
-              delete params[key];
+      onPullingUp(loading = false,type) {
+          if(type == 1){
+            this.deleteShow = true;
+            let params = Utils.getEffectiveAttrsByObj(this.filters);
+            if (loading) {
+              this.filters.page = 1;
+              HouseService.getList(params, res => {
+                this.dataList = res.data;
+                // this.$refs.scroll.scrollTo(0, 0, 300);
+                this.$refs.scroll.forceUpdate(true);
+              }, true);
+            } else {
+              this.filters.page += 1;
+              HouseService.getList(params, res => {
+                this.filters.page = res.meta.pagination.current_page;
+                this.dataList = this.dataList.concat(res.data);
+                if (this.dataList.length < res.meta.pagination.total) {
+                  this.$refs.scroll.forceUpdate(true);
+                } else {
+                  this.$refs.scroll.forceUpdate(false);
+                }
+              }, false);
+            }
+          }else {
+            this.deleteShow = false;
+            let params = Utils.getEffectiveAttrsByObj(this.filters);
+            if (loading) {
+              this.filters.page = 1;
+              UserService.getAgentList(params, res => {
+                this.dataList = res.data;
+                // this.$refs.scroll.scrollTo(0, 0, 300);
+                this.$refs.scroll.forceUpdate(true);
+              }, true);
+            } else {
+              this.filters.page += 1;
+              UserService.getAgentList(params, res => {
+                this.filters.page = res.meta.pagination.current_page;
+                this.dataList = this.dataList.concat(res.data);
+                if (this.dataList.length < res.meta.pagination.total) {
+                  this.$refs.scroll.forceUpdate(true);
+                } else {
+                  this.$refs.scroll.forceUpdate(false);
+                }
+              }, false);
             }
           }
-        }
-        return params;
-      },
-      onPullingUp(loading = false) {
-        let params = this.filterParams(this.filters);
-        if (loading) {
-          this.filters.page = 1;
-          HouseService.getList(params, res => {
-            this.dataList = res.data;
-            // this.$refs.scroll.scrollTo(0, 0, 300);
-            this.$refs.scroll.forceUpdate(true);
-          }, true);
-        } else {
-          this.filters.page += 1;
-          HouseService.getList(params, res => {
-            this.filters.page = res.meta.pagination.current_page;
-            this.dataList = this.dataList.concat(res.data);
-            if (this.dataList.length < res.meta.pagination.total) {
-              this.$refs.scroll.forceUpdate(true);
-            } else {
-              this.$refs.scroll.forceUpdate(false);
-            }
-          }, false);
-        }
       }
     },
     watch:{
       searchkey(nextValue,prevValue){
         console.log(nextValue.trim(),prevValue.trim());
-
+        let keywords = nextValue.trim();
+        if (keywords == ''){
+          return;
+        }
+        if (typeof keywords ==='string'){
+          this.filters.keywords = keywords;
+          this.onPullingUp(true,2);
+        }else {
+          this.filters.keywords = keywords;
+          this.onPullingUp(true,1);
+        }
       }
     }
   }
