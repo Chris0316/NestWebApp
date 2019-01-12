@@ -24,15 +24,17 @@
         </div>
       </nest-tab-container-item>
     </nest-tab-container>
-    <nest-scroll class="app-body">
-      <nest-tab-container v-model="tabSelected">
-
-        <nest-tab-container-item id="houseres">
-          <nest-swipe-cell  v-for="(recommend,index) in recommends" :key="index">
-            <div class="search-item"  slot="content">
+    <nest-tab-container class="wrap-out" v-model="tabSelected">
+      <nest-tab-container-item class="wrap-in" id="houseres">
+        <nest-scroll class="app-body"
+                     ref="scrollHouses"
+                     :pullUpLoad="pullUpLoadObj"
+                     @pullingUp="onPullingUpHouses">
+          <nest-swipe-cell v-for="(recommend,index) in recommends" :key="index">
+            <div class="search-item" slot="content">
               <div class="move-wrap">
                 <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
-                <div class="item-img"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
                 <div class="msg-wrap">
                   <div class="title">{{recommend.building_name}}</div>
                   <div class="type-wrap" v-if="recommend.trade == 'rent'">
@@ -53,7 +55,7 @@
                 </div>
               </div>
             </div>
-            <div class="collect-wrap"  slot="controls">
+            <div class="collect-wrap" slot="controls">
               <div class="collect">
                 <div class="heart" @click="cancelFollow(recommend,index,'recommends')"></div>
                 <div class="share" @click="shareFun"></div>
@@ -63,12 +65,15 @@
               </div>
             </div>
           </nest-swipe-cell>
-        </nest-tab-container-item>
-
-
-        <nest-tab-container-item id="econman">
+        </nest-scroll>
+      </nest-tab-container-item>
+      <nest-tab-container-item id="econman">
+        <nest-scroll class="app-body"
+                     ref="scrollEconman"
+                     :pullUpLoad="pullUpLoadObj"
+                     @pullingUp="onPullingUpEconman">
           <nest-swipe-cell v-for="(item, index) in peopleArr" :key="index">
-            <div class="item" slot="content">
+            <div class="item" slot="content" @click="$router.push({ path: `/follow/agent/${item.id}` }) ">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
@@ -76,17 +81,19 @@
                     <div class="det">
                       <div class="name">{{item.local_name}}</div>
                       <div class="skill">语言：
-                        <span v-for="(language, i) in item.languages">{{language}}<span v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
+                        <span v-for="(language, i) in item.languages">{{language}}<span
+                          v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
                       </div>
                     </div>
                   </div>
                   <div class="top-r">
-                    <div class="follow-btn" @click="cancelFollow(item,index,'peopleArr')">已关注</div>
+                    <div class="follow-btn" @click.stop="cancelFollow(item,index,'peopleArr')">已关注</div>
                     <div class="follow-num">{{item.follows}}人关注</div>
                   </div>
                 </div>
                 <div class="text1">
-                  近一个月：出租 <span class="sp">{{item.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{item.monthly_sold_amount}}</span> 套
+                  近一个月：出租 <span class="sp">{{item.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{item.monthly_sold_amount}}</span>
+                  套
                 </div>
                 <div class="text2">
                   {{item.introduction}}
@@ -102,9 +109,9 @@
               </div>
             </div>
           </nest-swipe-cell>
-        </nest-tab-container-item>
-      </nest-tab-container>
-    </nest-scroll>
+        </nest-scroll>
+      </nest-tab-container-item>
+    </nest-tab-container>
     <nest-nav page="follow"></nest-nav>
     <!--关注时间-->
     <!--followtime-->
@@ -136,7 +143,11 @@
 <script>
   import HouseService from '../services/HouseService'
   import UserService from '../services/UserService'
+  import Utils from '../utils/Utils';
+  import NestScroll from "../components/commons/NestScroll/NestScroll";
+
   export default {
+    components: {NestScroll},
     name: "Follow",
     props: {
       housesList: {
@@ -188,8 +199,8 @@
     data() {
       return {
         tabSelected: 'econman',
-        peopleArr: ['aa', 'bb', 'cc', 'dd'],
-        houseArr: ['aa', 'bb', 'cc', 'dd', 'cc'],
+        peopleArr: [],
+        houseArr: [],
         settleOpts: ['默认', '出租', '售卖'],
         settleShow: false,
         settleVal: '默认',
@@ -199,18 +210,24 @@
         followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
         followtimeShow: false,
         followtimeVal: '默认',
-        recommends : null,
-        shareShow:false
+        recommends: null,
+        shareShow: false,
+        filters: {
+          page: 0,
+          per_page: 10
+        },
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        }
       }
     },
-    created(){
-      UserService.getAgentList('',res=>{
-        this.peopleArr = res.data
-        console.log(this.peopleArr);
-      });
-      HouseService.getList('',res=>{
-        this.recommends = res.data;
-      });
+    created() {
+      this.onPullingUpHouses(true)
+      this.onPullingUpEconman(true)
     },
     methods: {
       typeModalFun() {
@@ -229,16 +246,62 @@
           return require('../assets/images/preview-default.png');
         }
       },
-      cancelFollow(item,index,list){
+      cancelFollow(item, index, list) {
         item.favored = !item.favored
-        if (list=='recommends'){
-          this.recommends.splice(index,1)
-        }else {
-          this.peopleArr.splice(index,1)
+        if (list == 'recommends') {
+          this.recommends.splice(index, 1)
+        } else {
+          this.peopleArr.splice(index, 1)
         }
       },
-      shareFun(){
+      shareFun() {
         this.shareShow = !this.shareShow
+      },
+      onPullingUpHouses(loading = false, callback) {
+        this.deleteShow = true;
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          HouseService.getList(params, res => {
+            this.recommends = res.data;
+            this.$refs.scrollHouses.scrollTo(0, 0, 300);
+            this.$refs.scrollHouses.forceUpdate(true);
+          }, true);
+        } else {
+          this.filters.page += 1;
+          HouseService.getList(params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.recommends = this.recommends.concat(res.data);
+            if (this.recommends.length < res.meta.pagination.total) {
+              this.$refs.scrollHouses.forceUpdate(true);
+            } else {
+              this.$refs.scrollHouses.forceUpdate(false);
+            }
+          }, false);
+        }
+      },
+      onPullingUpEconman(loading = false, callback) {
+        this.deleteShow = false;
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          UserService.getAgentList(params, res => {
+            this.peopleArr = res.data;
+            this.$refs.scrollEconman.scrollTo(0, 0, 300);
+            this.$refs.scrollEconman.forceUpdate(true);
+          }, true);
+        } else {
+          this.filters.page += 1;
+          UserService.getAgentList(params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.peopleArr = this.peopleArr.concat(res.data);
+            if (this.peopleArr.length < res.meta.pagination.total) {
+              this.$refs.scrollEconman.forceUpdate(true);
+            } else {
+              this.$refs.scrollEconman.forceUpdate(false);
+            }
+          }, false);
+        }
       }
     }
   }
@@ -257,6 +320,7 @@
     height: 100%;
     .search {
       position: relative;
+      flex-shrink: 0;
       &:active {
         &::after {
           position: absolute;
@@ -294,6 +358,7 @@
       margin-bottom: 0.4rem;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
       .tab-wrap {
         margin-left: 0.28rem;
       }
@@ -338,9 +403,15 @@
         }
       }
     }
-    .app-body {
+    .wrap-out{
       flex: 1;
       overflow: hidden;
+    }
+    .wrap-in{
+      height: 100%;
+    }
+    .app-body {
+      height: 100%;
     }
     .search-item {
       display: flex;
@@ -441,7 +512,7 @@
         flex-shrink: 0;
         width: 1.2rem;
         height: 1.74rem;
-        background:rgba(15,145,131,0.1);
+        background: rgba(15, 145, 131, 0.1);
       }
       .heart {
         width: 0.36rem;
@@ -461,8 +532,8 @@
         align-items: center;
         width: 0.8rem;
         height: 1.74rem;
-        background:rgba(249,245,237,1);
-        .call-icon{
+        background: rgba(249, 245, 237, 1);
+        .call-icon {
           width: 0.38rem;
           height: 0.38rem;
           background: url("../assets/images/s-call.png") no-repeat;
@@ -584,7 +655,7 @@
         align-items: center;
         width: 1.2rem;
         height: 2.15rem;
-        background:rgba(15,145,131,0.1);
+        background: rgba(15, 145, 131, 0.1);
         .icon {
           width: 0.3rem;
           height: 0.3rem;
@@ -606,7 +677,6 @@
         }
       }
     }
-
     .textali {
       font-size: 0.28rem;
       text-align: center;
