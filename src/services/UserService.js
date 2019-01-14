@@ -13,6 +13,11 @@ let UserService = {
       callback(res);
     })
   },
+  getAgentInfo(id, callback) {
+    axios.get(api.agent + "/" + id).then(res => {
+      callback(res);
+    })
+  },
   updateUserInfo(userInfo, callback) {
     axios.patch(api.userInfo, userInfo).then(res => {
       callback(res);
@@ -22,6 +27,16 @@ let UserService = {
     axios.get(api.agent, {
       params: params
     }).then(res => {
+      callback(res)
+    })
+  },
+  getAgentInfo(id, callback) {
+    axios.get(api.agent+"/"+id).then(res => {
+      callback(res)
+    })
+  },
+  getAgentInfoHouses(id,params, callback) {
+    axios.get(`users/${id}/houses?trade=${params.trade}`).then(res => {
       callback(res)
     })
   },

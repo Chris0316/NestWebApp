@@ -1,8 +1,10 @@
 import axios from '../utils/Request';
+import Utils from "../utils/Utils";
 
 const api = {
   house: '/houses',
-  house_same: '/house/same'
+  house_same: '/house/same',
+  house_update: '/houses/:house_id/status'
 };
 
 let HouseService = {
@@ -41,6 +43,19 @@ let HouseService = {
     }).then(res => {
       callback(res);
     });
+  },
+  updateMyHouseStatus(houseId, status, callback) {
+    let keyValueArray = [{
+      key: 'house_id',
+      value: houseId
+    }];
+    let this_api = Utils.replaceApiPlaceholder(api.house_update, keyValueArray);
+    axios.put(this_api, {
+      status: status,
+      loading: false
+    }).then(res => {
+      callback(res);
+    })
   }
 };
 

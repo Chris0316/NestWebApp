@@ -5,81 +5,60 @@
       我的发布
     </div>
     <div class="control-wrap">
-      <nest-button :type="publishBtn.type" class="mr28">{{ publishBtn.txt }}</nest-button>
+      <nest-button :type="publishBtn.type" class="mr28" @click="switchPublishStatus">{{ publishBtn.txt }}</nest-button>
       <nest-button class="mr28" @click="tradeShow = true">类型</nest-button>
       <nest-button class="mr28" @click="typeShow = true">分类</nest-button>
-      <nest-button class="mr28">关注时间</nest-button>
+      <nest-button class="mr28" @click="publishDateShow = true">发布时间</nest-button>
     </div>
     <nest-scroll class="app-body" :pullUpLoad="pullUpLoadObj"
                  @pullingUp="getMyData"
                  ref="myScroll">
       <div class="the-time-list">
-        <div class="the-time">今天</div>
-        <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-          <!--<div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: listType, id: item.id }})">-->
-            <!--<div class="move-wrap">-->
-              <!--<div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>-->
-              <!--<div class="msg-wrap">-->
-                <!--<div class="title">{{ item.building_name }}</div>-->
-                <!--<div class="type-wrap" v-if="listType === 'new'">-->
-                  <!--<div class="type-str">{{ item.address }}</div>-->
-                <!--</div>-->
-                <!--<div class="type-wrap" v-else>-->
-                  <!--<div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>-->
-                <!--</div>-->
-                <!--<div class="rent">-->
-                  <!--<div class="price" v-if="listType === 'new' || listType === 'rent'">{{ item.price }}</div>-->
-                  <!--<div class="price" v-else>{{ item.total_amount / 10000 }}</div>-->
-                  <!--<div class="price-msg" v-if="listType === 'new'">P/㎡</div>-->
-                  <!--<div class="price-msg" v-else-if="listType === 'rent'">P/月</div>-->
-                  <!--<div class="price-msg" v-else>万</div>-->
-                  <!--<div class="room-size" v-if="listType === 'new'">{{ item.centiare }} ㎡</div>-->
-                  <!--<div class="room-size" v-else-if="listType === 'second'">{{ item.price }} P/㎡</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="collect" slot="controls" v-if="userId == item.user_id">-->
-            <!--<div class="share" @click="doShare"></div>-->
-          <!--</div>-->
-
-          <div class="search-item" slot="content">
-            <div class="move-wrap">
-              <div class="item-img"></div>
-              <div class="msg-wrap">
-                <div class="title">{{ item.building_name }}</div>
-                <div class="type-wrap">
-                  <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
-                </div>
-                <!--<div class="type-wrap">-->
-                  <!--<div class="type-str">{{ item.address }}</div>-->
-                <!--</div>-->
-                <div class="rent">
-                  <div class="price">{{ item.price }}</div>
-                  <div class="price-msg">P/月</div>
+        <div v-for="(item, index) in dataList" :key="item.id">
+          <div class="the-time" v-if="item.created_at">{{ item.created_at }}</div>
+          <nest-swipe-cell>
+            <div class="search-item" slot="content">
+              <div class="move-wrap">
+                <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
+                <div class="msg-wrap">
+                  <div class="title">{{ item.building_name }}</div>
+                  <div class="type-wrap" v-if="matchCustomType(item) === 'new'">
+                    <div class="type-str">{{ item.address }}</div>
+                  </div>
+                  <div class="type-wrap" v-else>
+                    <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
+                  </div>
+                  <div class="rent">
+                    <div class="price" v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</div>
+                    <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
+                    <div class="price-msg" v-if="matchCustomType(item) === 'new'">P/㎡</div>
+                    <div class="price-msg" v-else-if="matchCustomType(item) === 'rent'">P/月</div>
+                    <div class="price-msg" v-else>万</div>
+                    <div class="room-size" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</div>
+                    <div class="room-size" v-else-if="matchCustomType(item) === 'second'">{{ item.price }} P/㎡</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="collect-wrap" slot="controls">
-            <div class="share-icon"></div>
-          </div>
-        </nest-swipe-cell>
+            <div slot="controls" class="collect-wrap" v-if="filters.status === 1">
+              <div class="share"></div>
+              <div class="cancel" @click="updateStatus(item.id, 0)"></div>
+            </div>
+            <div slot="controls" class="collect-wrap" v-else>
+              <div class="publish" @click="updateStatus(item.id, 1)"></div>
+              <div class="delete"></div>
+            </div>
+          </nest-swipe-cell>
+        </div>
       </div>
     </nest-scroll>
-
-    <!--关注时间-->
-    <!--followtime-->
-    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followtimeShow = false"
-                :status="followtimeShow">
-      <nest-radio v-model="followtimeVal" :count-in-row="1" :options="followtimeOpts"></nest-radio>
+    <nest-modal title="发布时间" :has-clear="false" :has-footer="false" @close="publishDateShow = false"
+                :status="publishDateShow">
+      <nest-radio v-model="publishDate" :count-in-row="1" :options="publishDateOpts"></nest-radio>
     </nest-modal>
-    <!--分类-->
-    <!--classify-->
     <nest-modal title="分类" :has-clear="false" :has-footer="false" @close="typeShow = false" :status="typeShow">
       <nest-radio v-model="type" :count-in-row="1" :options="typeOpts"></nest-radio>
     </nest-modal>
-    <!--类型-->
     <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
       <nest-radio v-model="trade" :count-in-row="1" :options="tradeOpts"></nest-radio>
     </nest-modal>
@@ -87,9 +66,14 @@
 </template>
 
 <script>
+  import Vue from 'vue';
   import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
   import UserService from '../../services/UserService';
+  import PreviewDefaultImg from '../../assets/images/preview-default.png';
+  import HouseService from '../../services/HouseService';
+
+  let dateTemp = '';
 
   export default {
     name: "MyHouses",
@@ -114,9 +98,8 @@
         trade: '-1',
         typeShow: false,
         type: '-1',
-        followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
-        followtimeShow: false,
-        followtimeVal: '默认'
+        publishDateShow: false,
+        publishDate: '-1'
       }
     },
     created() {
@@ -129,26 +112,73 @@
       initConsts() {
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
+        this.matchCustomType = Utils.matchCustomType;
         this.tradeOpts = DICT.house.trade2;
         this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
         this.typeOpts = DICT.house.type;
         this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.publishDateOpts = [{
+          label: '默认',
+          value: '-1'
+        }, {
+          label: '今天',
+          value: '1'
+        }, {
+          label: '近三天',
+          value: '2'
+        }, {
+          label: '近两周',
+          value: '3'
+        }, {
+          label: '近一个月',
+          value: '4'
+        }];
       },
-      typeModalFun() {
-        this.settleShow = !this.settleShow
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return PreviewDefaultImg;
+        }
       },
-      classifyModalFun() {
-        this.classifyShow = !this.classifyShow
+      switchPublishStatus() {
+        if (this.publishBtn.txt === '已发布') {
+          this.filters.status = 0;
+          this.getMyData(true, () => {
+            this.publishBtn.txt = '待发布';
+            this.publishBtn.type = 'default';
+          });
+        } else {
+          this.filters.status = 1;
+          this.getMyData(true, () => {
+            this.publishBtn.txt = '已发布';
+            this.publishBtn.type = 'primary';
+          });
+        }
+
       },
-      followtimeModalFun() {
-        this.followtimeShow = !this.followtimeShow
+      updateStatus(houseId, status) {
+        HouseService.updateMyHouseStatus(houseId, status, res => {
+          this.getMyData(true);
+        })
       },
       getMyData(loading = false, callback) {
-        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        let dateFormat = Vue.filter('dateFormat'),
+          todayStr = dateFormat(new Date(), 'yyyy-MM-dd'),
+          params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
           UserService.getMyHouses(params, res => {
-            this.dataList = res.data;
+            this.dataList = res.data.map(item => {
+              let dateStr = dateFormat(item.created_at, 'yyyy-MM-dd');
+              if (dateTemp === dateStr) {
+                item.created_at = '';
+              } else {
+                dateTemp = dateStr;
+                item.created_at = dateStr === todayStr ? '今天' : dateStr;
+              }
+              return item;
+            });
             this.$refs.myScroll.scrollTo(0, 0, 300);
             if (this.dataList.length < res.meta.pagination.total) {
               this.$refs.myScroll.forceUpdate(true);
@@ -162,7 +192,16 @@
           this.filters.page += 1;
           UserService.getMyHouses(params, res => {
             this.filters.page = res.meta.pagination.current_page;
-            this.dataList = this.dataList.concat(res.data);
+            this.dataList = this.dataList.concat(res.data.map(item => {
+              let dateStr = dateFormat(item.created_at, 'yyyy-MM-dd');
+              if (dateTemp === dateStr) {
+                item.created_at = '';
+              } else {
+                dateTemp = dateStr;
+                item.created_at = dateStr === todayStr ? '今天' : dateStr;
+              }
+              return item;
+            }));
             if (this.dataList.length < res.meta.pagination.total) {
               this.$refs.myScroll.forceUpdate(true);
             } else {
@@ -237,12 +276,11 @@
       }
       .item-img {
         margin-left: 0.28rem;
-        flex-shrink: 0;
         width: 2.7rem;
         height: 1.74rem;
         border-radius: 0.1rem;
         background: #e8e8ea no-repeat;
-        background-size: 100% 100%;
+        background-size: cover;
       }
       .msg-wrap {
         display: flex;
@@ -310,16 +348,30 @@
     }
     .collect-wrap {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 1.2rem;
-      height: 1.74rem;
-      background: rgba(15, 145, 131, 0.1);
-      .share-icon {
-        width: 0.38rem;
-        height: 0.38rem;
-        background: url("../../assets/images/share.png") no-repeat;
-        background-size: 100%;
+      height: 100%;
+      .share {
+        width: 1.2rem;
+        height: 100%;
+        background: rgba(15, 145, 131, .1) url('../../assets/images/share.png') no-repeat center center;
+        background-size: .3rem .3rem;
+      }
+      .publish {
+        width: 1.2rem;
+        height: 100%;
+        background: #D5EAFF url('../../assets/images/icon-send.png') no-repeat center center;
+        background-size: .34rem .34rem;
+      }
+      .cancel {
+        width: .8rem;
+        height: 100%;
+        background: #FFE6E6 url('../../assets/images/icon-cancel.png') no-repeat center center;
+        background-size: .31rem .31rem;
+      }
+      .delete {
+        width: .8rem;
+        height: 100%;
+        background: #FFE6E6 url('../../assets/images/icon-delete.png') no-repeat center center;
+        background-size: .3rem .3rem;
       }
     }
   }

@@ -2,7 +2,7 @@
   <div class="economic">
     <div class="ec-title">
       经纪人详情
-      <div class="reback"></div>
+      <div class="reback" @click="$router.go(-1)"></div>
     </div>
     <div class="item">
       <div class="item-cont">
@@ -10,8 +10,10 @@
           <div class="top-l">
             <div class="cli"></div>
             <div class="det">
-              <div class="name">Govern</div>
-              <div class="skill">语言：汉语/英语/韩语/日语</div>
+              <div class="name">{{agentData.name}}</div>
+              <div class="skill">语言：
+                <span v-for="(language, i) in agentData.languages">{{language}}<span v-if="i!=agentData.languages.length-1">{{agentData.languages.length}}/</span></span>
+              </div>
             </div>
           </div>
           <div class="top-r">
@@ -19,27 +21,26 @@
           </div>
         </div>
         <div class="text1">
-          近一个月：出租 <span class="sp">13</span>套 &nbsp;售卖 <span class="sp">24</span> 套
+          近一个月：出租 <span class="sp">{{agentData.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{agentData.monthly_sold_amount}}</span> 套
         </div>
         <div class="text2">
-          我是来自makati的经纪人，这是个性签名随便写点什么做多两行的
-          最后一行在这里最后用“...“表示就行了最后一行在这里最后用“...“表示就行了
+          {{agentData.introduction}}
         </div>
       </div>
     </div>
     <div class="summary-warp">
       <div class="summary border-bottom">
         <div class="one">
-          <div class="top">221天</div>
+          <div class="top">{{agentData.join_days}}天</div>
           <div class="bottom">加入时间</div>
         </div>
         <div class="one">
-          <div class="top">100套</div>
+          <div class="top">{{agentData.house_count}}套</div>
           <div class="bottom">TA的房源</div>
         </div>
         <div class="one">
-          <div class="top">30人</div>
-          <div class="bottom">加入时间</div>
+          <div class="top">{{agentData.follows}}人</div>
+          <div class="bottom">关注人数</div>
         </div>
       </div>
     </div>
@@ -54,51 +55,106 @@
         <nest-tab-item id="ecsale">售卖</nest-tab-item>
       </nest-tab-bar>
     </div>
-    <nest-swipe-cell  v-for="(recommend,index) in recommends" :key="index">
-      <div class="search-item"  slot="content">
-        <div class="move-wrap">
-          <div class="item-img"></div>
-          <div class="msg-wrap">
-            <div class="title">{{recommend.roomplace}}</div>
-            <div class="type-wrap" v-if="recommend.roomsizes.constructor === Array">
-              <div class="type" v-for="(roomsize,index) in recommend.roomsizes" :key="index">{{roomsize}}</div>
+
+    <nest-tab-container class="app-body" v-model="tabSelected">
+      <nest-tab-container-item class="container-item" id="ecrent">
+        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj"
+                     @pullingUp="getMyDataRent"
+                     ref="ecrent">
+          <nest-swipe-cell  v-for="(recommend,index) in dataListRent" :key="index">
+            <div class="search-item"  slot="content">
+              <div class="move-wrap">
+                <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
+                <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                <div class="msg-wrap">
+                  <div class="title">{{recommend.building_name}}</div>
+                  <div class="type-wrap" v-if="recommend.trade == 'rent'">
+                    <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                  </div>
+                  <div class="type-wrap" v-else="recommend.trade != 'rent'">
+                    <div class="type-str">{{recommend.address}}</div>
+                  </div>
+                  <div class="rent" v-if="recommend.trade == 'rent'">
+                    <div class="price">{{recommend.price}}</div>
+                    <div class="price-msg">P/月</div>
+                  </div>
+                  <div class="rent" v-else-if="recommend.trade == 'sale'">
+                    <div class="price">{{recommend.price}}</div>
+                    <div class="price-msg">P/㎡</div>
+                    <div class="room-size">{{recommend.centiare}} ㎡</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="type-wrap" v-else="!recommend.roomsizes.constructor === Array">
-              <div class="type-str">{{recommend.roomsizes}}</div>
+            <div class="collect-wrap"  slot="controls">
+              <div class="collect">
+                <div class="heart" @click="cancelFollow(recommend,index)"></div>
+                <div class="share" @click="shareFun"></div>
+              </div>
+              <div class="collect-del">
+                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
+              </div>
             </div>
-            <div class="rent" v-if="!recommend.rentsize">
-              <div class="price">{{recommend.pricem}}</div>
-              <div class="price-msg">P/月</div>
+          </nest-swipe-cell>
+        </nest-scroll>
+      </nest-tab-container-item>
+
+      <nest-tab-container-item class="container-item" id="ecsale">
+        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj"
+                     @pullingUp="getMyDataSale"
+                     ref="ecsale">
+          <nest-swipe-cell  v-for="(recommend,index) in dataListSale" :key="index">
+            <div class="search-item"  slot="content">
+              <div class="move-wrap">
+                <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
+                <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                <div class="msg-wrap">
+                  <div class="title">{{recommend.building_name}}</div>
+                  <div class="type-wrap" v-if="recommend.trade == 'rent'">
+                    <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                  </div>
+                  <div class="type-wrap" v-else="recommend.trade != 'rent'">
+                    <div class="type-str">{{recommend.address}}</div>
+                  </div>
+                  <div class="rent" v-if="recommend.trade == 'rent'">
+                    <div class="price">{{recommend.price}}</div>
+                    <div class="price-msg">P/月</div>
+                  </div>
+                  <div class="rent" v-else-if="recommend.trade == 'sale'">
+                    <div class="price">{{recommend.price}}</div>
+                    <div class="price-msg">P/㎡</div>
+                    <div class="room-size">{{recommend.centiare}} ㎡</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="rent" v-else-if="recommend.rentsize">
-              <div class="price">{{recommend.pricem}}</div>
-              <div class="price-msg">P/㎡</div>
-              <div class="room-size">{{recommend.rentsize}}</div>
+            <div class="collect-wrap"  slot="controls">
+              <div class="collect">
+                <div class="heart" @click="cancelFollow(recommend,index)"></div>
+                <div class="share" @click="shareFun"></div>
+              </div>
+              <div class="collect-del">
+                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="collect-wrap"  slot="controls">
-        <div class="collect">
-          <div class="heart"></div>
-          <div class="share"></div>
-        </div>
-        <div class="collect-del">
-          <div class="call-icon"></div>
-        </div>
-      </div>
-    </nest-swipe-cell>
+          </nest-swipe-cell>
+        </nest-scroll>
+      </nest-tab-container-item>
+    </nest-tab-container>
     <div class="foot-end">
-      <div class="end-item">
+      <div class="end-item" @click="shareShow=!shareShow">
         <img class="share-icon" src="../../assets/images/share.png" alt="">
       </div>
-      <div class="end-item center">短信咨询</div>
-      <div class="end-item last">电话咨询</div>
+      <div class="end-item center" :href="`sms:${agentData.phone}`">短信咨询</div>
+      <a class="end-item last" :href="`tel:${agentData.phone}`">电话咨询</a>
     </div>
+    <NestShare :status="shareShow" @close="shareShow = false"></NestShare>
   </div>
 </template>
 
 <script>
+  import UserService from '../../services/UserService'
+  import Utils from '../../utils/Utils';
   export default {
     name: "FollowAgent",
     props:{
@@ -146,15 +202,113 @@
             }
           ];
         }
-      }
+      },
+    },
+    mounted(){
+      UserService.getAgentInfo(this.id,(res)=>{
+        this.agentData = res.data
+      })
+      // UserService.getAgentInfoHouses(this.id,)
+      this.getMyDataRent(false)
+      this.getMyDataSale(false)
     },
     data(){
       return {
         tabSelected:'ecrent',
+        agentData:{},
+        filters: {
+          status: 1
+        },
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        },
+        dataListRent:[],
+        dataListSale:[],
+        shareShow:false,
+        id:this.$route.params.id,
       }
     },
     methods: {
-
+      imageUrl(item) {
+        if (item.galleries.data.length > 0) {
+          return item.galleries.data[0].url;
+        } else {
+          return require('../../assets/images/preview-default.png');
+        }
+      },
+      shareFun(){
+        this.shareShow = !this.shareShow
+      },
+      cancelFollow(item,index){
+        item.favored = !item.favored
+        this.dataList.splice(index,1)
+      },
+      getMyDataRent(loading = false, callback) {
+        this.filters.trade='rent'
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          UserService.getAgentInfoHouses(this.id,params, res => {
+            this.dataListRent = res.data;
+            this.$refs.ecrent.scrollTo(0, 0, 300);
+            if (this.dataListRent.length < res.meta.pagination.total) {
+              this.$refs.ecrent.forceUpdate(true);
+            } else {
+              this.$refs.ecrent.forceUpdate(false);
+            }
+            if (callback)
+              callback();
+          });
+        } else {
+          this.filters.page += 1;
+          UserService.getAgentInfoHouses(this.id,params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataListRent = this.dataListRent.concat(res.data);
+            if (this.dataListRent.length < res.meta.pagination.total) {
+              this.$refs.ecrent.forceUpdate(true);
+            } else {
+              this.$refs.ecrent.forceUpdate(false);
+            }
+            if (callback)
+              callback();
+          });
+        }
+      },
+      getMyDataSale(loading = false, callback) {
+        this.filters.trade='sale'
+        let params = Utils.getEffectiveAttrsByObj(this.filters);
+        if (loading) {
+          this.filters.page = 1;
+          UserService.getAgentInfoHouses(this.id,params, res => {
+            this.dataListSale = res.data;
+            this.$refs.ecsale.scrollTo(0, 0, 300);
+            if (this.dataListSale.length < res.meta.pagination.total) {
+              this.$refs.ecsale.forceUpdate(true);
+            } else {
+              this.$refs.ecsale.forceUpdate(false);
+            }
+            if (callback)
+              callback();
+          });
+        } else {
+          this.filters.page += 1;
+          UserService.getAgentInfoHouses(this.id,params, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataListSale = this.dataListSale.concat(res.data);
+            if (this.dataListSale.length < res.meta.pagination.total) {
+              this.$refs.ecsale.forceUpdate(true);
+            } else {
+              this.$refs.ecsale.forceUpdate(false);
+            }
+            if (callback)
+              callback();
+          });
+        }
+      },
     }
   }
 </script>
@@ -187,8 +341,10 @@
       margin-bottom: 0.8rem;
     }
     .item-cont{
+      box-sizing: border-box;
+      padding: 0 0.28rem;
       position: absolute;
-      margin: 0 0.28rem;
+      width: 100%;
     }
     .top{
       margin-bottom: 0.2rem;
@@ -519,6 +675,17 @@ margin-bottom: 0.18rem;
       color: #fff;
       background: #0F9183;
     }
+  }
+  .app-body {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .container-item {
+    height: 100%;
+  }
+  .scroll-body {
+    height:4.8rem;
   }
 }
 </style>
