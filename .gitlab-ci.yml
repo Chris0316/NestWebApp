@@ -2,6 +2,8 @@
 #2018-12-30 01:49:07
 stages:
   - build
+  - develop
+  - test
   - deploy
 
 #build过程
@@ -20,6 +22,30 @@ build:
    only:
    - master
 
+#test
+develop:
+   stage: develop
+   image: alpine:latest
+   script:
+     - rm -Rf /home/wwwroot/www.dev.ohmynest.com/*
+     - cp -Rf dist/* /home/wwwroot/www.dev.ohmynest.com/
+   only:
+     - master
+   tags:
+     - devops
+
+#test
+test:
+    stage: test
+    image: alpine:latest
+    script:
+      - rm -Rf /home/wwwroot/www.test.ohmynest.com/*
+      - cp -Rf dist/* /home/wwwroot/www.test.ohmynest.com/
+    only:
+      - test
+    tags:
+      - devops
+
 #deploy过程
 deploy:
     stage: deploy
@@ -28,6 +54,6 @@ deploy:
       - rm -Rf /home/wwwroot/www.ohmynest.com/*
       - cp -Rf dist/* /home/wwwroot/www.ohmynest.com/
     only:
-      - master
+      - release
     tags:
       - devops

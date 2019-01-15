@@ -67,13 +67,13 @@
           <div class="left">为你推荐</div>
           <div class="right">
             <nest-tab-bar class="tabs" v-model="tabSelected" align="right">
-              <nest-tab-item id="rent" @click="getRecommends">出租</nest-tab-item>
-              <nest-tab-item id="sale" @click="getRecommends">售卖</nest-tab-item>
+              <nest-tab-item id="rent" @click="getRecommends()">出租</nest-tab-item>
+              <nest-tab-item id="sale" @click="getRecommends()">售卖</nest-tab-item>
             </nest-tab-bar>
           </div>
         </div>
         <div class="list-wrap">
-          <div class="unit" v-for="(house,index) in recommends">
+          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ path: `/explore/details/${house.id}` }) ">
             <div class="unit-img"><img :src="house.cover"></div>
             <div class="unit-place">{{house.title}}</div>
             <div class="unit-size" v-if="typeof house.tags === 'object'">
@@ -207,7 +207,6 @@
               recommends.push(res.data[i]);
             }
           }
-
           this.recommends = recommends;
         });
       }

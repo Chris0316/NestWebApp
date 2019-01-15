@@ -323,6 +323,7 @@
   import HouseService from '../../services/HouseService';
   import Storage from "../../utils/Storage";
   import Utils from '../../utils/Utils';
+  import Share from '../../utils/Share';
 
   export default {
     name: 'ExploreDetails',
@@ -342,6 +343,7 @@
     },
     created() {
       this.initConsts();
+      this.share();
     },
     mounted() {
       this.getData();
@@ -427,6 +429,9 @@
             this.$router.go(-1);
           });
         }
+      },
+      share(){
+        Share.weixin("分享", "ddd");
       }
     },
     components: {
