@@ -20,7 +20,7 @@
         <div class="label">英文简称</div>
         <nest-field class="group-right" v-model="account"></nest-field>
       </div>
-      <div class="form-tip">姓名和昵称是平台上的唯一标识，一旦设定不可修改</div>
+      <div class="form-tip">英文简称是平台上的唯一标识，一旦设定不可修改</div>
       <nest-button class="mt90" type="primary" size="full" :disabled="btnDisabled" @click="next">下一步</nest-button>
     </div>
     <country :show="countryShow" v-model="country" @close="countryShow = false"></country>

@@ -147,8 +147,8 @@
       width: 1.2rem;
       height: 1.2rem;
       border-radius: 1.2rem;
-      background-color: #e6e6e6;
-      background-size: 100% 100%;
+      background: #e6e6e6 center center no-repeat;
+      background-size: cover;
     }
     .personal-sign {
       margin-top: .4rem;

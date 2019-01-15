@@ -15,7 +15,7 @@
         <div class="label">个性签名</div>
         <div class="value">
           <nest-field type="textarea" class="textarea" v-model="signature" :area-style="areaStyle"></nest-field>
-          <span class="num">12</span>
+          <span class="num">{{ signatureNum }}</span>
         </div>
       </div>
       <div class="form-group border-bottom arrow-right" @click="countryShow = true">
@@ -67,6 +67,7 @@
           lineHeight: .42 + 'rem'
         },
         signature: '',
+        signatureNum: 30,
         country: '',
         genderShow: false,
         gender: '',
@@ -87,6 +88,13 @@
     watch: {
       gender() {
         this.genderShow = false;
+      },
+      signature(val) {
+        let len = val.length;
+        this.signatureNum = 30 - len;
+        if (this.signatureNum < 0) {
+
+        }
       }
     },
     created() {

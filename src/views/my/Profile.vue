@@ -142,8 +142,8 @@
       width: 1.2rem;
       height: 1.2rem;
       border-radius: 1.2rem;
-      background: #e6e6e6 no-repeat;
-      background-size: 100% 100%;
+      background: #e6e6e6 center center no-repeat;
+      background-size: cover;
       .country {
         position: absolute;
         top: 0;

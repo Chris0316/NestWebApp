@@ -1,7 +1,7 @@
 <template>
   <div class="nest-upload" v-if="currentVal.length > 0">
     <div class="upload-row" v-for="(rowNum, rowIndex) in Math.ceil((currentVal.length + 1) / 4)">
-      <div class="upload-cell" v-for="(cellNum, cellIndex) in 4">
+      <div class="upload-cell" :class="{ 'main': rowIndex === 0 && cellIndex === 0 }" v-for="(cellNum, cellIndex) in 4">
         <div class="upload-item img"
              v-if="rowIndex * 4 + cellIndex < currentVal.length"
              :style="{ backgroundImage: 'url(' + mediaInCell(rowIndex, cellIndex) + ')' }">
@@ -109,8 +109,25 @@
     }
   }
   .upload-cell {
+    position: relative;
     width: 1.4rem;
     height: 1.4rem;
+    &.main {
+      &::before {
+        position: absolute;
+        content: '主图';
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: .5rem;
+        line-height: .5rem;
+        font-size: .28rem;
+        color: #fff;
+        text-align: center;
+        z-index: 1;
+        background-color: #0f9183;
+      }
+    }
   }
   .upload-item {
     position: relative;
