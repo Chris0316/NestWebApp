@@ -47,19 +47,17 @@
         </div>
         <nest-scroll direction="horizontal" class="topics">
           <div class="topics-wrap">
-            <div class="topic" v-for="(item, index) in topAdvertisements">
+            <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }" v-for="(item, index) in topAdvertisements">
               <div class="title">{{item.title}}</div>
               <div class="msg">{{item.content}}</div>
-              <img class="cover" :src="item.cover" />
             </div>
           </div>
         </nest-scroll>
         <nest-scroll direction="horizontal" class="topics budget">
           <div class="topics-wrap">
-            <div class="topic" v-for="(item, index) in middleAdvertisements">
+            <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }" v-for="(item, index) in middleAdvertisements">
               <div class="title">{{item.title}}</div>
               <div class="msg">{{item.content}}</div>
-              <img class="cover" :src="item.cover" />
             </div>
           </div>
         </nest-scroll>
@@ -74,8 +72,8 @@
         </div>
         <div class="list-wrap">
           <div class="unit" v-for="(house,index) in recommends">
-            <div class="unit-img"><img :src="house.cover"></div>
-            <div class="unit-place">{{house.title}}</div>
+            <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
+            <div class="unit-place">{{house.building_name}}</div>
             <div class="unit-size" v-if="typeof house.tags === 'object'">
               <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
             </div>
@@ -301,7 +299,6 @@
         margin-right: .28rem;
       }
     }
-
     .app-body {
       flex: 1;
       overflow: hidden;
@@ -355,38 +352,16 @@
         padding: 0 .28rem;
       }
       .topic {
+        position: relative;
         flex-shrink: 0;
         margin-right: 0.1rem;
         width: 2.8rem;
         height: 2rem;
         border-radius: 0.1rem;
         background: #f5f5f7 no-repeat bottom right;
+        background-size: 100% 100%;
         &:first-child {
           margin-left: 0;
-        }
-        &.icon1 {
-          background-image: url('../assets/images/explore/icon1.png');
-          background-size: 1.09rem 1.01rem;
-        }
-        &.icon2 {
-          background-image: url('../assets/images/explore/icon2.png');
-          background-size: 1.05rem .98rem;
-        }
-        &.icon3 {
-          background-image: url('../assets/images/explore/icon3.png');
-          background-size: .99rem .9rem;
-        }
-        &.icon4 {
-          background-image: url('../assets/images/explore/icon4.png');
-          background-size: .83rem 1.6rem;
-        }
-        &.icon5 {
-          background-image: url('../assets/images/explore/icon5.png');
-          background-size: 1.16rem 1.65rem;
-        }
-        &.icon6 {
-          background-image: url('../assets/images/explore/icon6.png');
-          background-size: 2.21rem 1.1rem;
         }
         .title {
           margin-top: 0.2rem;
@@ -449,8 +424,8 @@
         width: 3.3rem;
         height: 2.36rem;
         border-radius: 0.1rem;
-        background-size: 100% 100%;
-        background: #e8e8ea no-repeat;
+        background: #e8e8ea center center no-repeat;
+        background-size: cover;
       }
       .unit-place {
         word-break: break-all;

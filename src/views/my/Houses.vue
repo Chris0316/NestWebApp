@@ -17,7 +17,7 @@
         <div v-for="(item, index) in dataList" :key="item.id">
           <div class="the-time" v-if="item.created_at">{{ item.created_at }}</div>
           <nest-swipe-cell>
-            <div class="search-item" slot="content">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: matchCustomType(item), id: item.id }})">
               <div class="move-wrap">
                 <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="msg-wrap">
@@ -113,8 +113,10 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
-        this.tradeOpts = DICT.house.trade2;
-        this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        let opts = DICT.house.trade2;
+        console.log(opts);
+        opts.unshift({ 'label': '默认', 'value': '-1' });
+        this.tradeOpts = opts;
         this.typeOpts = DICT.house.type;
         this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
         this.publishDateOpts = [{

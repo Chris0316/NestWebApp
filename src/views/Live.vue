@@ -73,9 +73,20 @@
 </template>
 
 <script>
+  import NewsService from '../services/NewsService';
 
   export default {
-    name: "Live"
+    name: "Live",
+    created() {
+      this.getData();
+    },
+    methods: {
+      getData() {
+        NewsService.getNewsList(res => {
+          console.log(res);
+        })
+      }
+    }
   }
 </script>
 

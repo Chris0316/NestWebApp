@@ -32,7 +32,11 @@
               <div class="date">{{ item.date }}</div>
             </div>
           </div>
-          <template slot="controls">
+          <div slot="controls" class="item-control" v-if="userId == item.user_id">
+            <div class="share-2"></div>
+            <div class="cancel"></div>
+          </div>
+          <template slot="controls" v-else>
             <div class="follow"></div>
             <div class="share"></div>
           </template>
@@ -53,6 +57,7 @@
 <script>
   import DICT, {getSelecteds} from '../../configs/DICT';
   import Utils from '../../utils/Utils';
+  import Storage from '../../utils/Storage'
   import WantsService from '../../services/WantsService';
 
   export default {
@@ -121,6 +126,7 @@
       initConsts() {
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
+        this.userId = Storage.getLocalStorage('nest_user_id');
       },
       getListTitle(item) {
         let title = getSelecteds(DICT.house.type, item.type).map(item2 => item2.label).join('·');
@@ -343,6 +349,10 @@
         }
       }
     }
+    .item-control {
+      display: flex;
+      height: 100%;
+    }
     .follow {
       width: 1.2rem;
       height: .87rem;
@@ -354,6 +364,18 @@
       height: .87rem;
       background: rgba(15,145,131,.1) url('../../assets/images/share.png') no-repeat center center;
       background-size: .3rem .3rem;
+    }
+    .share-2 {
+      width: 1.2rem;
+      height: 100%;
+      background: rgba(15, 145, 131, .1) url('../../assets/images/share.png') no-repeat center center;
+      background-size: .3rem .3rem;
+    }
+    .cancel {
+      width: .8rem;
+      height: 100%;
+      background: #FFE6E6 url('../../assets/images/icon-cancel.png') no-repeat center center;
+      background-size: .31rem .31rem;
     }
   }
 </style>
