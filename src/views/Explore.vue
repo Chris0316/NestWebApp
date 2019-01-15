@@ -47,18 +47,22 @@
         </div>
         <nest-scroll direction="horizontal" class="topics">
           <div class="topics-wrap">
-            <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }" v-for="(item, index) in topAdvertisements">
-              <div class="title">{{item.title}}</div>
-              <div class="msg">{{item.content}}</div>
-            </div>
+            <a :href="item.url" v-for="(item, index) in topAdvertisements">
+              <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }">
+                  <div class="title">{{item.title}}</div>
+                  <div class="msg">{{item.content}}</div>
+              </div>
+            </a>
           </div>
         </nest-scroll>
         <nest-scroll direction="horizontal" class="topics budget">
           <div class="topics-wrap">
-            <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }" v-for="(item, index) in middleAdvertisements">
-              <div class="title">{{item.title}}</div>
-              <div class="msg">{{item.content}}</div>
-            </div>
+            <a :href="item.url" v-for="(item, index) in middleAdvertisements">
+              <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }">
+                  <div class="title">{{item.title}}</div>
+                  <div class="msg">{{item.content}}</div>
+              </div>
+            </a>
           </div>
         </nest-scroll>
         <div class="recommend">
@@ -71,7 +75,7 @@
           </div>
         </div>
         <div class="list-wrap">
-          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ path: `/explore/details/${house.id}` }) ">
+          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ path: `/explore/details/${house.id}` })">
             <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
             <div class="unit-place">{{house.building_name}}</div>
             <div class="unit-size" v-if="typeof house.tags === 'object'">
