@@ -57,8 +57,8 @@
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div class="heart" @click="cancelFollow(recommend,index,'recommends')"></div>
-                <div class="share" @click="shareFun"></div>
+                <div class="heart" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
+                <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
                 <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
@@ -67,7 +67,7 @@
           </nest-swipe-cell>
         </nest-scroll>
       </nest-tab-container-item>
-      <nest-tab-container-item id="econman">
+      <nest-tab-container-item class="wrap-in" id="econman">
         <nest-scroll class="app-body"
                      ref="scrollEconman"
                      :pullUpLoad="pullUpLoadObj"
@@ -87,7 +87,7 @@
                     </div>
                   </div>
                   <div class="top-r">
-                    <div class="follow-btn" @click.stop="cancelFollow(item,index,'peopleArr')">已关注</div>
+                    <div class="follow-btn" :class="item.favored?'':'wblack'" @click.stop="cancelFollow(item,index,'peopleArr')">{{item.favored?'已关注':'未关注'}}</div>
                     <div class="follow-num">{{item.follows}}人关注</div>
                   </div>
                 </div>
@@ -247,11 +247,24 @@
         }
       },
       cancelFollow(item, index, list) {
-        item.favored = !item.favored
         if (list == 'recommends') {
-          this.recommends.splice(index, 1)
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.recommends.splice(index, 1)
         } else {
-          this.peopleArr.splice(index, 1)
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.peopleArr.splice(index, 1)
         }
       },
       shareFun() {
@@ -436,7 +449,7 @@
         border-radius: 0.1rem;
         background-color: #e8e8ea;
         background-repeat: no-repeat;
-        background-size: 100% 100%;
+        background-size: cover;
       }
       .msg-wrap {
         display: flex;
@@ -564,7 +577,9 @@
           width: 1rem;
           height: 1rem;
           background: #DFDFDF;
-          background-size: 100%;
+          background-size: contain;
+          background-position: 50% 50%;
+          background-repeat: no-repeat;
           border-radius: 50%;
         }
         .det {
@@ -617,6 +632,9 @@
             transform: scale(.5);
             transform-origin: left top;
           }
+        }
+        .wblack{
+          color: #333;
         }
         .follow-num {
           margin-top: 0.08rem;
