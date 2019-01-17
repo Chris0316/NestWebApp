@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="list-wrap">
-          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ path: `/explore/details/${house.id}` }) ">
+          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
             <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
             <div class="unit-place">{{house.building_name}}</div>
             <div class="unit-size" v-if="typeof house.tags === 'object'">

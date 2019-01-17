@@ -17,7 +17,7 @@
         <div v-for="(item, index) in dataList" :key="item.id">
           <div class="the-time" v-if="item.created_at">{{ item.created_at }}</div>
           <nest-swipe-cell>
-            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { type: matchCustomType(item), id: item.id }})">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id }})">
               <div class="move-wrap">
                 <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="msg-wrap">

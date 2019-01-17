@@ -21,18 +21,18 @@
         </div>
         <div class="main-info">
           <div class="item">
-            <div class="txt-1 bold" v-if="pageType === 'rent'">{{ house.price }} P/月</div>
-            <div class="txt-1 bold" v-else-if="pageType === 'new'">{{ house.avg_price }} P/㎡</div>
+            <div class="txt-1 bold" v-if="matchCustomType(house) === 'rent'">{{ house.price }} P/月</div>
+            <div class="txt-1 bold" v-else-if="matchCustomType(house) === 'new'">{{ house.avg_price }} P/㎡</div>
             <div class="txt-1 bold" v-else>{{ house.total_amount / 10000 }} 万</div>
-            <div class="label" v-if="pageType === 'new'">均价</div>
-            <div class="label" v-else-if="pageType === 'rent'">租金</div>
+            <div class="label" v-if="matchCustomType(house) === 'new'">均价</div>
+            <div class="label" v-else-if="matchCustomType(house) === 'rent'">租金</div>
             <div class="label" v-else>售价</div>
           </div>
-          <div class="item" v-if="pageType === 'second'">
+          <div class="item" v-if="matchCustomType(house) === 'second'">
             <div class="txt-1 bold">{{ house.bedroom }}室{{ house.hall }}厅</div>
             <div class="label">户型</div>
           </div>
-          <div class="item" v-if="pageType === 'new'">
+          <div class="item" v-if="matchCustomType(house) === 'new'">
             <div class="txt-2">{{ house.available_time }}</div>
             <div class="label">开盘时间</div>
           </div>
@@ -41,7 +41,7 @@
             <div class="label">面积</div>
           </div>
         </div>
-        <div class="details-module" v-if="pageType === 'new' || pageType === 'second'">
+        <div class="details-module" v-if="matchCustomType(house) === 'new' || matchCustomType(house) === 'second'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -84,7 +84,7 @@
             <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
-        <div class="details-module" v-if="pageType === 'rent'">
+        <div class="details-module" v-if="matchCustomType(house) === 'rent'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">用途:</div>
@@ -131,7 +131,7 @@
             <div class="value">{{ getSelecteds(DICT.house.carport, house.carport)[0].label }}</div>
           </div>
         </div>
-        <div class="details-module" v-if="pageType === 'carport'">
+        <div class="details-module" v-if="matchCustomType(house) === 'carport'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -154,7 +154,7 @@
             <div class="value">{{ house.floor }}层</div>
           </div>
         </div>
-        <div class="details-module" v-if="pageType === 'land'">
+        <div class="details-module" v-if="matchCustomType(house) === 'land'">
           <div class="module-title">基本信息</div>
           <div class="cell">
             <div class="label">单价:</div>
@@ -182,7 +182,7 @@
             </div>
           </div>
         </div>
-        <div class="details-module scroll" v-if="pageType === 'new'">
+        <div class="details-module scroll" v-if="matchCustomType(house) === 'new'">
           <div class="module-title">户型介绍</div>
           <nest-scroll direction="horizontal" class="info-list">
             <div class="info-list-wrap">
@@ -227,13 +227,13 @@
         <!--地图-->
         <!--<div class="details-map"></div>-->
         <div class="details-module scroll">
-          <div class="module-title" v-if="pageType === 'new'">周边楼盘</div>
-          <div class="module-title" v-else-if="pageType === 'rent'">同小区在租</div>
-          <div class="module-title" v-else-if="pageType === 'land'">同地区在售</div>
+          <div class="module-title" v-if="matchCustomType(house) === 'new'">周边楼盘</div>
+          <div class="module-title" v-else-if="matchCustomType(house) === 'rent'">同小区在租</div>
+          <div class="module-title" v-else-if="matchCustomType(house) === 'land'">同地区在售</div>
           <div class="module-title" v-else>同小区在售</div>
           <nest-scroll direction="horizontal" class="similar">
             <div class="similar-wrap">
-              <div class="item" v-for="item in dataList">
+              <div class="item" v-for="item in dataList" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
                 <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="item-title">{{ item.building_name }}</div>
                 <div class="item-title mt0" v-if="['apartment', 'villa', 'homestay'].indexOf(item.type) > -1">{{ item.bedroom }}室{{ item.hall }}厅</div>
@@ -288,8 +288,8 @@
           <!--</nest-scroll>-->
         </div>
         <div class="publish">
-          <div class="tips">{{ pageType === 'rent' ? '我也要出租？' : '我也要出售？' }}</div>
-          <a href="javascript:;" class="publish-btn" v-if="pageType === 'rent'" @click="$router.push({ name: 'ExplorePublish', params: { trade: 'rent', id: 'new' } })">立即发布</a>
+          <div class="tips">{{ matchCustomType(house) === 'rent' ? '我也要出租？' : '我也要出售？' }}</div>
+          <a href="javascript:;" class="publish-btn" v-if="matchCustomType(house) === 'rent'" @click="$router.push({ name: 'ExplorePublish', params: { trade: 'rent', id: 'new' } })">立即发布</a>
           <a href="javascript:;" class="publish-btn" v-else @click="$router.push({ name: 'ExplorePublish', params: { trade: 'sale', id: 'new' } })">立即发布</a>
         </div>
       </div>
@@ -352,7 +352,6 @@
       initConsts() {
         let params = this.$route.params;
         if (params) {
-          this.pageType = params.type;
           this.houseId = params.id;
         }
         this.DICT = DICT;
@@ -414,7 +413,7 @@
               this.isMine = true;
             }
           });
-          let trade = this.pageType === 'rent' ? 'rent' : 'sale';
+          let trade = this.matchCustomType(this.house) === 'rent' ? 'rent' : 'sale';
           HouseService.getSameHouse({
             trade: trade,
             house_id: this.houseId

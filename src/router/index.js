@@ -23,6 +23,7 @@ let routes = [
 ].concat(explore, follow, live, my, auth);
 
 export default new Router({
+  mode: 'history',
   routes: routes
 })
 
