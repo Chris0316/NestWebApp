@@ -456,7 +456,7 @@
             width: 1rem;
             height: 1rem;
             background: #DFDFDF;
-            background-size: contain;
+            background-size: cover;
             background-position: 50% 50%;
             background-repeat: no-repeat;
             border-radius: 50%;
