@@ -17,7 +17,7 @@
             </div>
           </div>
           <div class="top-r">
-            <div class="follow-btn">已关注</div>
+            <div class="follow-btn" :class="agentData.favored?'':'wblack'" @click.stop="cancelFollow(agentData)">{{agentData.favored?'已关注':'未关注'}}</div>
           </div>
         </div>
         <div class="text1">
@@ -88,8 +88,8 @@
             </div>
             <div class="collect-wrap"  slot="controls">
               <div class="collect">
-                <div class="heart" @click="cancelFollow(recommend,index)"></div>
-                <div class="share" @click="shareFun"></div>
+                <div class="heart" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
+                <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
                 <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
@@ -130,8 +130,8 @@
             </div>
             <div class="collect-wrap"  slot="controls">
               <div class="collect">
-                <div class="heart" @click="cancelFollow(recommend,index)"></div>
-                <div class="share" @click="shareFun"></div>
+                <div class="heart" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
+                <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
                 <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
@@ -243,9 +243,26 @@
       shareFun(){
         this.shareShow = !this.shareShow
       },
-      cancelFollow(item,index){
-        item.favored = !item.favored
-        this.dataList.splice(index,1)
+      cancelFollow(item, index, list) {
+        if (list == 'recommends') {
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.recommends.splice(index, 1)
+        } else {
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.peopleArr.splice(index, 1)
+        }
       },
       getMyDataRent(loading = false, callback) {
         this.filters.trade='rent'
@@ -359,8 +376,11 @@
         margin-right: 0.2rem;
         width: 1rem;
         height: 1rem;
-        background: #DFDFDF;
+        background-color: #DFDFDF;
         border-radius: 50%;
+        background-size: contain;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
       }
       .det{
         display: flex;
@@ -412,6 +432,9 @@
           transform: scale(.5);
           transform-origin: left top;
         }
+      }
+      .wblack{
+        color: #333;
       }
       .follow-num{
         margin-top: 0.08rem;
@@ -538,7 +561,7 @@ margin-bottom: 0.18rem;
       border-radius: 0.1rem;
       background-color: #e8e8ea;
       background-repeat: no-repeat;
-      background-size: 100% 100%;
+      background-size: cover;
     }
     .msg-wrap {
       display: flex;
