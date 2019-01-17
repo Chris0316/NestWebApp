@@ -42,7 +42,7 @@
           </div>
           <div class="collect-wrap"  slot="controls">
             <div class="collect">
-              <div class="heart" @click.stop="cancelFollow(recommend,index)"></div>
+              <div class="heart" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
               <div class="share" @click.stop="shareFun"></div>
             </div>
             <div class="collect-del">
@@ -67,7 +67,7 @@
                   </div>
                 </div>
                 <div class="top-r">
-                  <div class="follow-btn" @click.stop="cancelFollow(item,index)">已关注</div>
+                  <div class="follow-btn" :class="item.favored?'':'wblack'" @click.stop="cancelFollow(item,index,'peopleArr')">{{item.favored?'已关注':'未关注'}}</div>
                   <div class="follow-num">{{item.follows}}人关注</div>
                 </div>
               </div>
@@ -136,9 +136,26 @@
       shareFun(){
         this.shareShow = !this.shareShow
       },
-      cancelFollow(item,index){
-        item.favored = !item.favored
-        this.dataList.splice(index,1)
+      cancelFollow(item, index, list) {
+        if (list == 'recommends') {
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.recommends.splice(index, 1)
+        } else {
+          if (item.favored == true){
+            item.favored = !item.favored
+            this.$toast.info('取消了')
+          }else {
+            item.favored = !item.favored
+            this.$toast.info('收藏了')
+          }
+          // this.peopleArr.splice(index, 1)
+        }
       },
       clearSearch(){
         this.searchkey=''
@@ -307,7 +324,7 @@
         border-radius: 0.1rem;
         background-color: #e8e8ea;
         background-repeat: no-repeat;
-        background-size: 100% 100%;
+        background-size: cover;
       }
       .msg-wrap {
         display: flex;
@@ -439,6 +456,9 @@
             width: 1rem;
             height: 1rem;
             background: #DFDFDF;
+            background-size: contain;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
             border-radius: 50%;
           }
           .det{
@@ -491,6 +511,9 @@
               transform: scale(.5);
               transform-origin: left top;
             }
+          }
+          .wblack{
+            color: #333;
           }
           .follow-num{
             margin-top: 0.08rem;
