@@ -378,7 +378,7 @@
         height: 1rem;
         background-color: #DFDFDF;
         border-radius: 50%;
-        background-size: contain;
+        background-size: cover;
         background-position: 50% 50%;
         background-repeat: no-repeat;
       }

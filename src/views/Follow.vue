@@ -259,10 +259,20 @@
         } else {
           if (item.favored == true){
             item.favored = !item.favored
+            let params = {
+              target_type:'user',
+              target_id:item.id
+            }
+            UserService.cancelFavorites(params,()=>{})
             this.$toast.info('取消了')
           }else {
             item.favored = !item.favored
-            this.$toast.info('收藏了')
+            let params = {
+              target_type:'user',
+              target_id:item.id
+            }
+            UserService.addFavorites(params)
+            this.$toast.info('关注了')
           }
           // this.peopleArr.splice(index, 1)
         }
@@ -577,7 +587,7 @@
           width: 1rem;
           height: 1rem;
           background: #DFDFDF;
-          background-size: contain;
+          background-size: cover;
           background-position: 50% 50%;
           background-repeat: no-repeat;
           border-radius: 50%;
