@@ -17,9 +17,9 @@
       <nest-button class="mt60" type="primary" size="full" @click="getSms">获取短信验证码</nest-button>
       <div class="login-tip">其他登录方式</div>
       <div class="third-login">
-        <div class="third wechat"></div>
-        <div class="third fb"></div>
-        <div class="third line"></div>
+        <div class="third wechat" @click="thirdLogin('wechat')"></div>
+        <div class="third fb" @click="thirdLogin('facebook')"></div>
+        <div class="third line" @click="thirdLogin('line')"></div>
       </div>
       <div class="contract-tip">登录代表你已同意鸟窝用户协议及隐私政策</div>
     </div>
@@ -79,6 +79,13 @@
             Storage.setLocalStorage('nest_auth_key', key);
             this.$router.push({ name: 'AuthSmsCode' })
           });
+        }
+      },
+      thirdLogin(type){
+        if(document.referrer){
+          window.location.href = process.env.API_SERVER + "/auth/"+type+"?referer=" + encodeURI(document.referrer);
+        }else{
+          window.location.href = process.env.API_SERVER + "/auth/"+type;
         }
       }
     }
