@@ -9,6 +9,7 @@ import filters from './utils/Filters'
 // import HistoryCache from './utils/HistoryCache';
 
 Vue.use(components)
+Vue.use(require('vue-cookies'))
 
 Vue.config.productionTip = false
 

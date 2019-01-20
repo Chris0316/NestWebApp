@@ -21,6 +21,8 @@ build:
      - dist
    only:
    - master
+   - test
+   - release
 
 #test
 develop:
