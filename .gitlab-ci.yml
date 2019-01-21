@@ -1,16 +1,14 @@
 #自动化部署
 #2018-12-30 01:49:07
 stages:
-  - build-dev
-  - build-test
-  - build-production
+  - build
   - develop
   - test
   - deploy
 
-#build dev过程
-build-dev:
-   stage: build-dev
+#build过程
+build:
+   stage: build
    image: node:9.4.0
    cache:
      paths:
@@ -23,36 +21,9 @@ build-dev:
      - dist
    only:
    - master
-#build test过程
-build-test:
-   stage: build-test
-   image: node:9.4.0
-   cache:
-     paths:
-     - node_modules/
-   script:
-   - npm install
-   - npm run prod
-   artifacts:
-     paths:
-     - dist
-   only:
    - test
- #build dev过程
- build-production:
-    stage: build-production
-    image: node:9.4.0
-    cache:
-      paths:
-      - node_modules/
-    script:
-    - npm install
-    - npm run prod
-    artifacts:
-      paths:
-      - dist
-    only:
-    - release
+   - release
+
 #test
 develop:
    stage: develop
