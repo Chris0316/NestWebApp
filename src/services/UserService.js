@@ -4,10 +4,23 @@ const api = {
   userInfo: '/user',
   agent: '/agents',
   myWants: '/user/wants',
-  myHouses: '/user/houses'
+  myHouses: '/user/houses',
+  favorites:'/user/favorites'
 };
 
 let UserService = {
+  addFavorites(params,callback){
+    axios.post(api.favorites,params,{loading:false}
+    ).then(res => {
+      callback(res)
+    })
+  },
+  cancelFavorites(params,callback){
+    axios.delete(api.favorites, {params:params,loading:false}
+    ).then(res => {
+      callback(res)
+    })
+  },
   getUserInfo(callback) {
     axios.get(api.userInfo).then(res => {
       callback(res);
