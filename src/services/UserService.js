@@ -10,16 +10,14 @@ const api = {
 
 let UserService = {
   addFavorites(params,callback){
-    axios.post(api.favorites, {
-      params: params
-    }).then(res => {
+    axios.post(api.favorites,params,{loading:false}
+    ).then(res => {
       callback(res)
     })
   },
   cancelFavorites(params,callback){
-    axios.delete(api.favorites, {
-      params: params
-    }).then(res => {
+    axios.delete(api.favorites, {params:params,loading:false}
+    ).then(res => {
       callback(res)
     })
   },

@@ -31,9 +31,8 @@
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpHouses">
           <nest-swipe-cell v-for="(recommend,index) in recommends" :key="index">
-            <div class="search-item" slot="content">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
               <div class="move-wrap">
-                <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
                 <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
                 <div class="msg-wrap">
                   <div class="title">{{recommend.building_name}}</div>
@@ -57,7 +56,7 @@
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div class="heart" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
+                <div :class="recommend.favored?'heart on':'heart'" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
@@ -87,7 +86,7 @@
                     </div>
                   </div>
                   <div class="top-r">
-                    <div class="follow-btn" :class="item.favored?'':'wblack'" @click.stop="cancelFollow(item,index,'peopleArr')">{{item.favored?'已关注':'未关注'}}</div>
+                    <div :class="item.favored?'follow-btn':'focus-btn'" @click.stop="cancelFollow(item,index,'peopleArr')">{{item.favored?'已关注':'关注'}}</div>
                     <div class="follow-num">{{item.follows}}人关注</div>
                   </div>
                 </div>
@@ -250,9 +249,20 @@
         if (list == 'recommends') {
           if (item.favored == true){
             item.favored = !item.favored
+            let params = {
+              target_type:'house',
+              target_id:item.id
+            }
+            UserService.cancelFavorites(params,()=>{})
             this.$toast.info('取消了')
           }else {
             item.favored = !item.favored
+            let params = {
+              target_type:'house',
+              target_id:item.id,
+              loading:false
+            }
+            UserService.addFavorites(params,()=>{})
             this.$toast.info('收藏了')
           }
           // this.recommends.splice(index, 1)
@@ -271,7 +281,7 @@
               target_type:'user',
               target_id:item.id
             }
-            UserService.addFavorites(params)
+            UserService.addFavorites(params,()=>{})
             this.$toast.info('关注了')
           }
           // this.peopleArr.splice(index, 1)
@@ -538,6 +548,10 @@
         background: rgba(15, 145, 131, 0.1);
       }
       .heart {
+        &.on{
+          background: url("../assets/images/heart-on.png") no-repeat;
+          background-size: 100% 100%;
+        }
         width: 0.36rem;
         height: 0.32rem;
         background: url("../assets/images/heart.png") no-repeat;
@@ -610,6 +624,37 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        .focus-btn {
+          position: relative;
+          padding-left: .48rem;
+          width: 1.28rem;
+          height: .6rem;
+          line-height: 0.6rem;
+          border: .02rem solid #0f9183;
+          border-radius: .1rem;
+          font-size: .28rem;
+          color: #0f9183;
+          box-sizing: border-box;
+          &::before {
+            position: absolute;
+            top: .16rem;
+            left: .15rem;
+            content: "";
+            width: .24rem;
+            height: .24rem;
+            background: url('../assets/images/icon-plus.png') no-repeat;
+            background-size: 100% 100%;
+          }
+          &.disabled {
+            padding-left: 0;
+            text-align: center;
+            color: #b2b2b2;
+            border-color: #b2b2b2;
+            &::before {
+              display: none;
+            }
+          }
+        }
         .follow-btn {
           font-size: 0.28rem;
           color: #B3B3B3;
@@ -642,9 +687,6 @@
             transform: scale(.5);
             transform-origin: left top;
           }
-        }
-        .wblack{
-          color: #333;
         }
         .follow-num {
           margin-top: 0.08rem;
