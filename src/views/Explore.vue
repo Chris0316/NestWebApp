@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="list-wrap">
-          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
+          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
             <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
             <div class="unit-place">{{house.building_name}}</div>
             <div class="unit-size" v-if="typeof house.tags === 'object'">
@@ -241,7 +241,7 @@
         height: .8rem;
         border: 1px solid #e8e8ea;
         border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
+        box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
         box-sizing: border-box;
         z-index: 1;
         &::before {
@@ -417,7 +417,7 @@
         flex-direction: column;
         width: 3.3rem;
         &:nth-of-type(even) {
-          margin-right: 0rem;
+          margin-right: 0;
         }
       }
       .unit-img {
