@@ -113,11 +113,9 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
-        let opts = DICT.house.trade2;
-        console.log(opts);
-        opts.unshift({ 'label': '默认', 'value': '-1' });
-        this.tradeOpts = opts;
-        this.typeOpts = DICT.house.type;
+        this.tradeOpts = [].concat(DICT.house.trade2);
+        this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.typeOpts = [].concat(DICT.house.type);
         this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
         this.publishDateOpts = [{
           label: '默认',
