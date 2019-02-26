@@ -356,7 +356,6 @@
         padding: 0 .28rem;
       }
       .topic {
-        position: relative;
         flex-shrink: 0;
         margin-right: 0.1rem;
         width: 2.8rem;
@@ -368,8 +367,7 @@
           margin-left: 0;
         }
         .title {
-          margin-top: 0.2rem;
-          margin-left: 0.2rem;
+          padding: .2rem 0 0 .2rem;
           font-size: 0.3rem;
           color: #333333;
         }
