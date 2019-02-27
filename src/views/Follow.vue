@@ -1,32 +1,25 @@
 <template>
   <div class="follow">
-    <div class="search" @click="$router.push({path:'/follow/list'})">
-      <div class="search-img"></div>
-      <div class="search-text">搜索经纪人或房源编号</div>
+    <div class="search-wrap">
+      <div class="search-box" @click="$router.push({path:'/follow/list'})">
+        搜索经纪人或房源编号
+      </div>
     </div>
-    <div class="tabs">
-      <nest-tab-bar class="tab-wrap" v-model="tabSelected">
-        <nest-tab-item id="houseres">房源</nest-tab-item>
-        <nest-tab-item id="econman">经纪人</nest-tab-item>
-      </nest-tab-bar>
+    <nest-tab-bar class="tabs" v-model="tabSelected">
+      <nest-tab-item id="resources">房源</nest-tab-item>
+      <nest-tab-item id="agents">经纪人</nest-tab-item>
+    </nest-tab-bar>
+    <div class="control-wrap" v-if="tabSelected === 'resources'">
+      <nest-button class="mr28">类型</nest-button>
+      <nest-button class="mr28">分类</nest-button>
+      <nest-button class="mr28">关注时间</nest-button>
     </div>
-    <nest-tab-container v-model="tabSelected">
-      <nest-tab-container-item id="houseres">
-        <div class="control-wrap">
-          <div class="control-btn" @click="typeModalFun">类型</div>
-          <div class="control-btn active" @click="classifyModalFun">分类</div>
-          <div class="control-btn" @click="followtimeModalFun">关注时间</div>
-        </div>
-      </nest-tab-container-item>
-      <nest-tab-container-item id="econman">
-        <div class="control-wrap">
-          <div class="control-btn" @click="followtimeModalFun">关注时间</div>
-        </div>
-      </nest-tab-container-item>
-    </nest-tab-container>
-    <nest-tab-container class="wrap-out" v-model="tabSelected">
-      <nest-tab-container-item class="wrap-in" id="houseres">
-        <nest-scroll class="app-body"
+    <div class="control-wrap" v-else>
+      <nest-button>关注时间</nest-button>
+    </div>
+    <nest-tab-container class="app-body" v-model="tabSelected">
+      <nest-tab-container-item class="container-item" id="resources">
+        <nest-scroll class="list"
                      ref="scrollHouses"
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpHouses">
@@ -66,8 +59,8 @@
           </nest-swipe-cell>
         </nest-scroll>
       </nest-tab-container-item>
-      <nest-tab-container-item class="wrap-in" id="econman">
-        <nest-scroll class="app-body"
+      <nest-tab-container-item class="container-item" id="agents">
+        <nest-scroll class="list"
                      ref="scrollEconman"
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpEconman">
@@ -143,61 +136,12 @@
   import HouseService from '../services/HouseService'
   import UserService from '../services/UserService'
   import Utils from '../utils/Utils';
-  import NestScroll from "../components/commons/NestScroll/NestScroll";
 
   export default {
-    components: {NestScroll},
     name: "Follow",
-    props: {
-      housesList: {
-        type: Array,
-        default: function () {
-          return [
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型',
-              roomsizes: "新房旧房Makati, 1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "车位Makati, 1207 Metro Manila",
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            }
-          ];
-        }
-      }
-    },
     data() {
       return {
-        tabSelected: 'econman',
+        tabSelected: 'resources',
         peopleArr: [],
         houseArr: [],
         settleOpts: ['默认', '出租', '售卖'],
@@ -341,109 +285,67 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  input {
-    background: none;
-    outline: none;
-    border: 0px;
-  }
-
   .follow {
     display: flex;
     flex-direction: column;
     height: 100%;
-    .search {
-      position: relative;
-      flex-shrink: 0;
-      &:active {
-        &::after {
-          position: absolute;
-          content: "";
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #e8e8ea;
-          z-index: -1;
-        }
-      }
-      display: flex;
-      align-items: center;
-      margin: 0.2rem auto 0.4rem;
-      width: 6.94rem;
-      height: 0.8rem;
-      border: 1px solid #E8E8EA;
-      border-radius: 0.1rem;
-      box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
-      .search-img {
-        margin-left: 0.24rem;
-        margin-right: 0.3rem;
-        width: 0.32rem;
-        height: 0.32rem;
-        background: url("../assets/images/search-img.png") no-repeat;
-        background-size: 100% 100%;
-      }
-      .search-text {
+    .search-wrap {
+      padding: .2rem .28rem;
+      .search-box {
+        padding-left: .8rem;
+        position: relative;
+        height: .8rem;
+        line-height: .8rem;
         font-size: 0.28rem;
         color: #B2B2B2;
+        border: 1px solid #E8E8EA;
+        border-radius: 0.1rem;
+        box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
+        box-sizing: border-box;
+        z-index: 1;
+        &::before {
+          position: absolute;
+          content: "";
+          top: .24rem;
+          left: .24rem;
+          width: .32rem;
+          height: .32rem;
+          background: url('../assets/images/search-img.png') no-repeat;
+          background-size: 100% 100%;
+        }
+        &:active {
+          &::after {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e8e8ea;
+            z-index: -1;
+          }
+        }
       }
     }
     .tabs {
-      margin-bottom: 0.4rem;
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      .tab-wrap {
-        margin-left: 0.28rem;
-      }
+      padding: 0 .28rem .2rem;
     }
     .control-wrap {
-      margin-bottom: 0.7rem;
-      position: relative;
-      margin-left: .28rem;
       display: flex;
-      .control-btn {
-        position: relative;
+      padding: .2rem .28rem;
+      .mr28 {
         margin-right: .28rem;
-        padding: 0 .22rem;
-        min-width: 1.2rem;
-        max-width: 1.6rem;
-        height: .6rem;
-        line-height: .6rem;
-        text-align: center;
-        font-size: .28rem;
-        color: #333;
-        box-sizing: border-box;
-        border-radius: .1rem;
-        &.active {
-          color: #fff;
-          background-color: #0f9183;
-          &::after {
-            display: none;
-          }
-        }
-        &::after {
-          position: absolute;
-          content: "";
-          top: 0;
-          left: 0;
-          border: 1px solid #b2b2b2;
-          border-radius: .2rem;
-          box-sizing: border-box;
-          width: 200%;
-          height: 200%;
-          transform: scale(.5);
-          transform-origin: left top;
-        }
       }
     }
-    .wrap-out{
+    .app-body {
+      position: relative;
       flex: 1;
       overflow: hidden;
     }
-    .wrap-in{
+    .container-item {
       height: 100%;
     }
-    .app-body {
+    .list {
       height: 100%;
     }
     .search-item {
@@ -454,8 +356,8 @@
       margin-bottom: 0.4rem;
       .move-wrap {
         position: absolute;
-        top: 0rem;
-        left: 0rem;
+        top: 0;
+        left: 0;
         z-index: 1;
         display: flex;
         background: #fff;
@@ -467,8 +369,7 @@
         width: 2.7rem;
         height: 1.74rem;
         border-radius: 0.1rem;
-        background-color: #e8e8ea;
-        background-repeat: no-repeat;
+        background: #e8e8ea no-repeat;
         background-size: cover;
       }
       .msg-wrap {
@@ -600,10 +501,8 @@
           margin-right: 0.2rem;
           width: 1rem;
           height: 1rem;
-          background: #DFDFDF;
+          background: #DFDFDF 50% 50% no-repeat;
           background-size: cover;
-          background-position: 50% 50%;
-          background-repeat: no-repeat;
           border-radius: 50%;
         }
         .det {
