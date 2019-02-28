@@ -251,7 +251,7 @@
   input {
     background: none;
     outline: none;
-    border: 0px;
+    border: 0;
     caret-color: #0f9183;
   }
   @mixin rowcenter {
@@ -299,7 +299,7 @@
         height: 100%;
         border: 1px solid #e8e8ea;
         border-radius: 0.1rem;
-        box-shadow: 0px 0px 0.2rem rgba(176, 183, 187, 0.4);
+        box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
         &:active {
           background-color: #e8e8ea;
         }
@@ -329,8 +329,8 @@
       margin-bottom: 0.4rem;
       .move-wrap {
         position: absolute;
-        top: 0rem;
-        left: 0rem;
+        top: 0;
+        left: 0;
         z-index: 1;
         display: flex;
         background: #fff;
@@ -342,8 +342,7 @@
         width: 2.7rem;
         height: 1.74rem;
         border-radius: 0.1rem;
-        background-color: #e8e8ea;
-        background-repeat: no-repeat;
+        background: #e8e8ea no-repeat;
         background-size: cover;
       }
       .msg-wrap {
@@ -479,10 +478,8 @@
             margin-right: 0.2rem;
             width: 1rem;
             height: 1rem;
-            background: #DFDFDF;
+            background: #DFDFDF no-repeat 50% 50%;
             background-size: cover;
-            background-position: 50% 50%;
-            background-repeat: no-repeat;
             border-radius: 50%;
           }
           .det{
