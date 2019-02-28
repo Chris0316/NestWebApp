@@ -3,8 +3,6 @@ import axios from '../utils/Request';
 const api = {
   userInfo: '/user',
   agent: '/agents',
-  myWants: '/user/wants',
-  myHouses: '/user/houses',
   favorites:'/user/favorites'
 };
 
@@ -43,30 +41,9 @@ let UserService = {
       callback(res)
     })
   },
-  getAgentInfo(id, callback) {
-    axios.get(api.agent+"/"+id).then(res => {
-      callback(res)
-    })
-  },
   getAgentInfoHouses(id,params, callback) {
     axios.get(`users/${id}/houses?trade=${params.trade}`).then(res => {
       callback(res)
-    })
-  },
-  getMyWants(params, callback, loading) {
-    axios.get(api.myWants, {
-      params: params,
-      loading: loading
-    }).then(res => {
-      callback(res);
-    })
-  },
-  getMyHouses(params, callback, loading) {
-    axios.get(api.myHouses, {
-      params: params,
-      loading: loading
-    }).then(res => {
-      callback(res);
     })
   }
 };

@@ -4,7 +4,8 @@ import Utils from "../utils/Utils";
 const api = {
   house: '/houses',
   house_same: '/house/same',
-  house_update: '/houses/:house_id/status'
+  house_update: '/houses/:house_id/status',
+  myHouses: '/user/houses',
 };
 
 let HouseService = {
@@ -53,6 +54,14 @@ let HouseService = {
     axios.put(this_api, {
       status: status,
       loading: false
+    }).then(res => {
+      callback(res);
+    })
+  },
+  getMyHouses(params, callback, loading) {
+    axios.get(api.myHouses, {
+      params: params,
+      loading: loading
     }).then(res => {
       callback(res);
     })

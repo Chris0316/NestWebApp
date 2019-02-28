@@ -69,7 +69,6 @@
   import Vue from 'vue';
   import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
-  import UserService from '../../services/UserService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
   import HouseService from '../../services/HouseService';
 
@@ -168,7 +167,7 @@
           params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
-          UserService.getMyHouses(params, res => {
+          HouseService.getMyHouses(params, res => {
             this.dataList = res.data.map(item => {
               let dateStr = dateFormat(item.created_at, 'yyyy-MM-dd');
               if (dateTemp === dateStr) {
@@ -190,7 +189,7 @@
           }, true);
         } else {
           this.filters.page += 1;
-          UserService.getMyHouses(params, res => {
+          HouseService.getMyHouses(params, res => {
             this.filters.page = res.meta.pagination.current_page;
             this.dataList = this.dataList.concat(res.data.map(item => {
               let dateStr = dateFormat(item.created_at, 'yyyy-MM-dd');

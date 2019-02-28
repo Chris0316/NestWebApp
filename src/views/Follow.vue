@@ -20,10 +20,10 @@
     <nest-tab-container class="app-body" v-model="tabSelected">
       <nest-tab-container-item class="container-item" id="resources">
         <nest-scroll class="list"
-                     ref="scrollHouses"
+                     ref="resourcesScroll"
                      :pullUpLoad="pullUpLoadObj"
-                     @pullingUp="onPullingUpHouses">
-          <nest-swipe-cell v-for="(recommend,index) in recommends" :key="index">
+                     @pullingUp="onPullingUpResources">
+          <nest-swipe-cell v-for="(recommend,index) in dataList" :key="index">
             <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
               <div class="move-wrap">
                 <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
@@ -61,10 +61,10 @@
       </nest-tab-container-item>
       <nest-tab-container-item class="container-item" id="agents">
         <nest-scroll class="list"
-                     ref="scrollEconman"
-                     :pullUpLoad="pullUpLoadObj"
-                     @pullingUp="onPullingUpEconman">
-          <nest-swipe-cell v-for="(item, index) in peopleArr" :key="index">
+                     ref="agentsScroll"
+                     :pullUpLoad="pullUpLoadObj2"
+                     @pullingUp="onPullingUpAgents">
+          <nest-swipe-cell v-for="(item, index) in dataList2" :key="index">
             <div class="item" slot="content" @click="$router.push({ path: `/follow/agent/${item.id}` }) ">
               <div class="item-cont">
                 <div class="top">
@@ -142,7 +142,7 @@
     data() {
       return {
         tabSelected: 'resources',
-        peopleArr: [],
+        agentFirstLoad: false,
         houseArr: [],
         settleOpts: ['默认', '出租', '售卖'],
         settleShow: false,
@@ -153,9 +153,14 @@
         followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
         followtimeShow: false,
         followtimeVal: '默认',
-        recommends: null,
         shareShow: false,
+        dataList: [],
+        dataList2: [],
         filters: {
+          page: 0,
+          per_page: 10
+        },
+        filters2: {
           page: 0,
           per_page: 10
         },
@@ -165,12 +170,26 @@
             more: '加载更多',
             noMore: '没有更多数据了'
           }
+        },
+        pullUpLoadObj2: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        }
+      }
+    },
+    watch: {
+      tabSelected(val) {
+        if (val === 'agents' && !this.agentFirstLoad) {
+          this.onPullingUpAgents(true);
+          this.agentFirstLoad = true;
         }
       }
     },
     created() {
-      this.onPullingUpHouses(true)
-      this.onPullingUpEconman(true)
+      this.onPullingUpResources(true);
     },
     methods: {
       typeModalFun() {
@@ -234,48 +253,55 @@
       shareFun() {
         this.shareShow = !this.shareShow
       },
-      onPullingUpHouses(loading = false, callback) {
-        this.deleteShow = true;
+      onPullingUpResources(loading = false) {
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
           HouseService.getList(params, res => {
-            this.recommends = res.data;
-            this.$refs.scrollHouses.scrollTo(0, 0, 300);
-            this.$refs.scrollHouses.forceUpdate(true);
+            this.dataList = res.data;
+            this.$refs.resourcesScroll.scrollTo(0, 0, 300);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.resourcesScroll.forceUpdate(true);
+            } else {
+              this.$refs.resourcesScroll.forceUpdate(false);
+            }
           }, true);
         } else {
           this.filters.page += 1;
           HouseService.getList(params, res => {
             this.filters.page = res.meta.pagination.current_page;
-            this.recommends = this.recommends.concat(res.data);
-            if (this.recommends.length < res.meta.pagination.total) {
-              this.$refs.scrollHouses.forceUpdate(true);
+            this.dataList = this.dataList.concat(res.data);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.resourcesScroll.forceUpdate(true);
             } else {
-              this.$refs.scrollHouses.forceUpdate(false);
+              this.$refs.resourcesScroll.forceUpdate(false);
             }
           }, false);
         }
       },
-      onPullingUpEconman(loading = false, callback) {
-        this.deleteShow = false;
-        let params = Utils.getEffectiveAttrsByObj(this.filters);
+      onPullingUpAgents(loading = false) {
+        let params = Utils.getEffectiveAttrsByObj(this.filters2);
         if (loading) {
-          this.filters.page = 1;
+          this.filters2.page = 1;
           UserService.getAgentList(params, res => {
-            this.peopleArr = res.data;
-            this.$refs.scrollEconman.scrollTo(0, 0, 300);
-            this.$refs.scrollEconman.forceUpdate(true);
+            this.dataList2 = res.data;
+            console.log(this.$refs.agentsScroll)
+            this.$refs.agentsScroll.scrollTo(0, 0, 300);
+            if (this.dataList2.length < res.meta.pagination.total) {
+              this.$refs.agentsScroll.forceUpdate(true);
+            } else {
+              this.$refs.agentsScroll.forceUpdate(false);
+            }
           }, true);
         } else {
-          this.filters.page += 1;
+          this.filters2.page += 1;
           UserService.getAgentList(params, res => {
-            this.filters.page = res.meta.pagination.current_page;
-            this.peopleArr = this.peopleArr.concat(res.data);
-            if (this.peopleArr.length < res.meta.pagination.total) {
-              this.$refs.scrollEconman.forceUpdate(true);
+            this.filters2.page = res.meta.pagination.current_page;
+            this.dataList2 = this.dataList2.concat(res.data);
+            if (this.dataList2.length < res.meta.pagination.total) {
+              this.$refs.agentsScroll.forceUpdate(true);
             } else {
-              this.$refs.scrollEconman.forceUpdate(false);
+              this.$refs.agentsScroll.forceUpdate(false);
             }
           }, false);
         }
@@ -346,6 +372,7 @@
       height: 100%;
     }
     .list {
+      margin-top: .2rem;
       height: 100%;
     }
     .search-item {

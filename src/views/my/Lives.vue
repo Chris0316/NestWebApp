@@ -47,11 +47,11 @@
         </nest-scroll>
       </nest-tab-container-item>
       <nest-tab-container-item class="container-item" id="favorite">
-        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj"
-                     @pullingUp="getMyData"
+        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj2"
+                     @pullingUp="getFavoriteData"
                      ref="favoriteScroll">
           <div class="list">
-            <nest-swipe-cell v-for="item in dataList" :key="item.id" class="list-item">
+            <nest-swipe-cell v-for="item in dataList2" :key="item.id" class="list-item" v-if="dataList2.length !== 0">
               <div class="item" slot="content" :class="item.trade"
                    @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
                 <div class="item-img" :class="[item.type[0]]"></div>
@@ -83,7 +83,6 @@
 <script>
   import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
-  import UserService from '../../services/UserService';
   import WantsService from '../../services/WantsService';
   import Storage from "../../utils/Storage";
 
@@ -106,7 +105,15 @@
             noMore: '没有更多数据了'
           }
         },
-        dataList: []
+        pullUpLoadObj2: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        },
+        dataList: [],
+        dataList2: []
       }
     },
     created() {
@@ -135,7 +142,6 @@
             this.publishBtn.type = 'primary';
           });
         }
-
       },
       getListTitle(item) {
         let title = getSelecteds(DICT.house.type, item.type).map(item2 => item2.label).join('·');
@@ -153,7 +159,7 @@
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
-          UserService.getMyWants(params, res => {
+          WantsService.getMyWants(params, res => {
             this.dataList = res.data;
             this.$refs.myScroll.scrollTo(0, 0, 300);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -166,7 +172,7 @@
           }, true);
         } else {
           this.filters.page += 1;
-          UserService.getMyWants(params, res => {
+          WantsService.getMyWants(params, res => {
             this.filters.page = res.meta.pagination.current_page;
             this.dataList = this.dataList.concat(res.data);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -178,6 +184,9 @@
               callback();
           }, false);
         }
+      },
+      getFavoriteData() {
+
       }
     }
   }
