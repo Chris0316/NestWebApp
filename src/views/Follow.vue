@@ -10,12 +10,12 @@
       <nest-tab-item id="agents">经纪人</nest-tab-item>
     </nest-tab-bar>
     <div class="control-wrap" v-if="tabSelected === 'resources'">
-      <nest-button class="mr28">类型</nest-button>
-      <nest-button class="mr28">分类</nest-button>
-      <nest-button class="mr28">关注时间</nest-button>
+      <nest-button class="mr28" @click="tradeShow = true">类型</nest-button>
+      <nest-button class="mr28" @click="typeShow = true">分类</nest-button>
+      <nest-button class="mr28" @click="followDateShow = true">关注时间</nest-button>
     </div>
     <div class="control-wrap" v-else>
-      <nest-button>关注时间</nest-button>
+      <nest-button @click="followDateShow2 = true">关注时间</nest-button>
     </div>
     <nest-tab-container class="app-body" v-model="tabSelected">
       <nest-tab-container-item class="container-item" id="resources">
@@ -23,37 +23,37 @@
                      ref="resourcesScroll"
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpResources">
-          <nest-swipe-cell v-for="(recommend,index) in dataList" :key="index">
-            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
+          <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
               <div class="move-wrap">
-                <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(item) +')'}"></div>
                 <div class="msg-wrap">
-                  <div class="title">{{recommend.building_name}}</div>
-                  <div class="type-wrap" v-if="recommend.trade == 'rent'">
-                    <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                  <div class="title">{{ item.building_name }}</div>
+                  <div class="type-wrap" v-if="item.trade == 'rent'">
+                    <div class="type" v-for="(feature, index) in item.features" :key="index">{{feature}}</div>
                   </div>
-                  <div class="type-wrap" v-else="recommend.trade != 'rent'">
-                    <div class="type-str">{{recommend.address}}</div>
+                  <div class="type-wrap" v-else="item.trade != 'rent'">
+                    <div class="type-str">{{item.address}}</div>
                   </div>
-                  <div class="rent" v-if="recommend.trade == 'rent'">
-                    <div class="price">{{recommend.price}}</div>
+                  <div class="rent" v-if="item.trade == 'rent'">
+                    <div class="price">{{ item.price }}</div>
                     <div class="price-msg">P/月</div>
                   </div>
-                  <div class="rent" v-else-if="recommend.trade == 'sale'">
-                    <div class="price">{{recommend.price}}</div>
+                  <div class="rent" v-else-if="item.trade == 'sale'">
+                    <div class="price">{{ item.price }}</div>
                     <div class="price-msg">P/㎡</div>
-                    <div class="room-size">{{recommend.centiare}} ㎡</div>
+                    <div class="room-size">{{ item.centiare }} ㎡</div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div :class="recommend.favored?'heart on':'heart'" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
+                <div :class="item.favored ? 'heart on' : 'heart'" @click.stop="cancelFollow(item, index, 'recommends')"></div>
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
-                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
+                <a class="call-icon" :href="`tel:${item.user.phone}`"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -69,31 +69,30 @@
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
-                    <div class="cli" :style="{backgroundImage:'url('+item.avatar+')'}"></div>
+                    <div class="cli" :style="{backgroundImage:'url(' + item.avatar + ')'}"></div>
                     <div class="det">
-                      <div class="name">{{item.local_name}}</div>
+                      <div class="name">{{ item.local_name }}</div>
                       <div class="skill">语言：
-                        <span v-for="(language, i) in item.languages">{{language}}<span
-                          v-if="i!=item.languages.length-1">{{item.languages.length}}/</span></span>
+                        <span v-for="(language, i) in item.languages">{{language}}<span v-if="i != item.languages.length-1">{{ item.languages.length }}/</span></span>
                       </div>
                     </div>
                   </div>
                   <div class="top-r">
-                    <div :class="item.favored?'follow-btn':'focus-btn'" @click.stop="cancelFollow(item,index,'peopleArr')">{{item.favored?'已关注':'关注'}}</div>
-                    <div class="follow-num">{{item.follows}}人关注</div>
+                    <div :class="item.favored ? 'follow-btn' : 'focus-btn'" @click.stop="cancelFollow(item,index,'peopleArr')">{{ item.favored ? '已关注' : '关注' }}</div>
+                    <div class="follow-num">{{ item.follows }}人关注</div>
                   </div>
                 </div>
                 <div class="text1">
-                  近一个月：出租 <span class="sp">{{item.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{item.monthly_sold_amount}}</span>
+                  近一个月：出租 <span class="sp">{{ item.monthly_rent_amount }}</span>套 &nbsp;售卖 <span class="sp">{{ item.monthly_sold_amount }}</span>
                   套
                 </div>
                 <div class="text2">
-                  {{item.introduction}}
+                  {{ item.introduction }}
                 </div>
               </div>
             </div>
             <div class="collect-wrap" slot="controls">
-              <div class="collect-l" @click="shareShow=!shareShow">
+              <div class="collect-l" @click="shareShow =! shareShow">
                 <img class="icon" src="../assets/images/s-share.png" alt="">
               </div>
               <div class="collect-r">
@@ -105,21 +104,19 @@
       </nest-tab-container-item>
     </nest-tab-container>
     <nest-nav page="follow"></nest-nav>
-    <!--关注时间-->
-    <!--followtime-->
-    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followtimeShow = false"
-                :status="followtimeShow">
-      <nest-radio v-model="followtimeVal" :count-in-row="1" :options="followtimeOpts"></nest-radio>
+    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followDateShow = false"
+                :status="followDateShow">
+      <nest-radio v-model="followDate" :count-in-row="1" :options="followDateOpts"></nest-radio>
     </nest-modal>
-    <!--分类-->
-    <!--classify-->
-    <nest-modal title="分类" :has-clear="false" :has-footer="false" @close="classifyShow = false"
-                :status="classifyShow">
-      <nest-radio v-model="classifyVal" :count-in-row="1" :options="classifyOpts"></nest-radio>
+    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followDateShow2 = false"
+                :status="followDateShow2">
+      <nest-radio v-model="followDate2" :count-in-row="1" :options="followDateOpts2"></nest-radio>
     </nest-modal>
-    <!--类型-->
-    <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="settleShow = false" :status="settleShow">
-      <nest-radio v-model="settleVal" :count-in-row="1" :options="settleOpts"></nest-radio>
+    <nest-modal title="分类" :has-clear="false" :has-footer="false" @close="typeShow = false" :status="typeShow">
+      <nest-radio v-model="type" :count-in-row="1" :options="typeOpts"></nest-radio>
+    </nest-modal>
+    <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
+      <nest-radio v-model="trade" :count-in-row="1" :options="tradeOpts"></nest-radio>
     </nest-modal>
     <!--弹框确认取消-->
     <nest-modal
@@ -133,8 +130,10 @@
 </template>
 
 <script>
+  import DICT from '../configs/DICT'
   import HouseService from '../services/HouseService'
   import UserService from '../services/UserService'
+  import PreviewDefaultImg from '../assets/images/preview-default.png';
   import Utils from '../utils/Utils';
 
   export default {
@@ -143,16 +142,14 @@
       return {
         tabSelected: 'resources',
         agentFirstLoad: false,
-        houseArr: [],
-        settleOpts: ['默认', '出租', '售卖'],
-        settleShow: false,
-        settleVal: '默认',
-        classifyOpts: ['默认', '公寓', '别墅', '民居', '商铺/写字楼', '车位'],
-        classifyShow: false,
-        classifyVal: '默认',
-        followtimeOpts: ['默认', '今天', '近三天', '近两周', '近一个月'],
-        followtimeShow: false,
-        followtimeVal: '默认',
+        tradeShow: false,
+        trade: '-1',
+        typeShow: false,
+        type: '-1',
+        followDateShow: false,
+        followDate: '-1',
+        followDateShow2: false,
+        followDate2: '-1',
         shareShow: false,
         dataList: [],
         dataList2: [],
@@ -189,23 +186,40 @@
       }
     },
     created() {
+      this.initConsts();
+    },
+    mounted() {
       this.onPullingUpResources(true);
     },
     methods: {
-      typeModalFun() {
-        this.settleShow = !this.settleShow
-      },
-      classifyModalFun() {
-        this.classifyShow = !this.classifyShow
-      },
-      followtimeModalFun() {
-        this.followtimeShow = !this.followtimeShow
+      initConsts() {
+        this.DICT = DICT;
+        this.tradeOpts = [].concat(DICT.house.trade2);
+        this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.typeOpts = [].concat(DICT.house.type);
+        this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.followDateOpts = this.followDateOpts2 = [{
+          label: '默认',
+          value: '-1'
+        }, {
+          label: '今天',
+          value: '1'
+        }, {
+          label: '近三天',
+          value: '2'
+        }, {
+          label: '近两周',
+          value: '3'
+        }, {
+          label: '近一个月',
+          value: '4'
+        }];
       },
       imageUrl(item) {
         if (item.galleries.data.length > 0) {
           return item.galleries.data[0].url;
         } else {
-          return require('../assets/images/preview-default.png');
+          return PreviewDefaultImg;
         }
       },
       cancelFollow(item, index, list) {

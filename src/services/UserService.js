@@ -34,9 +34,10 @@ let UserService = {
       callback(res);
     })
   },
-  getAgentList(params, callback) {
+  getAgentList(params, callback, loading) {
     axios.get(api.agent, {
-      params: params
+      params: params,
+      loading: loading
     }).then(res => {
       callback(res)
     })
