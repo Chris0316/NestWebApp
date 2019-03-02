@@ -83,9 +83,9 @@
       },
       thirdLogin(type){
         if(document.referrer){
-          window.location.href = process.env.API_SERVER + "/auth/"+type+"?referer=" + encodeURI(document.referrer);
+          window.location.href = process.env.API_SERVER.replace('/api', '') + "/auth/"+type+"?referer=" + encodeURI(document.referrer);
         }else{
-          window.location.href = process.env.API_SERVER + "/auth/"+type;
+          window.location.href = process.env.API_SERVER.replace('/api', '') + "/auth/"+type;
         }
       }
     }
