@@ -24,36 +24,36 @@
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpResources">
           <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.target.id } })">
               <div class="move-wrap">
-                <div class="item-img" :style="{backgroundImage:'url('+ imageUrl(item) +')'}"></div>
+                <div class="item-img" :style="{ backgroundImage:'url(' + imageUrl(item.target) + ')' }"></div>
                 <div class="msg-wrap">
-                  <div class="title">{{ item.building_name }}</div>
-                  <div class="type-wrap" v-if="item.trade == 'rent'">
-                    <div class="type" v-for="(feature, index) in item.features" :key="index">{{feature}}</div>
+                  <div class="title">{{ item.target.building_name }}</div>
+                  <div class="type-wrap" v-if="matchCustomType(item.target) === 'new'">
+                    <div class="type-str">{{ item.target.address }}</div>
                   </div>
-                  <div class="type-wrap" v-else="item.trade != 'rent'">
-                    <div class="type-str">{{item.address}}</div>
+                  <div class="type-wrap" v-else>
+                    <div class="type" v-for="(tag, index) in item.target.tags" :key="index">{{ tag }}</div>
                   </div>
-                  <div class="rent" v-if="item.trade == 'rent'">
-                    <div class="price">{{ item.price }}</div>
-                    <div class="price-msg">P/月</div>
-                  </div>
-                  <div class="rent" v-else-if="item.trade == 'sale'">
-                    <div class="price">{{ item.price }}</div>
-                    <div class="price-msg">P/㎡</div>
-                    <div class="room-size">{{ item.centiare }} ㎡</div>
+                  <div class="rent">
+                    <div class="price" v-if="matchCustomType(item.target) === 'new' || matchCustomType(item.target) === 'rent'">{{ item.target.price }}</div>
+                    <div class="price" v-else>{{ item.target.total_amount / 10000 }}</div>
+                    <div class="price-msg" v-if="matchCustomType(item.target) === 'new'">P/㎡</div>
+                    <div class="price-msg" v-else-if="matchCustomType(item.target) === 'rent'">P/月</div>
+                    <div class="price-msg" v-else>万</div>
+                    <div class="room-size" v-if="matchCustomType(item.target) === 'new'">{{ item.target.centiare }} ㎡</div>
+                    <div class="room-size" v-else-if="matchCustomType(item.target) === 'second'">{{ item.target.price }} P/㎡</div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div :class="item.favored ? 'heart on' : 'heart'" @click.stop="cancelFollow(item, index, 'recommends')"></div>
+                <div :class="item.target.favored ? 'heart on' : 'heart'" @click.stop="cancelFollow(item.target, index, 'recommends')"></div>
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
-                <a class="call-icon" :href="`tel:${item.user.phone}`"></a>
+                <a class="call-icon" :href="`tel:${item.target.user.phone}`"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -131,7 +131,7 @@
 
 <script>
   import DICT from '../configs/DICT'
-  import HouseService from '../services/HouseService'
+  import FollowService from '../services/FollowService'
   import UserService from '../services/UserService'
   import PreviewDefaultImg from '../assets/images/preview-default.png';
   import Utils from '../utils/Utils';
@@ -194,6 +194,7 @@
     methods: {
       initConsts() {
         this.DICT = DICT;
+        this.matchCustomType = Utils.matchCustomType;
         this.tradeOpts = [].concat(DICT.house.trade2);
         this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
         this.typeOpts = [].concat(DICT.house.type);
@@ -268,10 +269,11 @@
         this.shareShow = !this.shareShow
       },
       onPullingUpResources(loading = false) {
+        this.filters.target_type = 'house';
         let params = Utils.getEffectiveAttrsByObj(this.filters);
         if (loading) {
           this.filters.page = 1;
-          HouseService.getList(params, res => {
+          FollowService.getFollowList(params, res => {
             this.dataList = res.data;
             this.$refs.resourcesScroll.scrollTo(0, 0, 300);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -282,7 +284,7 @@
           }, true);
         } else {
           this.filters.page += 1;
-          HouseService.getList(params, res => {
+          FollowService.getFollowList(params, res => {
             this.filters.page = res.meta.pagination.current_page;
             this.dataList = this.dataList.concat(res.data);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -299,7 +301,6 @@
           this.filters2.page = 1;
           UserService.getAgentList(params, res => {
             this.dataList2 = res.data;
-            console.log(this.$refs.agentsScroll)
             this.$refs.agentsScroll.scrollTo(0, 0, 300);
             if (this.dataList2.length < res.meta.pagination.total) {
               this.$refs.agentsScroll.forceUpdate(true);

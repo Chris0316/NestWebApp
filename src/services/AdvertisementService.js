@@ -4,8 +4,10 @@ const api = {
   advertisement: '/advertisement'
 };
 
-export function getItemsList(postion, callback){
-  axios.get(api.advertisement + "/positions/" + postion + "/items").then(res => {
-    callback(res);
-  })
-}
+export default {
+  getItemsList(position, callback) {
+    axios.get(api.advertisement + "/positions/" + position + "/items").then(res => {
+      callback(res);
+    })
+  }
+};

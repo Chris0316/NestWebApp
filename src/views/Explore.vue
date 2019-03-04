@@ -110,8 +110,9 @@
 </template>
 <script>
   import DICT, {getSelecteds} from '../configs/DICT';
-  import {getItemsList} from  '../services/AdvertisementService';
+  import AdvertisementService from  '../services/AdvertisementService';
   import {getHouseList} from  '../services/RecommendService';
+
   export default {
     name: 'Explore',
     data() {
@@ -189,12 +190,12 @@
         // todo 筛选发请求
       },
       getTopAdvertisements(){
-        getItemsList(1, res => {
+        AdvertisementService.getItemsList(1, res => {
           this.topAdvertisements = res.data;
         });
       },
       getMiddleAdvertisements(){
-        getItemsList(2, res => {
+        AdvertisementService.getItemsList(2, res => {
          this.middleAdvertisements = res.data;
         });
       },

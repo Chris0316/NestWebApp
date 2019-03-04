@@ -114,7 +114,7 @@
             <div class="share" @click="doShare"></div>
           </div>
           <div class="collect" slot="controls" v-else>
-            <div class="heart" @click="doFavorite"></div>
+            <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
             <div class="share" @click="doShare"></div>
           </div>
         </nest-swipe-cell>
@@ -127,6 +127,7 @@
   import DICT, {getSelecteds} from '../../configs/DICT';
   import Utils from '../../utils/Utils';
   import HouseService from '../../services/HouseService';
+  import FollowService from '../../services/FollowService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
   import Storage from '../../utils/Storage';
 
@@ -345,8 +346,24 @@
           }, false);
         }
       },
-      doFavorite() {
-        this.$toast.info('收藏了')
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'house',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('取消成功');
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'house',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('收藏成功');
+            item.favored = true;
+          });
+        }
       },
       doShare() {
         this.$toast.info('分享了')
@@ -574,6 +591,10 @@
       height: 0.32rem;
       background: url("../../assets/images/heart.png") no-repeat;
       background-size: 100% 100%;
+      &.on {
+        background: url("../../assets/images/heart-on.png") no-repeat;
+        background-size: 100% 100%;
+      }
     }
     .share {
       width: 0.3rem;

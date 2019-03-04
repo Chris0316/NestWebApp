@@ -73,7 +73,7 @@
 </template>
 
 <script>
-  import NewsService from '../services/NewsService';
+  import AdvertisementService from '../services/AdvertisementService';
 
   export default {
     name: "Live",
@@ -82,7 +82,7 @@
     },
     methods: {
       getData() {
-        NewsService.getNewsList(res => {
+        AdvertisementService.getItemsList(3, res => {
           console.log(res);
         })
       }
