@@ -1,7 +1,7 @@
 <template>
   <div class="follow">
     <div class="search-wrap">
-      <div class="search-box" @click="$router.push({path:'/follow/list'})">
+      <div class="search-box" @click="$router.push({ name: 'FollowList' })">
         搜索经纪人或房源编号
       </div>
     </div>
@@ -53,7 +53,7 @@
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
-                <a class="call-icon" :href="`tel:${item.target.user.phone}`"></a>
+                <a class="call-icon" :href="`tel:${item.user.phone}`"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -65,15 +65,15 @@
                      :pullUpLoad="pullUpLoadObj2"
                      @pullingUp="onPullingUpAgents">
           <nest-swipe-cell v-for="(item, index) in dataList2" :key="index">
-            <div class="item" slot="content" @click="$router.push({ path: `/follow/agent/${item.id}` }) ">
+            <div class="item" slot="content" @click="$router.push({ name: 'FollowAgent', params: { id: item.user.id } }) ">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
-                    <div class="cli" :style="{backgroundImage:'url(' + item.avatar + ')'}"></div>
+                    <div class="cli" :style="{backgroundImage:'url(' + item.user.avatar + ')'}"></div>
                     <div class="det">
-                      <div class="name">{{ item.local_name }}</div>
+                      <div class="name">{{ item.user.local_name }}</div>
                       <div class="skill">语言：
-                        <span v-for="(language, i) in item.languages">{{language}}<span v-if="i != item.languages.length-1">{{ item.languages.length }}/</span></span>
+                        <span v-for="(language, i) in item.user.languages">{{language}}<span v-if="i != item.user.languages.length-1">{{ item.user.languages.length }}/</span></span>
                       </div>
                     </div>
                   </div>
@@ -132,7 +132,6 @@
 <script>
   import DICT from '../configs/DICT'
   import FollowService from '../services/FollowService'
-  import UserService from '../services/UserService'
   import PreviewDefaultImg from '../assets/images/preview-default.png';
   import Utils from '../utils/Utils';
 
@@ -217,8 +216,8 @@
         }];
       },
       imageUrl(item) {
-        if (item.galleries.data.length > 0) {
-          return item.galleries.data[0].url;
+        if (item.galleries.length > 0) {
+          return item.galleries[0].url;
         } else {
           return PreviewDefaultImg;
         }
@@ -296,10 +295,11 @@
         }
       },
       onPullingUpAgents(loading = false) {
+        this.filters2.target_type = 'user';
         let params = Utils.getEffectiveAttrsByObj(this.filters2);
         if (loading) {
           this.filters2.page = 1;
-          UserService.getAgentList(params, res => {
+          FollowService.getFollowList(params, res => {
             this.dataList2 = res.data;
             this.$refs.agentsScroll.scrollTo(0, 0, 300);
             if (this.dataList2.length < res.meta.pagination.total) {
@@ -310,7 +310,7 @@
           }, true);
         } else {
           this.filters2.page += 1;
-          UserService.getAgentList(params, res => {
+          FollowService.getFollowList(params, res => {
             this.filters2.page = res.meta.pagination.current_page;
             this.dataList2 = this.dataList2.concat(res.data);
             if (this.dataList2.length < res.meta.pagination.total) {
