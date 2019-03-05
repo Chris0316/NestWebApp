@@ -49,7 +49,7 @@
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div class="heart on" @click="unFollow(item.target)"></div>
+                <div class="heart on" @click="unFollow(item.target, 'house')"></div>
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
@@ -64,30 +64,30 @@
                      ref="agentsScroll"
                      :pullUpLoad="pullUpLoadObj2"
                      @pullingUp="onPullingUpAgents">
-          <nest-swipe-cell v-for="(item, index) in dataList2" :key="index">
+          <nest-swipe-cell v-for="(item, index) in dataList2" :key="item.id">
             <div class="item" slot="content" @click="$router.push({ name: 'FollowAgent', params: { id: item.user.id } }) ">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
-                    <div class="cli" :style="{backgroundImage:'url(' + item.user.avatar + ')'}"></div>
+                    <div class="cli" :style="{ backgroundImage: 'url(' + item.target.avatar + ')' }"></div>
                     <div class="det">
-                      <div class="name">{{ item.user.local_name }}</div>
+                      <div class="name">{{ item.target.local_name }}</div>
                       <div class="skill">语言：
-                        <span v-for="(language, i) in item.user.languages">{{language}}<span v-if="i != item.user.languages.length-1">{{ item.user.languages.length }}/</span></span>
+                        <span v-for="(language, i) in item.target.languages">{{language}}<span v-if="i != item.target.languages.length-1">{{ item.target.languages.length }}/</span></span>
                       </div>
                     </div>
                   </div>
                   <div class="top-r">
-                    <div :class="item.favored ? 'follow-btn' : 'focus-btn'" @click.stop="cancelFollow(item,index,'peopleArr')">{{ item.favored ? '已关注' : '关注' }}</div>
-                    <div class="follow-num">{{ item.follows }}人关注</div>
+                    <div class="follow-btn" @click="unFollow(item.target, 'user')">已关注</div>
+                    <div class="follow-num">{{ item.target.follows }}人关注</div>
                   </div>
                 </div>
                 <div class="text1">
-                  近一个月：出租 <span class="sp">{{ item.monthly_rent_amount }}</span>套 &nbsp;售卖 <span class="sp">{{ item.monthly_sold_amount }}</span>
+                  近一个月：出租 <span class="sp">{{ item.target.monthly_rent_amount }}</span>套 &nbsp;售卖 <span class="sp">{{ item.target.monthly_sold_amount }}</span>
                   套
                 </div>
                 <div class="text2">
-                  {{ item.introduction }}
+                  {{ item.target.introduction }}
                 </div>
               </div>
             </div>
@@ -96,7 +96,7 @@
                 <img class="icon" src="../assets/images/s-share.png" alt="">
               </div>
               <div class="collect-r">
-                <a :href="`tel:${item.phone}`" class="icon"></a>
+                <a :href="'tel:' + item.target.phone" class="icon"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -222,55 +222,17 @@
           return PreviewDefaultImg;
         }
       },
-      unFollow(item) {
+      unFollow(item, type) {
         FollowService.unFollow({
-          target_type: 'house',
+          target_type: type,
           target_id: item.id
         }, res => {
-          this.onPullingUpResources(true);
+          if (type === 'house') {
+            this.onPullingUpResources(true);
+          } else {
+            this.onPullingUpAgents(true);
+          }
         })
-      },
-      cancelFollow(item, index, list) {
-        if (list == 'recommends') {
-          if (item.favored == true){
-            item.favored = !item.favored
-            let params = {
-              target_type:'house',
-              target_id:item.id
-            }
-            UserService.cancelFavorites(params,()=>{})
-            this.$toast.info('取消了')
-          }else {
-            item.favored = !item.favored
-            let params = {
-              target_type:'house',
-              target_id:item.id,
-              loading:false
-            }
-            UserService.addFavorites(params,()=>{})
-            this.$toast.info('收藏了')
-          }
-          // this.recommends.splice(index, 1)
-        } else {
-          if (item.favored == true){
-            item.favored = !item.favored
-            let params = {
-              target_type:'user',
-              target_id:item.id
-            }
-            UserService.cancelFavorites(params,()=>{})
-            this.$toast.info('取消了')
-          }else {
-            item.favored = !item.favored
-            let params = {
-              target_type:'user',
-              target_id:item.id
-            }
-            UserService.addFavorites(params,()=>{})
-            this.$toast.info('关注了')
-          }
-          // this.peopleArr.splice(index, 1)
-        }
       },
       shareFun() {
         this.shareShow = !this.shareShow
@@ -573,37 +535,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        .focus-btn {
-          position: relative;
-          padding-left: .48rem;
-          width: 1.28rem;
-          height: .6rem;
-          line-height: 0.6rem;
-          border: .02rem solid #0f9183;
-          border-radius: .1rem;
-          font-size: .28rem;
-          color: #0f9183;
-          box-sizing: border-box;
-          &::before {
-            position: absolute;
-            top: .16rem;
-            left: .15rem;
-            content: "";
-            width: .24rem;
-            height: .24rem;
-            background: url('../assets/images/icon-plus.png') no-repeat;
-            background-size: 100% 100%;
-          }
-          &.disabled {
-            padding-left: 0;
-            text-align: center;
-            color: #b2b2b2;
-            border-color: #b2b2b2;
-            &::before {
-              display: none;
-            }
-          }
-        }
         .follow-btn {
           font-size: 0.28rem;
           color: #B3B3B3;

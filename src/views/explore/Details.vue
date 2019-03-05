@@ -218,7 +218,7 @@
                 <span>语言：{{ getSelecteds(DICT.languages, house.user.languages).join('/') }}</span>
               </div>
             </div>
-            <div class="focus-btn" @click="doFollow(house.user)">关注</div>
+            <div class="focus-btn" :class="{ disabled: house.user.favored }" @click="doFollow(house.user)">{{ house.user.favored ? '已关注' : '关注' }}</div>
           </div>
           <div class="paragraph">
             {{ house.user.introduction }}
@@ -431,24 +431,21 @@
         }
       },
       doFollow(item) {
-        console.log(item);
-        // if (item.favored) {
-        //   FollowService.unFollow({
-        //     target_type: 'user',
-        //     target_id: item.id
-        //   }, res => {
-        //     this.$toast.info('取消成功');
-        //     item.favored = false;
-        //   })
-        // } else {
-        //   FollowService.doFollow({
-        //     target_type: 'user',
-        //     target_id: item.id
-        //   }, res => {
-        //     this.$toast.info('收藏成功');
-        //     item.favored = true;
-        //   });
-        // }
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'user',
+            target_id: item.id
+          }, res => {
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'user',
+            target_id: item.id
+          }, res => {
+            item.favored = true;
+          });
+        }
       },
       share(){
         Share.weixin("分享", "ddd");
