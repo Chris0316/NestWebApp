@@ -218,7 +218,7 @@
                 <span>语言：{{ getSelecteds(DICT.languages, house.user.languages).join('/') }}</span>
               </div>
             </div>
-            <div class="focus-btn">关注</div>
+            <div class="focus-btn" @click="doFollow(house.user)">关注</div>
           </div>
           <div class="paragraph">
             {{ house.user.introduction }}
@@ -320,6 +320,7 @@
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
   import DICT, {getSelecteds} from "../../configs/DICT";
+  import FollowService from '../../services/FollowService'
   import HouseService from '../../services/HouseService';
   import Storage from "../../utils/Storage";
   import Utils from '../../utils/Utils';
@@ -428,6 +429,26 @@
             this.$router.go(-1);
           });
         }
+      },
+      doFollow(item) {
+        console.log(item);
+        // if (item.favored) {
+        //   FollowService.unFollow({
+        //     target_type: 'user',
+        //     target_id: item.id
+        //   }, res => {
+        //     this.$toast.info('取消成功');
+        //     item.favored = false;
+        //   })
+        // } else {
+        //   FollowService.doFollow({
+        //     target_type: 'user',
+        //     target_id: item.id
+        //   }, res => {
+        //     this.$toast.info('收藏成功');
+        //     item.favored = true;
+        //   });
+        // }
       },
       share(){
         Share.weixin("分享", "ddd");

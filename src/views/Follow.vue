@@ -23,7 +23,7 @@
                      ref="resourcesScroll"
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpResources">
-          <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
+          <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
             <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.target.id } })">
               <div class="move-wrap">
                 <div class="item-img" :style="{ backgroundImage:'url(' + imageUrl(item.target) + ')' }"></div>
@@ -49,11 +49,11 @@
             </div>
             <div class="collect-wrap" slot="controls">
               <div class="collect">
-                <div :class="item.target.favored ? 'heart on' : 'heart'" @click.stop="cancelFollow(item.target, index, 'recommends')"></div>
+                <div class="heart on" @click="unFollow(item.target)"></div>
                 <div class="share" @click.stop="shareFun"></div>
               </div>
               <div class="collect-del">
-                <a class="call-icon" :href="`tel:${item.user.phone}`"></a>
+                <a class="call-icon" :href="'tel:' + item.user.phone"></a>
               </div>
             </div>
           </nest-swipe-cell>
@@ -221,6 +221,14 @@
         } else {
           return PreviewDefaultImg;
         }
+      },
+      unFollow(item) {
+        FollowService.unFollow({
+          target_type: 'house',
+          target_id: item.id
+        }, res => {
+          this.onPullingUpResources(true);
+        })
       },
       cancelFollow(item, index, list) {
         if (list == 'recommends') {
