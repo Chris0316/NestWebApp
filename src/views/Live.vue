@@ -9,22 +9,27 @@
               <div class="title">帮住</div>
               <div class="desc">给我您的需求<br>帮您淘满意的房源</div>
             </div>
-            <div class="module icon2">
-              <div class="title">入门攻略</div>
-              <div class="desc">帮您了解海外购置房产全流程</div>
+            <div class="module icon2" v-for="item in categoryList" :key="item.id"
+                 @click="$router.push({ name: 'LiveSubject', params: { type: item.alias } })">
+              <div class="title">{{ item.name }}</div>
+              <div class="desc">{{ item.description }}</div>
             </div>
-            <div class="module icon3">
-              <div class="title">买房攻略</div>
-              <div class="desc">您的疑惑和顾虑我来消除</div>
-            </div>
-            <div class="module icon4">
-              <div class="title">开盘快报</div>
-              <div class="desc">最新的楼盘资讯早班车，勿错过</div>
-            </div>
-            <div class="module icon5">
-              <div class="title">时政经济</div>
-              <div class="desc">政策先知道，紧握投资形势</div>
-            </div>
+            <!--<div class="module icon2">-->
+              <!--<div class="title">入门攻略</div>-->
+              <!--<div class="desc">帮您了解海外购置房产全流程</div>-->
+            <!--</div>-->
+            <!--<div class="module icon3">-->
+              <!--<div class="title">买房攻略</div>-->
+              <!--<div class="desc">您的疑惑和顾虑我来消除</div>-->
+            <!--</div>-->
+            <!--<div class="module icon4">-->
+              <!--<div class="title">开盘快报</div>-->
+              <!--<div class="desc">最新的楼盘资讯早班车，勿错过</div>-->
+            <!--</div>-->
+            <!--<div class="module icon5">-->
+              <!--<div class="title">时政经济</div>-->
+              <!--<div class="desc">政策先知道，紧握投资形势</div>-->
+            <!--</div>-->
           </div>
         </nest-scroll>
         <div class="category-container">
@@ -73,17 +78,30 @@
 </template>
 
 <script>
-  import AdvertisementService from '../services/AdvertisementService';
+  import CategoryService from '../services/CategoryService';
+  import AdvertisementService from "../services/AdvertisementService";
 
   export default {
     name: "Live",
-    created() {
-      this.getData();
+    data() {
+      return {
+        categoryList: [],
+        advList: []
+      }
+    },
+    mounted() {
+      this.getCategory();
+      this.getItemsList();
     },
     methods: {
-      getData() {
-        AdvertisementService.getItemsList(3, res => {
-          console.log(res);
+      getCategory() {
+        CategoryService.getCategoryByAlias('news', res => {
+          this.categoryList = res.data;
+        })
+      },
+      getItemsList() {
+        AdvertisementService.getItemsList('3', res => {
+          this.advList = res.data;
         })
       }
     }
