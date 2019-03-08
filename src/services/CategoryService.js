@@ -13,6 +13,11 @@ let CategoryService = {
     }).then(res => {
       callback(res);
     })
+  },
+  getCategoryList(params, callback) {
+    axios.get(api.categories + '/19/articles?include=user', params).then(res => {
+      callback(res);
+    })
   }
 };
 
