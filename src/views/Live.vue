@@ -1,5 +1,5 @@
 <template>
-  <div class="live">
+  <div class="live" v-if="categoryList.length && advList.length">
     <nest-scroll class="app-body">
       <div class="live-body">
         <div class="live-title">帮住</div>
@@ -9,60 +9,68 @@
               <div class="title">帮住</div>
               <div class="desc">给我您的需求<br>帮您淘满意的房源</div>
             </div>
-            <div class="module icon2">
-              <div class="title">入门攻略</div>
-              <div class="desc">帮您了解海外购置房产全流程</div>
+            <div class="module icon2" v-for="item in categoryList" :key="item.id"
+                 @click="$router.push({ name: 'LiveSubject', params: { type: item.alias } })">
+              <div class="title">{{ item.name }}</div>
+              <div class="desc">{{ item.description }}</div>
             </div>
-            <div class="module icon3">
-              <div class="title">买房攻略</div>
-              <div class="desc">您的疑惑和顾虑我来消除</div>
-            </div>
-            <div class="module icon4">
-              <div class="title">开盘快报</div>
-              <div class="desc">最新的楼盘资讯早班车，勿错过</div>
-            </div>
-            <div class="module icon5">
-              <div class="title">时政经济</div>
-              <div class="desc">政策先知道，紧握投资形势</div>
-            </div>
+            <!--<div class="module icon2">-->
+              <!--<div class="title">入门攻略</div>-->
+              <!--<div class="desc">帮您了解海外购置房产全流程</div>-->
+            <!--</div>-->
+            <!--<div class="module icon3">-->
+              <!--<div class="title">买房攻略</div>-->
+              <!--<div class="desc">您的疑惑和顾虑我来消除</div>-->
+            <!--</div>-->
+            <!--<div class="module icon4">-->
+              <!--<div class="title">开盘快报</div>-->
+              <!--<div class="desc">最新的楼盘资讯早班车，勿错过</div>-->
+            <!--</div>-->
+            <!--<div class="module icon5">-->
+              <!--<div class="title">时政经济</div>-->
+              <!--<div class="desc">政策先知道，紧握投资形势</div>-->
+            <!--</div>-->
           </div>
         </nest-scroll>
         <div class="category-container">
-          <div class="category banner1">
-            <span class="favorite"></span>
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[0].cover + ')'}">
+            <span class="favorite" :class="{ 'on': advList[0].favored }" @click="doFollow(advList[0])"></span>
+            <div class="category-tag" v-if="advList[0].title">
+              <span>{{ advList[0].title }}</span>
+            </div>
             <div class="category-text">
-              “外国人”在菲律宾购置房产的政策法规深度解析
+              {{ advList[0].content }}
             </div>
           </div>
         </div>
         <div class="category-container">
-          <div class="category banner2">
-            <span class="favorite"></span>
-            <div class="category-tag hot">
-              <span>购房常识</span>
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[1].cover + ')'}">
+            <span class="favorite" :class="{ 'on': advList[1].favored }" @click="doFollow(advList[1])"></span>
+            <div class="category-tag" v-if="advList[1].title">
+              <span>{{ advList[1].title }}</span>
             </div>
             <div class="category-text">
-              菲律宾房产投资入门攻略
+              {{ advList[1].content }}
             </div>
           </div>
         </div>
         <div class="category-container">
-          <div class="category banner3">
-            <span class="favorite"></span>
-            <div class="category-tag">
-              <span>购房常识</span>
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}">
+            <span class="favorite" :class="{ 'on': advList[2].favored }" @click="doFollow(advList[2])"></span>
+            <div class="category-tag" v-if="advList[2].title">
+              <span>{{ advList[2].title }}</span>
             </div>
             <div class="category-text">
-              菲律宾租房流程
+              {{ advList[2].content }}
             </div>
           </div>
-          <div class="category banner4">
-            <span class="favorite"></span>
-            <div class="category-tag">
-              <span>投资参考</span>
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}">
+            <span class="favorite" :class="{ 'on': advList[3].favored }" @click="doFollow(advList[3])"></span>
+            <div class="category-tag" v-if="advList[3].title">
+              <span>{{ advList[3].title }}</span>
             </div>
             <div class="category-text">
-              华人海外房产投资“新宠”
+              {{ advList[3].content }}
             </div>
           </div>
         </div>
@@ -73,19 +81,50 @@
 </template>
 
 <script>
-  import AdvertisementService from '../services/AdvertisementService';
+  import CategoryService from '../services/CategoryService';
+  import AdvertisementService from "../services/AdvertisementService";
+  import FollowService from "../services/FollowService";
 
   export default {
     name: "Live",
-    created() {
-      this.getData();
+    data() {
+      return {
+        categoryList: [],
+        advList: []
+      }
+    },
+    mounted() {
+      this.getCategory();
+      this.getItemsList();
     },
     methods: {
-      getData() {
-        AdvertisementService.getItemsList(3, res => {
-          console.log(res);
+      getCategory() {
+        CategoryService.getCategoryByAlias('news', res => {
+          this.categoryList = res.data;
         })
-      }
+      },
+      getItemsList() {
+        AdvertisementService.getItemsList('3', res => {
+          this.advList = res.data;
+        })
+      },
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'news',
+            target_id: item.url
+          }, res => {
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'news',
+            target_id: item.url
+          }, res => {
+            item.favored = true;
+          });
+        }
+      },
     }
   }
 </script>
@@ -220,18 +259,6 @@
       background-color: #e6e6e6;
       background-size: 100% 100%;
       box-sizing: border-box;
-      &.banner1 {
-        background-image: url('../assets/images/live/banner1.png');
-      }
-      &.banner2 {
-        background-image: url('../assets/images/live/banner2.png');
-      }
-      &.banner3 {
-        background-image: url('../assets/images/live/banner3.png');
-      }
-      &.banner4 {
-        background-image: url('../assets/images/live/banner4.png');
-      }
       .favorite {
         position: absolute;
         top: .2rem;
@@ -240,6 +267,9 @@
         height: .32rem;
         background: url('../assets/images/favorite-w.png') no-repeat;
         background-size: 100% 100%;
+        &.on {
+          background: #fff;
+        }
       }
       .category-text {
         font-size: .36rem;

@@ -78,7 +78,7 @@
                     </div>
                   </div>
                   <div class="top-r">
-                    <div class="follow-btn" @click="unFollow(item.target, 'user')">已关注</div>
+                    <div class="follow-btn" @click.stop="unFollow(item.target, 'user')">已关注</div>
                     <div class="follow-num">{{ item.target.follows }}人关注</div>
                   </div>
                 </div>

@@ -218,7 +218,7 @@
                 <span>语言：{{ getSelecteds(DICT.languages, house.user.languages).join('/') }}</span>
               </div>
             </div>
-            <div class="focus-btn" :class="{ disabled: house.user.favored }" @click="doFollow(house.user)">{{ house.user.favored ? '已关注' : '关注' }}</div>
+            <div class="focus-btn" :class="{ disabled: house.user.favored }" @click="doFollow(house.user, 'user')">{{ house.user.favored ? '已关注' : '关注' }}</div>
           </div>
           <div class="paragraph">
             {{ house.user.introduction }}
@@ -294,20 +294,21 @@
         </div>
       </div>
     </nest-scroll>
-    <div class="control-bar">
+    <div class="control-bar" v-if="house">
       <div class="controls">
-        <a href="javascript:;" class="favorite" v-if="!isMine"></a>
-        <a href="javascript:;" class="share"></a>
+        <a href="javascript:;" class="favorite" :class="{ 'on': house.favored }" @click="doFollow(house, 'house')" v-if="!isMine"></a>
+        <a href="javascript:;" class="share" @click="shareShow = !shareShow"></a>
       </div>
       <template v-if="isMine">
         <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { trade: house.trade, id: house.id } })">编辑</a>
         <a href="javascript:;" class="control-btn danger" @click="deleteShow = true">删除</a>
       </template>
       <template v-else>
-        <a href="javascript:;" class="control-btn info">短信咨询</a>
-        <a href="javascript:;" class="control-btn primary">电话咨询</a>
+        <a :href="'sms:' + house.user.phone" class="control-btn info">短信咨询</a>
+        <a :href="'tel:' + house.user.phone" class="control-btn primary">电话咨询</a>
       </template>
     </div>
+    <NestShare :status="shareShow" @close="shareShow = false"></NestShare>
     <nest-modal modal-type="confirm" :has-clear="false" :has-cancel="true" modal-cancel-txt="按错了" :status="deleteShow" v-if="isMine"
       @cancel="deleteShow = false" @close="deleteShow = false" @confirm="deleteHouseInfo">
       确定要删除该 <span class="hl">房源</span> 吗？
@@ -331,6 +332,7 @@
     data() {
       return {
         house: null,
+        shareShow: false,
         deleteShow: false,
         swiperOption: {
           loop: true,
@@ -430,17 +432,17 @@
           });
         }
       },
-      doFollow(item) {
+      doFollow(item, type) {
         if (item.favored) {
           FollowService.unFollow({
-            target_type: 'user',
+            target_type: type,
             target_id: item.id
           }, res => {
             item.favored = false;
           })
         } else {
           FollowService.doFollow({
-            target_type: 'user',
+            target_type: type,
             target_id: item.id
           }, res => {
             item.favored = true;
@@ -833,6 +835,10 @@
           height: .38rem;
           background: url("../../assets/images/favorite.png") no-repeat;
           background-size: 100% 100%;
+          &.on {
+            background: url("../../assets/images/favorite-on.png") no-repeat;
+            background-size: 100% 100%;
+          }
         }
         .share {
           width: .38rem;

@@ -52,8 +52,25 @@
 </template>
 
 <script>
+  import CategoryService from "../../services/CategoryService";
+
   export default {
-    name: "LiveSubject"
+    name: "LiveSubject",
+    data() {
+      return {
+        dataList: []
+      }
+    },
+    mounted() {
+      this.getNewsList();
+    },
+    methods: {
+      getNewsList() {
+        CategoryService.getCategoryList({}, res => {
+          console.log(res);
+        })
+      }
+    }
   }
 </script>
 
