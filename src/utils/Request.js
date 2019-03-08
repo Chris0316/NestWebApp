@@ -15,6 +15,9 @@ instance.interceptors.request.use(
     let accessToken = Storage.getLocalStorage('nest_access_token');
     if(!accessToken || accessToken.length === 0){
         accessToken = window.$cookies.get("nest_session");
+        if(!accessToken || accessToken.length === 0){
+            accessToken = window.$cookies.get("XSRF-TOKEN");
+        }
     }
     if (accessToken && accessToken.length !== 0) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
