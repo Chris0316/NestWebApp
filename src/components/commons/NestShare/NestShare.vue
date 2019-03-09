@@ -23,7 +23,7 @@
         <div class="share-line mt50">
           <div class="share-item facebook">
             <div class="icon"></div>
-            <div class="text">Facebook</div>
+            <div class="text" @click="facebook()">Facebook</div>
           </div>
           <div class="share-item messanger">
             <div class="icon"></div>
@@ -45,7 +45,6 @@
     </transition>
   </div>
 </template>
-
 <script>
   export default {
     name: "NestShare",
@@ -54,6 +53,33 @@
         type: Boolean,
         default: false
       }
+    },
+    created(){
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '2238721389736235',
+          xfbml      : true,
+          version    : 'v3.2'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    },
+    methods: {
+      facebook() {
+        FB.ui({
+          method: 'share',
+          mobile_iframe: true,
+          href: window.location.href,
+        }, function(response){});
+      },
     }
   }
 </script>
