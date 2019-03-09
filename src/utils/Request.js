@@ -14,10 +14,7 @@ instance.interceptors.request.use(
       Vue.prototype.$toast.loading();
     let accessToken = Storage.getLocalStorage('nest_access_token');
     if(!accessToken || accessToken.length === 0){
-        accessToken = window.$cookies.get("nest_session");
-        if(!accessToken || accessToken.length === 0){
-            accessToken = window.$cookies.get("XSRF-TOKEN");
-        }
+        accessToken = window.$cookies.get("access_token");
     }
     if (accessToken && accessToken.length !== 0) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
