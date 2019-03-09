@@ -1,7 +1,7 @@
 <template>
-  <div class="live" v-if="categoryList.length && advList.length">
+  <div class="live">
     <nest-scroll class="app-body">
-      <div class="live-body">
+      <div class="live-body" v-if="categoryList.length && advList.length">
         <div class="live-title">帮住</div>
         <nest-scroll direction="horizontal" class="live-modules">
           <div class="modules-wrap">
@@ -14,22 +14,6 @@
               <div class="title">{{ item.name }}</div>
               <div class="desc">{{ item.description }}</div>
             </div>
-            <!--<div class="module icon2">-->
-              <!--<div class="title">入门攻略</div>-->
-              <!--<div class="desc">帮您了解海外购置房产全流程</div>-->
-            <!--</div>-->
-            <!--<div class="module icon3">-->
-              <!--<div class="title">买房攻略</div>-->
-              <!--<div class="desc">您的疑惑和顾虑我来消除</div>-->
-            <!--</div>-->
-            <!--<div class="module icon4">-->
-              <!--<div class="title">开盘快报</div>-->
-              <!--<div class="desc">最新的楼盘资讯早班车，勿错过</div>-->
-            <!--</div>-->
-            <!--<div class="module icon5">-->
-              <!--<div class="title">时政经济</div>-->
-              <!--<div class="desc">政策先知道，紧握投资形势</div>-->
-            <!--</div>-->
           </div>
         </nest-scroll>
         <div class="category-container">
@@ -165,6 +149,7 @@
         margin-right: .1rem;
         background-color: #fafafa;
         box-sizing: border-box;
+        border-radius: .1rem;
         &.icon1 {
           &::after {
             position: absolute;
