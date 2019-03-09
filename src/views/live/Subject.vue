@@ -3,6 +3,9 @@
     <nest-scroll class="app-body">
       <div class="live-body">
         <div class="banner banner5">
+          <div class="head-bar">
+            <div class="back" @click="$router.go(-1)"></div>
+          </div>
           <div class="title">买房攻略</div>
           <div class="desc">您的疑惑和顾虑，我来消除</div>
         </div>
@@ -52,7 +55,7 @@
 </template>
 
 <script>
-  import CategoryService from "../../services/CategoryService";
+  import ArticleService from "../../services/ArticleService";
 
   export default {
     name: "LiveSubject",
@@ -61,12 +64,23 @@
         dataList: []
       }
     },
+    created() {
+      this.initConsts();
+    },
     mounted() {
-      this.getNewsList();
+      this.getArticleList();
     },
     methods: {
-      getNewsList() {
-        CategoryService.getCategoryList({}, res => {
+      initConsts() {
+        let params = this.$route.params;
+        if (params) {
+          this.type = params.type;
+        }
+      },
+      getArticleList() {
+        ArticleService.getArticleList({
+          category: this.type
+        }, res => {
           console.log(res);
         })
       }
@@ -88,9 +102,25 @@
       padding-bottom: 1.5rem;
     }
     .banner {
+      position: relative;
       padding-top: .9rem;
       height: 2.6rem;
       box-sizing: border-box;
+      .head-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1.2rem;
+        z-index: 2;
+        .back {
+          padding-left: .28rem;
+          width: .9rem;
+          height: 100%;
+          background: url('../../assets/images/icon-back.png') no-repeat .28rem center;
+          background-size: .42rem .32rem;
+        }
+      }
       .title {
         font-size: .46rem;
         font-weight: bold;

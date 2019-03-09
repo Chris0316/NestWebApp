@@ -47,10 +47,14 @@ instance.interceptors.response.use(
          *  1. 清空localstorage accessToken
          *  2. 跳转登录页
          */
-        Storage.removeLocalStorage('nest_access_token');
+        let token = Storage.getLocalStorage('nest_access_token');
+        if (token) {
+          Storage.removeLocalStorage('nest_access_token');
+          Vue.prototype.$toast.fail('登录超时，请重新登录');
+        }
         window.$cookies.remove("nest_session");
         Router.replace({ name: 'AuthLogin' });
-        Vue.prototype.$toast.info(resData.message);
+
       } else if (error.response.status >= 300 || error.response.status < 200) {
         Vue.prototype.$toast.info(resData.message);
         return Promise.reject('error');
