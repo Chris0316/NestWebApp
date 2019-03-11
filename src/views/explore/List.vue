@@ -265,11 +265,7 @@
         this.range = [0, this.rangeMax + this.rangeStep];
       },
       imageUrl(item) {
-        if (item.galleries.data.length > 0) {
-          return item.galleries.data[0].url;
-        } else {
-          return PreviewDefaultImg;
-        }
+        return item.cover ? item.cover : PreviewDefaultImg;
       },
       regionConfirm() {
         this.regionShow = false;

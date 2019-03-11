@@ -10,7 +10,8 @@
       </div>
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
-        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow">{{ bedroomBtnTxt }}</nest-button>
+        <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow">{{ bedroomBtnTxt }}
+        </nest-button>
       </div>
       <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
                   @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
@@ -49,8 +50,8 @@
           <div class="topics-wrap">
             <a :href="item.url" v-for="(item, index) in topAdvertisements">
               <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }">
-                  <div class="title">{{item.title}}</div>
-                  <div class="msg">{{item.content}}</div>
+                <div class="title">{{item.title}}</div>
+                <div class="msg">{{item.content}}</div>
               </div>
             </a>
           </div>
@@ -59,8 +60,8 @@
           <div class="topics-wrap">
             <a :href="item.url" v-for="(item, index) in middleAdvertisements">
               <div class="topic" :style="{ backgroundImage: 'url(' + item.cover + ')' }">
-                  <div class="title">{{item.title}}</div>
-                  <div class="msg">{{item.content}}</div>
+                <div class="title">{{item.title}}</div>
+                <div class="msg">{{item.content}}</div>
               </div>
             </a>
           </div>
@@ -69,15 +70,16 @@
           <div class="left">为你推荐</div>
           <div class="right">
             <nest-tab-bar class="tabs" v-model="tabSelected" align="right">
-              <nest-tab-item id="rent" @click="getRecommends">出租</nest-tab-item>
-              <nest-tab-item id="sale" @click="getRecommends">售卖</nest-tab-item>
+              <nest-tab-item id="rent">出租</nest-tab-item>
+              <nest-tab-item id="sale">售卖</nest-tab-item>
             </nest-tab-bar>
           </div>
         </div>
         <nest-tab-container class="app-body" v-model="tabSelected">
           <nest-tab-container-item class="container-item list-wrap" id="rent">
-            <div class="unit" v-for="(house, index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
-              <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
+            <div class="unit" v-for="(house, index) in rentList"
+                 @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
+              <div class="unit-img" :style="{ backgroundImage: 'url(' + imageUrl(house) + ')' }"></div>
               <div class="unit-place">{{house.building_name}}</div>
               <div class="unit-size" v-if="typeof house.tags === 'object'">
                 <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
@@ -102,7 +104,31 @@
             </div>
           </nest-tab-container-item>
           <nest-tab-container-item class="container-item list-wrap" id="sale">
-            asdfasf
+            <div class="unit" v-for="(house, index) in saleList"
+                 @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
+              <div class="unit-img" :style="{ backgroundImage: 'url(' + imageUrl(house) + ')' }"></div>
+              <div class="unit-place">{{house.building_name}}</div>
+              <div class="unit-size" v-if="typeof house.tags === 'object'">
+                <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
+              </div>
+              <div class="unit-size" v-else="typeof house.tags !== 'object'">
+                <div class="left-str">{{house.tags}}</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'rent'">
+                <div class="num">{{house.price}}</div>
+                <div class="month">P/月</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'sale' && house.is_new">
+                <div class="num">{{house.price}}</div>
+                <div class="month">P/㎡</div>
+                <div class="size">{{house.centiare_min}}-{{house.centiare_max}} ㎡</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'sale' && !house.is_new">
+                <div class="num">{{house.total_amount}}</div>
+                <div class="month">万</div>
+                <div class="size">{{house.price}} P/平</div>
+              </div>
+            </div>
           </nest-tab-container-item>
         </nest-tab-container>
       </div>
@@ -115,8 +141,9 @@
 </template>
 <script>
   import DICT, {getSelecteds} from '../configs/DICT';
-  import AdvertisementService from  '../services/AdvertisementService';
-  import {getHouseList} from  '../services/RecommendService';
+  import AdvertisementService from '../services/AdvertisementService';
+  import HouseService from '../services/HouseService';
+  import PreviewDefaultImg from '../assets/images/preview-default.png';
 
   export default {
     name: 'Explore',
@@ -136,14 +163,15 @@
         tabSelected: 'rent',
         topAdvertisements: [],
         middleAdvertisements: [],
-        recommends: []
+        rentList: [],
+        saleList: []
       }
     },
     watch: {
       trade(val) {
         this.tradeShow = false;
         setTimeout(() => {
-          this.$router.push({ name: 'ExplorePublish', params: { trade: val, id: 'new' } });
+          this.$router.push({name: 'ExplorePublish', params: {trade: val, id: 'new'}});
         }, 500);
       },
       region(val) {
@@ -193,29 +221,29 @@
         this.bedroomShow = false;
         // todo 筛选发请求
       },
-      getTopAdvertisements(){
+      imageUrl(item) {
+        return item.cover ? item.cover : PreviewDefaultImg;
+      },
+      getTopAdvertisements() {
         AdvertisementService.getItemsList(1, res => {
           this.topAdvertisements = res.data;
         });
       },
-      getMiddleAdvertisements(){
+      getMiddleAdvertisements() {
         AdvertisementService.getItemsList(2, res => {
-         this.middleAdvertisements = res.data;
+          this.middleAdvertisements = res.data;
         });
       },
-      getRecommends(){
-        getHouseList(this.tabSelected, res => {
-          let recommends = [];
-          if(res.data){
-            for(var i in res.data){
-              if(!res.data[i].title){
-                res.data[i].title = res.data[i].building_name;
-              }
-              recommends.push(res.data[i]);
-            }
-          }
-
-          this.recommends = recommends;
+      getRecommends() {
+        HouseService.getRecommendHouses({
+          trade: 'rent'
+        }, res => {
+          this.rentList = res.data;
+        });
+        HouseService.getRecommendHouses({
+          trade: 'sale'
+        }, res => {
+          this.saleList = res.data;
         });
       }
     }

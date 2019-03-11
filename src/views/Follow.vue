@@ -216,11 +216,7 @@
         }];
       },
       imageUrl(item) {
-        if (item.galleries.length > 0) {
-          return item.galleries[0].url;
-        } else {
-          return PreviewDefaultImg;
-        }
+        return item.cover ? item.cover : PreviewDefaultImg;
       },
       unFollow(item, type) {
         FollowService.unFollow({

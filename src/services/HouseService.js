@@ -5,7 +5,8 @@ const api = {
   house: '/houses',
   house_same: '/house/same',
   house_update: '/houses/:house_id/status',
-  myHouses: '/user/houses',
+  my_houses: '/user/houses',
+  recommend_houses: '/house/recommends'
 };
 
 let HouseService = {
@@ -59,9 +60,16 @@ let HouseService = {
     })
   },
   getMyHouses(params, callback, loading) {
-    axios.get(api.myHouses, {
+    axios.get(api.my_houses, {
       params: params,
       loading: loading
+    }).then(res => {
+      callback(res);
+    })
+  },
+  getRecommendHouses(params, callback) {
+    axios.get(api.recommend_houses, {
+      params: params
     }).then(res => {
       callback(res);
     })

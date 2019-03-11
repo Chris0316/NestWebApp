@@ -134,11 +134,7 @@
         }];
       },
       imageUrl(item) {
-        if (item.galleries.data.length > 0) {
-          return item.galleries.data[0].url;
-        } else {
-          return PreviewDefaultImg;
-        }
+        return item.cover ? item.cover : PreviewDefaultImg;
       },
       switchPublishStatus() {
         if (this.publishBtn.txt === '已发布') {
