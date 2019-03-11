@@ -74,32 +74,37 @@
             </nest-tab-bar>
           </div>
         </div>
-        <div class="list-wrap">
-          <div class="unit" v-for="(house,index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
-            <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
-            <div class="unit-place">{{house.building_name}}</div>
-            <div class="unit-size" v-if="typeof house.tags === 'object'">
-              <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
+        <nest-tab-container class="app-body" v-model="tabSelected">
+          <nest-tab-container-item class="container-item list-wrap" id="rent">
+            <div class="unit" v-for="(house, index) in recommends" @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
+              <div class="unit-img" :style="{ backgroundImage: 'url(' + house.cover + ')' }"></div>
+              <div class="unit-place">{{house.building_name}}</div>
+              <div class="unit-size" v-if="typeof house.tags === 'object'">
+                <div class="left" v-for="(tag,index) in house.tags" :key="index">{{tag}}</div>
+              </div>
+              <div class="unit-size" v-else="typeof house.tags !== 'object'">
+                <div class="left-str">{{house.tags}}</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'rent'">
+                <div class="num">{{house.price}}</div>
+                <div class="month">P/月</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'sale' && house.is_new">
+                <div class="num">{{house.price}}</div>
+                <div class="month">P/㎡</div>
+                <div class="size">{{house.centiare_min}}-{{house.centiare_max}} ㎡</div>
+              </div>
+              <div class="price-m" v-if="house.trade == 'sale' && !house.is_new">
+                <div class="num">{{house.total_amount}}</div>
+                <div class="month">万</div>
+                <div class="size">{{house.price}} P/平</div>
+              </div>
             </div>
-            <div class="unit-size" v-else="typeof house.tags !== 'object'">
-              <div class="left-str">{{house.tags}}</div>
-            </div>
-            <div class="price-m" v-if="house.trade == 'rent'">
-              <div class="num">{{house.price}}</div>
-              <div class="month">P/月</div>
-            </div>
-            <div class="price-m" v-if="house.trade == 'sale' && house.is_new">
-              <div class="num">{{house.price}}</div>
-              <div class="month">P/㎡</div>
-              <div class="size">{{house.centiare_min}}-{{house.centiare_max}} ㎡</div>
-            </div>
-            <div class="price-m" v-if="house.trade == 'sale' && !house.is_new">
-              <div class="num">{{house.total_amount}}</div>
-              <div class="month">万</div>
-              <div class="size">{{house.price}} P/平</div>
-            </div>
-          </div>
-        </div>
+          </nest-tab-container-item>
+          <nest-tab-container-item class="container-item list-wrap" id="sale">
+            asdfasf
+          </nest-tab-container-item>
+        </nest-tab-container>
       </div>
     </nest-scroll>
     <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
@@ -129,7 +134,6 @@
         tradeShow: false,
         trade: '',
         tabSelected: 'rent',
-        propparking: false,
         topAdvertisements: [],
         middleAdvertisements: [],
         recommends: []
