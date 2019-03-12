@@ -24,28 +24,34 @@
     </div>
     <nest-scroll class="app-body">
       <div class="explore-body">
-        <div class="menus">
-          <div class="menu-item" @click="tradeShow = true">
-            <div class="menu-icon icon1"></div>
-            <div class="name">发布房源</div>
+        <nest-scroll direction="horizontal" class="menus">
+          <div class="menus-wrap">
+            <div class="menu-item" @click="tradeShow = true">
+              <div class="menu-icon icon1"></div>
+              <div class="name">发布房源</div>
+            </div>
+            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'rent' } })">
+              <div class="menu-icon icon2"></div>
+              <div class="name">租房</div>
+            </div>
+            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'second' } })">
+              <div class="menu-icon icon3"></div>
+              <div class="name">二手房</div>
+            </div>
+            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'new' } })">
+              <div class="menu-icon icon4"></div>
+              <div class="name">新房</div>
+            </div>
+            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'carport' } })">
+              <div class="menu-icon icon5"></div>
+              <div class="name">车位</div>
+            </div>
+            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'land' } })">
+              <div class="menu-icon icon6"></div>
+              <div class="name">土地</div>
+            </div>
           </div>
-          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'rent' } })">
-            <div class="menu-icon icon2"></div>
-            <div class="name">租房</div>
-          </div>
-          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'second' } })">
-            <div class="menu-icon icon3"></div>
-            <div class="name">二手房</div>
-          </div>
-          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'new' } })">
-            <div class="menu-icon icon4"></div>
-            <div class="name">新房</div>
-          </div>
-          <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'carport' } })">
-            <div class="menu-icon icon5"></div>
-            <div class="name">车位</div>
-          </div>
-        </div>
+        </nest-scroll>
         <nest-scroll direction="horizontal" class="topics">
           <div class="topics-wrap">
             <a :href="item.url" v-for="(item, index) in topAdvertisements">
@@ -251,13 +257,6 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-
-  @mixin rowcenter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .explore {
     display: flex;
     flex-direction: column;
@@ -344,15 +343,16 @@
       padding-top: .5rem;
     }
     .menus {
-      margin-left: 0.28rem;
-      padding-right: 0.28rem;
       display: flex;
-      justify-content: space-between;
+      overflow: hidden;
+    }
+    .menus-wrap {
+      display: flex;
+      padding: 0 .28rem;
       .menu-item {
-        @include rowcenter;
-        flex-direction: column;
+        margin-right: .3rem;
         .menu-icon {
-          margin-bottom: 0.25rem;
+          margin: 0 auto;
           width: 1.1rem;
           height: 1.1rem;
           border-radius: 50%;
@@ -373,10 +373,16 @@
           &.icon5 {
             background-image: url('../assets/images/explore/parking.png');
           }
+          &.icon6 {
+            background-image: url('../assets/images/explore/land.png');
+          }
         }
         .name {
+          margin-top: .25rem;
           font-size: 0.28rem;
-          color: #333333;
+          color: #333;
+          text-align: center;
+          white-space: nowrap;
         }
       }
     }

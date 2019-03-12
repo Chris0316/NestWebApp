@@ -9,7 +9,7 @@
           </div>
           <div class="portrait" :style="{ backgroundImage: 'url(' + portrait + ')'}"></div>
         </div>
-        <div class="personal-sign arrow-right" v-if="isLogin" @click="login">{{ signature }}</div>
+        <div class="personal-sign" v-if="isLogin" @click="login">{{ signature }}</div>
         <div class="menu-panel">
           <div class="menu-item" @click="$router.push({ name: 'MyHouses' })">
             <div class="item-icon icon1"></div>
@@ -35,18 +35,18 @@
             <div class="label">我的消息</div>
           </div>
         </div>
-        <div class="form-group border-bottom"></div>
-        <div class="form-group border-bottom arrow-right">
-          <div class="label">语言显示</div>
-        </div>
-        <div class="form-group border-bottom">
-          <div class="label">新消息通知</div>
-          <nest-switch v-model="msgSwitch"></nest-switch>
-        </div>
-        <div class="form-group border-bottom" v-if="!isAgent">
-          <div class="label">加入我们</div>
-          <nest-switch v-model="joinSwitch"></nest-switch>
-        </div>
+        <!--<div class="form-group border-bottom"></div>-->
+        <!--<div class="form-group border-bottom arrow-right">-->
+          <!--<div class="label">语言显示</div>-->
+        <!--</div>-->
+        <!--<div class="form-group border-bottom">-->
+          <!--<div class="label">新消息通知</div>-->
+          <!--<nest-switch v-model="msgSwitch"></nest-switch>-->
+        <!--</div>-->
+        <!--<div class="form-group border-bottom" v-if="!isAgent">-->
+          <!--<div class="label">加入我们</div>-->
+          <!--<nest-switch v-model="joinSwitch"></nest-switch>-->
+        <!--</div>-->
         <div class="footer-links">
           <div class="links-item">
             <div class="link-icon icon4"></div>
