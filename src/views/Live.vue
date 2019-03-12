@@ -1,9 +1,9 @@
 <template>
   <div class="live">
     <nest-scroll class="app-body">
-      <div class="live-body" v-if="categoryList.length && advList.length">
+      <div class="live-body">
         <div class="live-title">帮住</div>
-        <nest-scroll direction="horizontal" class="live-modules">
+        <nest-scroll direction="horizontal" class="live-modules" v-if="categoryList.length">
           <div class="modules-wrap">
             <div class="module icon1" @click="$router.push({ name: 'LivePublish' })">
               <div class="title">帮住</div>
@@ -17,7 +17,7 @@
           </div>
         </nest-scroll>
         <div class="category-container">
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[0].cover + ')'}">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[0].cover + ')'}" v-if="advList[0]">
             <span class="favorite" :class="{ 'on': advList[0].favored }" @click="doFollow(advList[0])"></span>
             <div class="category-tag" v-if="advList[0].title">
               <span>{{ advList[0].title }}</span>
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="category-container">
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[1].cover + ')'}">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[1].cover + ')'}" v-if="advList[1]">
             <span class="favorite" :class="{ 'on': advList[1].favored }" @click="doFollow(advList[1])"></span>
             <div class="category-tag" v-if="advList[1].title">
               <span>{{ advList[1].title }}</span>
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div class="category-container">
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}" v-if="advList[2]">
             <span class="favorite" :class="{ 'on': advList[2].favored }" @click="doFollow(advList[2])"></span>
             <div class="category-tag" v-if="advList[2].title">
               <span>{{ advList[2].title }}</span>
@@ -48,7 +48,7 @@
               {{ advList[2].content }}
             </div>
           </div>
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}" v-if="advList[3]">
             <span class="favorite" :class="{ 'on': advList[3].favored }" @click="doFollow(advList[3])"></span>
             <div class="category-tag" v-if="advList[3].title">
               <span>{{ advList[3].title }}</span>
