@@ -19,6 +19,10 @@ Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key])
 });
 
+router.beforeEach((to, from, next) => {
+  next();
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
