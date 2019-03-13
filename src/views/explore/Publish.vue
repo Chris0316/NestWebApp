@@ -164,7 +164,7 @@
           </div>
         </template>
         <div class="detail-link" @click="detailShow = !detailShow">
-          <span>点击填写详细信息，轻松方便出租</span>
+          <span>{{ detailShowText }}</span>
         </div>
         <div class="pub-bottom">
           <nest-button type="primary" size="full" @click="publish">{{ houseId === 'new' ? '发布' : '保存' }}</nest-button>
@@ -248,6 +248,13 @@
       },
       regionName() {
         return getSelecteds(DICT.region, this.region);
+      },
+      detailShowText() {
+        if (this.detailShow) {
+          return '收起详细信息';
+        } else {
+          return '点击填写详细信息，轻松方便出租'
+        }
       }
     },
     created() {

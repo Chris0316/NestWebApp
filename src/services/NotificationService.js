@@ -5,8 +5,11 @@ const api = {
 };
 
 let NotificationService = {
-  getNotifications(callback) {
-    axios.get(api.notifications).then(res => {
+  getNotifications(params, callback, loading) {
+    axios.get(api.notifications, {
+      params: params,
+      loading: loading
+    }).then(res => {
       callback(res);
     })
   }

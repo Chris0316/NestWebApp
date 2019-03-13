@@ -12,6 +12,6 @@ export default [
   { path: '/my/profile', name: 'MyProfile', component: MyProfile, meta: { slideLevel: 1 } },
   { path: '/my/edit', name: 'MyEdit', component: MyEdit, meta: { slideLevel: 1 } },
   { path: '/my/message', name: 'MyMessage', component: Message, meta: { slideLevel: 1 } },
-  { path: '/my/message/detail', name: 'MyMessageDetail', component: MsgDetail, meta: { slideLevel: 1 } },
+  { path: '/my/message/detail/:id', name: 'MyMessageDetail', component: MsgDetail, meta: { slideLevel: 1 } },
   { path: '/my/houses', name: 'MyHouses', component: MyHouses, meta: { slideLevel: 1 } },
 ]

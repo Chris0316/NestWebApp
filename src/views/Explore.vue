@@ -22,7 +22,7 @@
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
     </div>
-    <nest-scroll class="app-body">
+    <nest-scroll class="app-body" ref="bodyScroll">
       <div class="explore-body">
         <nest-scroll direction="horizontal" class="menus">
           <div class="menus-wrap">
@@ -139,6 +139,7 @@
         </nest-tab-container>
       </div>
     </nest-scroll>
+    <div class="return-top" @click="returnTop">^</div>
     <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
       <nest-radio v-model="trade" :options="DICT.house.trade" :count-in-row="1"></nest-radio>
     </nest-modal>
@@ -251,6 +252,9 @@
         }, res => {
           this.saleList = res.data;
         });
+      },
+      returnTop() {
+        this.$refs.bodyScroll.scrollTo(0, 0, 300);
       }
     }
   }
@@ -522,6 +526,19 @@
           color: #B2B2B2;
         }
       }
+    }
+    .return-top {
+      position: fixed;
+      right: .6rem;
+      bottom: 1.5rem;
+      width: 1rem;
+      height: 1rem;
+      line-height: 1rem;
+      text-align: center;
+      background-color: #fff;
+      font-size: .6rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 .18rem 0 rgba(176, 183, 187, .6);
     }
   }
 </style>
