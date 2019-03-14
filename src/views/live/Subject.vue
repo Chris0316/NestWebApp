@@ -2,12 +2,12 @@
   <div class="subject">
     <nest-scroll class="app-body">
       <div class="live-body">
-        <div class="banner banner5">
+        <div class="banner" :class="bannerClass">
           <div class="head-bar">
             <div class="back" @click="$router.go(-1)"></div>
           </div>
-          <div class="title">买房攻略</div>
-          <div class="desc">您的疑惑和顾虑，我来消除</div>
+          <div class="title">{{ name }}</div>
+          <div class="desc">{{ description }}</div>
         </div>
         <div class="category-container">
           <div class="category banner1">
@@ -61,10 +61,14 @@
     name: "LiveSubject",
     data() {
       return {
+        bannerClass: '',
+        name: '',
+        description: '',
         dataList: []
       }
     },
     created() {
+      this.randomBanner();
       this.initConsts();
     },
     mounted() {
@@ -77,11 +81,19 @@
           this.type = params.type;
         }
       },
+      randomBanner() {
+        let ran = Math.random(),
+          bannerArr = ['banner5', 'banner6'],
+          index = Math.round(ran);
+        this.bannerClass = bannerArr[index];
+      },
       getArticleList() {
         ArticleService.getArticleList({
           category: this.type
         }, res => {
-          console.log(res);
+          this.name = res.meta.category.name;
+          this.description = res.meta.category.description;
+          this.dataList = res.data;
         })
       }
     }
@@ -137,6 +149,10 @@
       }
       &.banner5 {
         background: url('../../assets/images/live/banner5.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      &.banner6 {
+        background: url('../../assets/images/live/banner6.png') no-repeat;
         background-size: 100% 100%;
       }
     }
