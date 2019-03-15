@@ -20,10 +20,10 @@
           <div class="category" :style="{ backgroundImage: 'url(' + advList[0].cover + ')'}" v-if="advList[0]">
             <span class="favorite" :class="{ 'on': advList[0].favored }" @click="doFollow(advList[0])"></span>
             <div class="category-tag" v-if="advList[0].title">
-              <span>{{ advList[0].title }}</span>
+              <span>{{ advList[0].content }}</span>
             </div>
             <div class="category-text">
-              {{ advList[0].content }}
+              {{ advList[0].title }}
             </div>
           </div>
         </div>
@@ -31,10 +31,10 @@
           <div class="category" :style="{ backgroundImage: 'url(' + advList[1].cover + ')'}" v-if="advList[1]">
             <span class="favorite" :class="{ 'on': advList[1].favored }" @click="doFollow(advList[1])"></span>
             <div class="category-tag" v-if="advList[1].title">
-              <span>{{ advList[1].title }}</span>
+              <span>{{ advList[1].content }}</span>
             </div>
             <div class="category-text">
-              {{ advList[1].content }}
+              {{ advList[1].title }}
             </div>
           </div>
         </div>
@@ -42,19 +42,19 @@
           <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}" v-if="advList[2]">
             <span class="favorite" :class="{ 'on': advList[2].favored }" @click="doFollow(advList[2])"></span>
             <div class="category-tag" v-if="advList[2].title">
-              <span>{{ advList[2].title }}</span>
+              <span>{{ advList[2].content }}</span>
             </div>
             <div class="category-text">
-              {{ advList[2].content }}
+              {{ advList[2].title }}
             </div>
           </div>
           <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}" v-if="advList[3]">
             <span class="favorite" :class="{ 'on': advList[3].favored }" @click="doFollow(advList[3])"></span>
             <div class="category-tag" v-if="advList[3].title">
-              <span>{{ advList[3].title }}</span>
+              <span>{{ advList[3].content }}</span>
             </div>
             <div class="category-text">
-              {{ advList[3].content }}
+              {{ advList[3].title }}
             </div>
           </div>
         </div>
