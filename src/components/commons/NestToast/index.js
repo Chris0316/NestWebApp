@@ -8,7 +8,7 @@ let showToast = (type, message, options = {}) => {
   options.type = type;
   options.visible = true;
   options.message = message.toString();
-  if (instance) {
+  if (instance && instance.type === type) {
     instance.clearTimeout();
     instance.close();
   }

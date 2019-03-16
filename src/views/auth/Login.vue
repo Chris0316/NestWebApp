@@ -6,7 +6,10 @@
     <div class="content">
       <div class="title border-bottom">欢迎登录鸟窝</div>
       <div class="form-group border-bottom">
-        <div class="left" @click="countryShow = !countryShow">{{ country }} <span class="flag" :style="{ backgroundImage: 'url(' + flag + ')' }"></span><div class="arrow-down"></div></div>
+        <div class="left" @click="countryShow = !countryShow">{{ country }} <span class="flag"
+                                                                                  :style="{ backgroundImage: 'url(' + flag + ')' }"></span>
+          <div class="arrow-down"></div>
+        </div>
         <div class="right">
           <nest-field type="tel" class="form-input" placeholder="请输入手机号" max-length="11" v-model="phone"></nest-field>
         </div>
@@ -29,7 +32,7 @@
 
 <script>
   import Storage from '../../utils/Storage'
-  import DICT, { getSelecteds } from '../../configs/DICT'
+  import DICT, {getSelecteds} from '../../configs/DICT'
   import AuthService from '../../services/AuthService'
 
   export default {
@@ -56,7 +59,7 @@
             diff = parseInt((now - sendTime) / 1000);
           if (diff < 60) {
             // 同个手机号发送短信小于60秒间隔
-            this.$router.push({ name: 'AuthSmsCode' });
+            this.$router.push({name: 'AuthSmsCode'});
           } else {
             // 同个手机号发送短信大于60秒间隔
             smsList[this.phone] = new Date().getTime();
@@ -66,7 +69,7 @@
               Storage.setLocalStorage('nest_auth_phone_prefix', this.country);
               Storage.setLocalStorage('nest_auth_phone', this.phone);
               Storage.setLocalStorage('nest_auth_key', key);
-              this.$router.push({ name: 'AuthSmsCode' })
+              this.$router.push({name: 'AuthSmsCode'})
             });
           }
         } else {
@@ -77,15 +80,15 @@
             Storage.setLocalStorage('nest_auth_phone_prefix', this.country);
             Storage.setLocalStorage('nest_auth_phone', this.phone);
             Storage.setLocalStorage('nest_auth_key', key);
-            this.$router.push({ name: 'AuthSmsCode' })
+            this.$router.push({name: 'AuthSmsCode'})
           });
         }
       },
-      thirdLogin(type){
-        if(document.referrer){
-          window.location.href = process.env.API_SERVER.replace('com/api', 'com') + "/auth/"+type+"?referer=" + encodeURI(document.referrer);
-        }else{
-          window.location.href = process.env.API_SERVER.replace('com/api', 'com') + "/auth/"+type;
+      thirdLogin(type) {
+        if (document.referrer) {
+          window.location.href = process.env.API_SERVER.replace('com/api', 'com') + "/auth/" + type + "?referer=" + encodeURI(document.referrer);
+        } else {
+          window.location.href = process.env.API_SERVER.replace('com/api', 'com') + "/auth/" + type;
         }
       }
     }

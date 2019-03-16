@@ -77,6 +77,7 @@
       padding: 0 .4rem;
       border-radius: .1rem;
       background-color: rgba(0, 0, 0, .7);
+      z-index: 10;
       .toast-text {
         height: .8rem;
         line-height: .8rem;
@@ -104,6 +105,7 @@
       max-width: 4rem;
       background-color: #fff;
       box-sizing: border-box;
+      z-index: 11;
       .toast-icon {
         margin: auto;
         width: .96rem;

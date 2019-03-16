@@ -12,7 +12,7 @@
         <div class="category-container" v-if="dataList.length !== 0">
           <div class="category banner1">
             <span class="favorite"></span>
-            <div class="category-tag">
+            <div class="category-tag" v-if="dataList[0].content">
               <span>{{ dataList[0].content }}</span>
             </div>
             <div class="category-text">
@@ -23,7 +23,7 @@
         <div class="category-container" v-if="dataList.length === 2 || dataList.length === 4 || dataList.length > 4">
           <div class="category banner2">
             <span class="favorite"></span>
-            <div class="category-tag">
+            <div class="category-tag" v-if="dataList[1].content">
               <span>{{ dataList[1].content }}</span>
             </div>
             <div class="category-text">
@@ -34,7 +34,7 @@
         <div class="category-container" v-if="dataList.length === 3 || dataList.length === 4 || dataList.length > 4">
           <div class="category banner3">
             <span class="favorite"></span>
-            <div class="category-tag">
+            <div class="category-tag" v-if="(dataList.length === 3 && dataList[1].content) || (dataList.length === 4 && dataList[2].content)">
               <span>{{ dataList.length === 3 ? dataList[1].content : dataList[2].content }}</span>
             </div>
             <div class="category-text">
@@ -43,7 +43,7 @@
           </div>
           <div class="category banner4">
             <span class="favorite"></span>
-            <div class="category-tag">
+            <div class="category-tag" v-if="(dataList.length === 3 && dataList[2].content) || (dataList.length === 4 && dataList[3].content)">
               <span>{{ dataList.length === 3 ? dataList[2].content : dataList[3].content }}</span>
             </div>
             <div class="category-text">
@@ -51,8 +51,10 @@
             </div>
           </div>
         </div>
-        <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3">
-          {{ item.title }}
+        <div class="category-list">
+          <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3">
+            <div class="title">{{ item.title }}</div>
+          </div>
         </div>
       </div>
     </nest-scroll>
@@ -100,7 +102,6 @@
           this.name = res.meta.category.name;
           this.description = res.meta.category.description;
           this.dataList = res.data;
-          console.log(this.dataList)
         })
       }
     }
@@ -232,6 +233,16 @@
       }
       &:last-child {
         margin-right: 0;
+      }
+    }
+    .category-list {
+      padding: 0 .28rem;
+    }
+    .category-item {
+      padding: .3rem 0;
+      .title {
+        font-size: .32rem;
+        color: #333;
       }
     }
   }
