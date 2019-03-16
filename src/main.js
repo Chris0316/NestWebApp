@@ -29,7 +29,12 @@ router.beforeEach((to, from, next) => {
     Vue.prototype.$cookie.delete('nest_access_token');
   }
   if (to.meta.requireAuth === true) {
-
+    if (!accessToken || accessToken.length === 0) {
+      next({
+        name: 'AuthLogin'
+      })
+    }
+    next();
   }
   next();
 });
