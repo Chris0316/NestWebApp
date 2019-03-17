@@ -13,9 +13,9 @@ instance.interceptors.request.use(
     if (config.loading !== false)
       Vue.prototype.$toast.loading();
     let accessToken = Storage.getLocalStorage('nest_access_token');
-    if(!accessToken || accessToken.length === 0){
-        accessToken = window.$cookies.get("access_token");
-    }
+    // if (!accessToken || accessToken.length === 0) {
+    //   accessToken = Vue.prototype.$cookie.get("access_token");
+    // }
     if (accessToken && accessToken.length !== 0) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
     }
@@ -40,7 +40,7 @@ instance.interceptors.response.use(
     Vue.prototype.$toast.hide();
     if (error.response) {
       let resData = error.response.data;
-        // errors = error.response.data.errors;
+      // errors = error.response.data.errors;
       if (error.response.status === 401) {
         /**
          *  未授权跳转到登录
@@ -52,9 +52,8 @@ instance.interceptors.response.use(
           Storage.removeLocalStorage('nest_access_token');
           Vue.prototype.$toast.fail('登录超时，请重新登录');
         }
-        window.$cookies.remove("nest_session");
-        Router.replace({ name: 'AuthLogin' });
-
+        // Vue.prototype.$cookie.remove("nest_session");
+        Router.replace({name: 'AuthLogin'});
       } else if (error.response.status >= 300 || error.response.status < 200) {
         Vue.prototype.$toast.info(resData.message);
         return Promise.reject('error');

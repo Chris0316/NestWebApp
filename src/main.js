@@ -6,10 +6,12 @@ import App from './App'
 import router from './router'
 import './libs/remadaptor'
 import filters from './utils/Filters'
+import VueCookie from 'vue-cookie';
+import Storage from './utils/Storage';
 // import HistoryCache from './utils/HistoryCache';
 
 Vue.use(components)
-Vue.use(require('vue-cookies'))
+Vue.use(VueCookie)
 
 Vue.config.productionTip = false
 
@@ -17,6 +19,24 @@ Vue.config.productionTip = false
 
 Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key])
+});
+
+router.beforeEach((to, from, next) => {
+  let accessToken = Storage.getLocalStorage('nest_access_token');
+  if (!accessToken || accessToken.length === 0) {
+    accessToken = Vue.prototype.$cookie.get('nest_access_token');
+    Storage.setLocalStorage('nest_access_token', accessToken);
+    Vue.prototype.$cookie.delete('nest_access_token');
+  }
+  if (to.meta.requireAuth === true) {
+    if (!accessToken || accessToken.length === 0) {
+      next({
+        name: 'AuthLogin'
+      })
+    }
+    next();
+  }
+  next();
 });
 
 /* eslint-disable no-new */

@@ -44,7 +44,7 @@
             </div>
           </template>
           <div class="detail-link" @click="detailShow = !detailShow">
-            <span>点击填写详细信息，轻松方便出租</span>
+            <span>{{ detailShowText }}</span>
           </div>
           <div class="form-group mt80 border-top border-bottom">
             <span class="label">联系人</span>
@@ -116,6 +116,13 @@
           return this.selectedDate[0].getFullYear() + '-' + (this.selectedDate[0].getMonth() + 1) + '-' + this.selectedDate[0].getDate();
         }
         return '';
+      },
+      detailShowText() {
+        if (this.detailShow) {
+          return '收起详细信息';
+        } else {
+          return '点击填写详细信息，轻松方便出租'
+        }
       }
     },
     created() {
