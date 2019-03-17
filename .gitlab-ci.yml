@@ -7,7 +7,7 @@ stages:
   - deploy
 
 #build过程
-build:
+build-dev:
    stage: build
    image: node:9.4.0
    cache:
@@ -21,36 +21,36 @@ build:
      - dist
    only:
    - master
-#
-#build:
-#   stage: build
-#   image: node:9.4.0
-#   cache:
-#     paths:
-#     - node_modules/
-#   script:
-#   - npm install
-#   - npm run build:test
-#   artifacts:
-#     paths:
-#     - dist
-#   only:
-#   - test
-#build:
-#   stage: build
-#   image: node:9.4.0
-#   cache:
-#     paths:
-#     - node_modules/
-#   script:
-#   - npm install
-#   - npm run build:prod
-#   artifacts:
-#     paths:
-#     - dist
-#   only:
-#   - release
-#test
+build-test:
+  stage: build
+  image: node:9.4.0
+  cache:
+    paths:
+    - node_modules/
+  script:
+  - npm install
+  - npm run build:test
+  artifacts:
+    paths:
+    - dist
+  only:
+  - test
+build-prod:
+   stage: build
+   image: node:9.4.0
+   cache:
+     paths:
+     - node_modules/
+   script:
+   - npm install
+   - npm run build
+   artifacts:
+     paths:
+     - dist
+   only:
+   - release
+
+#deploy develop
 develop:
    stage: develop
    image: alpine:latest
