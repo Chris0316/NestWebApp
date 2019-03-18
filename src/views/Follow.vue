@@ -24,7 +24,8 @@
                      :pullUpLoad="pullUpLoadObj"
                      @pullingUp="onPullingUpResources">
           <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
-            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.target.id } })">
+            <div class="search-item" slot="content"
+                 @click="$router.push({ name: 'ExploreDetails', params: { id: item.target.id } })">
               <div class="move-wrap">
                 <div class="item-img" :style="{ backgroundImage:'url(' + imageUrl(item.target) + ')' }"></div>
                 <div class="msg-wrap">
@@ -36,13 +37,19 @@
                     <div class="type" v-for="(tag, index) in item.target.tags" :key="index">{{ tag }}</div>
                   </div>
                   <div class="rent">
-                    <div class="price" v-if="matchCustomType(item.target) === 'new' || matchCustomType(item.target) === 'rent'">{{ item.target.price }}</div>
+                    <div class="price"
+                         v-if="matchCustomType(item.target) === 'new' || matchCustomType(item.target) === 'rent'">
+                      {{ item.target.price }}
+                    </div>
                     <div class="price" v-else>{{ item.target.total_amount / 10000 }}</div>
                     <div class="price-msg" v-if="matchCustomType(item.target) === 'new'">P/㎡</div>
                     <div class="price-msg" v-else-if="matchCustomType(item.target) === 'rent'">P/月</div>
                     <div class="price-msg" v-else>万</div>
-                    <div class="room-size" v-if="matchCustomType(item.target) === 'new'">{{ item.target.centiare }} ㎡</div>
-                    <div class="room-size" v-else-if="matchCustomType(item.target) === 'second'">{{ item.target.price }} P/㎡</div>
+                    <div class="room-size" v-if="matchCustomType(item.target) === 'new'">{{ item.target.centiare }} ㎡
+                    </div>
+                    <div class="room-size" v-else-if="matchCustomType(item.target) === 'second'">{{ item.target.price }}
+                      P/㎡
+                    </div>
                   </div>
                 </div>
               </div>
@@ -64,16 +71,16 @@
                      ref="agentsScroll"
                      :pullUpLoad="pullUpLoadObj2"
                      @pullingUp="onPullingUpAgents">
-          <nest-swipe-cell v-for="(item, index) in dataList2" :key="item.id">
-            <div class="item" slot="content" @click="$router.push({ name: 'FollowAgent', params: { id: item.user.id } }) ">
+          <nest-swipe-cell v-for="(item, index) in dataList2" :key="item.target.id">
+            <div class="item" slot="content"
+                 @click="$router.push({ name: 'FollowAgent', params: { id: item.target.id } }) ">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
                     <div class="cli" :style="{ backgroundImage: 'url(' + item.target.avatar + ')' }"></div>
                     <div class="det">
                       <div class="name">{{ item.target.local_name }}</div>
-                      <div class="skill">语言：
-                        <span v-for="(language, i) in item.target.languages">{{language}}<span v-if="i != item.target.languages.length-1">{{ item.target.languages.length }}/</span></span>
+                      <div class="skill">语言：{{ getSelecteds(DICT.languages, item.target.languages).join('/') }}
                       </div>
                     </div>
                   </div>
@@ -92,7 +99,7 @@
               </div>
             </div>
             <div class="collect-wrap" slot="controls">
-              <div class="collect-l" @click="shareShow =! shareShow">
+              <div class="collect-l" @click="shareShow = !shareShow">
                 <img class="icon" src="../assets/images/s-share.png" alt="">
               </div>
               <div class="collect-r">
@@ -130,7 +137,7 @@
 </template>
 
 <script>
-  import DICT from '../configs/DICT'
+  import DICT, {getSelecteds} from '../configs/DICT'
   import FollowService from '../services/FollowService'
   import PreviewDefaultImg from '../assets/images/preview-default.png';
   import Utils from '../utils/Utils';
@@ -193,11 +200,12 @@
     methods: {
       initConsts() {
         this.DICT = DICT;
+        this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
         this.tradeOpts = [].concat(DICT.house.trade2);
-        this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.tradeOpts.unshift({'label': '默认', 'value': '-1'});
         this.typeOpts = [].concat(DICT.house.type);
-        this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
+        this.typeOpts.unshift({'label': '默认', 'value': '-1'});
         this.followDateOpts = this.followDateOpts2 = [{
           label: '默认',
           value: '-1'
@@ -457,7 +465,7 @@
         background: rgba(15, 145, 131, 0.1);
       }
       .heart {
-        &.on{
+        &.on {
           background: url("../assets/images/heart-on.png") no-repeat;
           background-size: 100% 100%;
         }

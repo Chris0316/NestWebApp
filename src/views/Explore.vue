@@ -440,7 +440,7 @@
       margin-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
       .left {
         margin-left: 0.28rem;
         font-size: 0.46rem;
@@ -453,10 +453,6 @@
         color: #999999;
         .tabs {
           padding-right: .28rem;
-        }
-        .on {
-          color: #0f9183;
-          border-bottom: 0.04rem solid #0f9183;
         }
       }
     }

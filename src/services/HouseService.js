@@ -6,6 +6,7 @@ const api = {
   house_same: '/house/same',
   house_update: '/houses/:house_id/status',
   my_houses: '/user/houses',
+  his_houses: '/users/:user_id/houses',
   recommend_houses: '/house/recommends'
 };
 
@@ -69,6 +70,18 @@ let HouseService = {
   },
   getRecommendHouses(params, callback) {
     axios.get(api.recommend_houses, {
+      params: params
+    }).then(res => {
+      callback(res);
+    })
+  },
+  getHousesByUserId(userId, params, callback) {
+    let keyValueArray = [{
+      key: 'user_id',
+      value: userId
+    }];
+    let this_api = Utils.replaceApiPlaceholder(api.his_houses, keyValueArray);
+    axios.get(this_api, {
       params: params
     }).then(res => {
       callback(res);

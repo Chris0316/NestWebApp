@@ -4,5 +4,5 @@ import FollowAgent from '@/views/follow/Agent'
 export default [
   { path: '/follow', name: 'Follow', component: Follow, meta: { slideLevel: 1, requireAuth: true } },
   { path: '/follow/list', name: 'FollowList', component: FollowList, meta: { slideLevel: 1, requireAuth: true } },
-  { path: '/follow/agent/:id', name: 'FollowAgent', component: FollowAgent, meta: { slideLevel: 1, requireAuth: true } }
+  { path: '/follow/agent/:id', name: 'FollowAgent', component: FollowAgent, meta: { slideLevel: 1 } }
 ]

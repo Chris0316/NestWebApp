@@ -57,7 +57,7 @@
         <div class="category-list">
           <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3">
             <div class="title">{{ item.title }}</div>
-            <div class="info">{{ item.created_at }}</div>
+            <div class="info"><span class="read"></span><span>{{ item.created_at }}</span></div>
           </div>
         </div>
       </div>
@@ -277,8 +277,18 @@
       }
       .info {
         margin-top: .25rem;
+        display: flex;
+        align-items: center;
         font-size: .24rem;
         color: #b2b2b2;
+      }
+      .read {
+        margin-right: .15rem;
+        display: block;
+        width: .22rem;
+        height: .16rem;
+        background: url('../../assets/images/read.png') no-repeat;
+        background-size: 100% 100%;
       }
     }
   }

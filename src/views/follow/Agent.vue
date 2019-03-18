@@ -1,431 +1,234 @@
 <template>
-  <div class="economic">
-    <div class="ec-title">
+  <div class="agent">
+    <div class="header border-bottom">
+      <div class="back" @click="$router.go(-1);"></div>
       经纪人详情
-      <div class="reback" @click="$router.go(-1)"></div>
     </div>
-    <div class="item">
-      <div class="item-cont">
-        <div class="top">
-          <div class="top-l">
-            <div class="cli"></div>
-            <div class="det">
-              <div class="name">{{agentData.name}}</div>
-              <div class="skill">语言：
-                <span v-for="(language, i) in agentData.languages">{{language}}<span v-if="i!=agentData.languages.length-1">{{agentData.languages.length}}/</span></span>
-              </div>
+    <nest-scroll ref="scroll"
+                 class="app-body">
+      <div class="user-info">
+        <div class="agent-base">
+          <div class="portrait" :style="{ backgroundImage: 'url(' + agent.avatar + ')'}"></div>
+          <div class="agent-info">
+            <div class="agent-name">{{ agent.name }}</div>
+            <div class="agent-desc">
+              <span>语言：{{ getSelecteds(DICT.languages, agent.languages).join('/') }}</span>
             </div>
           </div>
-          <div class="top-r">
-            <div :class="agentData.favored?'follow-btn':'focus-btn'" @click.stop="cancelFollow(agentData)">{{agentData.favored?'已关注':'关注'}}</div>
+          <div class="focus-btn" :class="{ disabled: agent.favored }">{{ agent.favored ? '已关注' : '关注' }}</div>
+        </div>
+        <div class="deal-info">近一个月: 出租<span class="hl">{{ agent.monthly_rent_amount }}</span>套 售卖<span class="hl">{{ agent.monthly_sold_amount }}</span>套</div>
+        <div class="agent-sign">{{ agent.introduction }}</div>
+        <div class="agent-sec border-bottom">
+          <div class="agent-cell">
+            <div class="main">{{ agent.join_days }}天</div>
+            <div class="sub">加入时间</div>
+          </div>
+          <div class="agent-cell">
+            <div class="main">{{ agent.house_count }}套</div>
+            <div class="sub">TA的房源</div>
+          </div>
+          <div class="agent-cell">
+            <div class="main">{{ agent.follows }}人</div>
+            <div class="sub">关注人数</div>
           </div>
         </div>
-        <div class="text1">
-          近一个月：出租 <span class="sp">{{agentData.monthly_rent_amount}}</span>套 &nbsp;售卖 <span class="sp">{{agentData.monthly_sold_amount}}</span> 套
-        </div>
-        <div class="text2">
-          {{agentData.introduction}}
-        </div>
-      </div>
-    </div>
-    <div class="summary-warp">
-      <div class="summary border-bottom">
-        <div class="one">
-          <div class="top">{{agentData.join_days}}天</div>
-          <div class="bottom">加入时间</div>
-        </div>
-        <div class="one">
-          <div class="top">{{agentData.house_count}}套</div>
-          <div class="bottom">TA的房源</div>
-        </div>
-        <div class="one">
-          <div class="top">{{agentData.follows}}人</div>
-          <div class="bottom">关注人数</div>
+        <!--<div class="star-wrap border-bottom">-->
+        <!--<div class="evaluate">用户评价</div>-->
+        <!--<div class="eval-stars"></div>-->
+        <!--</div>-->
+        <div class="resources">
+          <div class="left">TA的房源</div>
+          <div class="right">
+            <nest-tab-bar class="tabs" v-model="tabSelected" align="right">
+              <nest-tab-item id="rent">出租</nest-tab-item>
+              <nest-tab-item id="sale">售卖</nest-tab-item>
+            </nest-tab-bar>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="star-wrap border-bottom">
-      <div class="evaluate">用户评价</div>
-      <div class="eval-stars"></div>
-    </div>
-    <div class="his-resour">
-      <div class="resour-l">TA的房源</div>
-      <nest-tab-bar class="tabs" v-model="tabSelected">
-        <nest-tab-item id="ecrent">出租</nest-tab-item>
-        <nest-tab-item id="ecsale">售卖</nest-tab-item>
-      </nest-tab-bar>
-    </div>
-
-    <nest-tab-container class="app-body" v-model="tabSelected">
-      <nest-tab-container-item class="container-item" id="ecrent">
-        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj"
-                     @pullingUp="getMyDataRent"
-                     ref="ecrent">
-          <nest-swipe-cell  v-for="(recommend,index) in dataListRent" :key="index">
-            <div class="search-item"  slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
+      <nest-tab-container class="house-info" v-model="tabSelected">
+        <nest-tab-container-item id="rent">
+          <nest-swipe-cell v-for="item in rentList" :key="item.id">
+            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id }})">
               <div class="move-wrap">
-                <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
+                <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="msg-wrap">
-                  <div class="title">{{recommend.building_name}}</div>
-                  <div class="type-wrap" v-if="recommend.trade == 'rent'">
-                    <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
+                  <div class="title">{{ item.building_name }}</div>
+                  <div class="type-wrap" v-if="matchCustomType(item) === 'new'">
+                    <div class="type-str">{{ item.address }}</div>
                   </div>
-                  <div class="type-wrap" v-else="recommend.trade != 'rent'">
-                    <div class="type-str">{{recommend.address}}</div>
+                  <div class="type-wrap" v-else>
+                    <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
                   </div>
-                  <div class="rent" v-if="recommend.trade == 'rent'">
-                    <div class="price">{{recommend.price}}</div>
-                    <div class="price-msg">P/月</div>
-                  </div>
-                  <div class="rent" v-else-if="recommend.trade == 'sale'">
-                    <div class="price">{{recommend.price}}</div>
-                    <div class="price-msg">P/㎡</div>
-                    <div class="room-size">{{recommend.centiare}} ㎡</div>
+                  <div class="rent">
+                    <div class="price" v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</div>
+                    <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
+                    <div class="price-msg" v-if="matchCustomType(item) === 'new'">P/㎡</div>
+                    <div class="price-msg" v-else-if="matchCustomType(item) === 'rent'">P/月</div>
+                    <div class="price-msg" v-else>万</div>
+                    <div class="room-size" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</div>
+                    <div class="room-size" v-else-if="matchCustomType(item) === 'second'">{{ item.price }} P/㎡</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="collect-wrap"  slot="controls">
-              <div class="collect">
-                <div :class="recommend.favored?'heart on':'heart'" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
-                <div class="share" @click.stop="shareFun"></div>
-              </div>
-              <div class="collect-del">
-                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
-              </div>
+            <div class="collect" slot="controls">
+              <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
+              <div class="share" @click="doShare"></div>
             </div>
+            <!--<div slot="controls" class="collect-wrap" v-if="filters.status === 1">-->
+              <!--<div class="share"></div>-->
+              <!--<div class="cancel" @click="updateStatus(item.id, 0)"></div>-->
+            <!--</div>-->
+            <!--<div slot="controls" class="collect-wrap" v-else>-->
+              <!--<div class="publish" @click="updateStatus(item.id, 1)"></div>-->
+              <!--<div class="delete"></div>-->
+            <!--</div>-->
           </nest-swipe-cell>
-        </nest-scroll>
-      </nest-tab-container-item>
+        </nest-tab-container-item>
+        <nest-tab-container-item id="sale">
+          <nest-swipe-cell v-for="item in saleList" :key="item.id">
 
-      <nest-tab-container-item class="container-item" id="ecsale">
-        <nest-scroll class="scroll-body" :pullUpLoad="pullUpLoadObj"
-                     @pullingUp="getMyDataSale"
-                     ref="ecsale">
-          <nest-swipe-cell  v-for="(recommend,index) in dataListSale" :key="index">
-            <div class="search-item"  slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
-              <div class="move-wrap">
-                <!--<div class="item-img" :style="{backgroundImage:'url(http://img0.imgtn.bdimg.com/it/u=1415442510)'}"></div>-->
-                <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
-                <div class="msg-wrap">
-                  <div class="title">{{recommend.building_name}}</div>
-                  <div class="type-wrap" v-if="recommend.trade == 'rent'">
-                    <div class="type" v-for="(feature,index) in recommend.features" :key="index">{{feature}}</div>
-                  </div>
-                  <div class="type-wrap" v-else="recommend.trade != 'rent'">
-                    <div class="type-str">{{recommend.address}}</div>
-                  </div>
-                  <div class="rent" v-if="recommend.trade == 'rent'">
-                    <div class="price">{{recommend.price}}</div>
-                    <div class="price-msg">P/月</div>
-                  </div>
-                  <div class="rent" v-else-if="recommend.trade == 'sale'">
-                    <div class="price">{{recommend.price}}</div>
-                    <div class="price-msg">P/㎡</div>
-                    <div class="room-size">{{recommend.centiare}} ㎡</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="collect-wrap"  slot="controls">
-              <div class="collect">
-                <div :class="recommend.favored?'heart on':'heart'" @click.stop="cancelFollow(recommend,index,'recommends')"></div>
-                <div class="share" @click.stop="shareFun"></div>
-              </div>
-              <div class="collect-del">
-                <a class="call-icon" :href="`tel:${recommend.user.phone}`"></a>
-              </div>
-            </div>
           </nest-swipe-cell>
-        </nest-scroll>
-      </nest-tab-container-item>
-    </nest-tab-container>
-    <div class="foot-end">
-      <div class="end-item" @click="shareShow=!shareShow">
-        <img class="share-icon" src="../../assets/images/share.png" alt="">
+        </nest-tab-container-item>
+      </nest-tab-container>
+    </nest-scroll>
+    <div class="control-bar">
+      <div class="controls">
+        <a href="javascript:;" class="share" @click="shareShow = !shareShow"></a>
       </div>
-      <div class="end-item center" :href="`sms:${agentData.phone}`">短信咨询</div>
-      <a class="end-item last" :href="`tel:${agentData.phone}`">电话咨询</a>
+      <a :href="'sms:' + agent.phone" class="control-btn info">短信咨询</a>
+      <a :href="'tel:' + agent.phone" class="control-btn primary">电话咨询</a>
     </div>
     <NestShare :status="shareShow" @close="shareShow = false"></NestShare>
   </div>
 </template>
 
 <script>
-  import UserService from '../../services/UserService'
+  import DICT, {getSelecteds} from "../../configs/DICT";
   import Utils from '../../utils/Utils';
+  import UserService from '../../services/UserService';
+  import HouseService from "../../services/HouseService";
+  import PreviewDefaultImg from '../../assets/images/preview-default.png';
+
   export default {
     name: "FollowAgent",
-    props:{
-      recommends: {
-        type: Array,
-        default: function () {
-          return [
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "新房旧房Makati,新房旧房Makati,  1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型',
-              roomsizes: "新房旧房Makati, 1207 Metro Manila",
-              pricem: 23000,
-              rentsize: '28.00-100.55 ㎡'
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: "车位Makati, 1207 Metro Manila",
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            },
-            {
-              roomimg: '',
-              roomplace: 'Jazz residence户型Jazz residence户型residence户型residence户型',
-              roomsizes: ['10F', '100.55 ㎡'],
-              pricem: 23000
-            }
-          ];
-        }
-      },
-    },
-    mounted(){
-      UserService.getAgentInfo(this.id,(res)=>{
-        this.agentData = res.data
-      })
-      // UserService.getAgentInfoHouses(this.id,)
-      this.getMyDataRent(false)
-      this.getMyDataSale(false)
-    },
-    data(){
+    data() {
       return {
-        tabSelected:'ecrent',
-        agentData:{},
-        filters: {
-          status: 1
-        },
-        pullUpLoadObj: {
-          threshold: 0,
-          txt: {
-            more: '加载更多',
-            noMore: '没有更多数据了'
-          }
-        },
-        dataListRent:[],
-        dataListSale:[],
-        shareShow:false,
-        id:this.$route.params.id,
+        tabSelected: 'rent',
+        shareShow: false,
+        agent: {},
+        rentList: [],
+        saleList: []
       }
     },
+    created() {
+      this.initConsts();
+    },
+    mounted() {
+      this.getAgentInfo();
+      this.getRentData();
+    },
     methods: {
+      initConsts() {
+        let params = this.$route.params;
+        if (params) {
+          this.agentId = params.id;
+        }
+        this.DICT = DICT;
+        this.getSelecteds = getSelecteds;
+        this.matchCustomType = Utils.matchCustomType;
+      },
+      getAgentInfo() {
+        UserService.getAgentInfo(this.agentId, res => {
+          this.agent = res.data;
+        });
+      },
       imageUrl(item) {
-        if (item.galleries.data.length > 0) {
-          return item.galleries.data[0].url;
-        } else {
-          return require('../../assets/images/preview-default.png');
-        }
+        return item.cover ? item.cover : PreviewDefaultImg;
       },
-      shareFun(){
-        this.shareShow = !this.shareShow
+      getRentData() {
+        HouseService.getHousesByUserId(this.agentId, {
+          trade: 'rent'
+        }, res => {
+          this.rentList = res.data;
+        })
       },
-      cancelFollow(item, index, list) {
-        if (list == 'recommends') {
-          if (item.favored == true){
-            item.favored = !item.favored
-            let params = {
-              target_type:'house',
-              target_id:item.id
-            }
-            UserService.cancelFavorites(params,()=>{})
-            this.$toast.info('取消了')
-          }else {
-            item.favored = !item.favored
-            let params = {
-              target_type:'house',
-              target_id:item.id,
-              loading:false
-            }
-            UserService.addFavorites(params,()=>{})
-            this.$toast.info('收藏了')
-          }
-          // this.recommends.splice(index, 1)
-        } else {
-          if (item.favored == true){
-            item.favored = !item.favored
-            let params = {
-              target_type:'user',
-              target_id:item.id
-            }
-            UserService.cancelFavorites(params,()=>{})
-            this.$toast.info('取消了')
-          }else {
-            item.favored = !item.favored
-            let params = {
-              target_type:'user',
-              target_id:item.id
-            }
-            UserService.addFavorites(params,()=>{})
-            this.$toast.info('关注了')
-          }
-          // this.peopleArr.splice(index, 1)
-        }
-      },
-      getMyDataRent(loading = false, callback) {
-        this.filters.trade='rent'
-        let params = Utils.getEffectiveAttrsByObj(this.filters);
-        if (loading) {
-          this.filters.page = 1;
-          UserService.getAgentInfoHouses(this.id,params, res => {
-            this.dataListRent = res.data;
-            this.$refs.ecrent.scrollTo(0, 0, 300);
-            if (this.dataListRent.length < res.meta.pagination.total) {
-              this.$refs.ecrent.forceUpdate(true);
-            } else {
-              this.$refs.ecrent.forceUpdate(false);
-            }
-            if (callback)
-              callback();
-          });
-        } else {
-          this.filters.page += 1;
-          UserService.getAgentInfoHouses(this.id,params, res => {
-            this.filters.page = res.meta.pagination.current_page;
-            this.dataListRent = this.dataListRent.concat(res.data);
-            if (this.dataListRent.length < res.meta.pagination.total) {
-              this.$refs.ecrent.forceUpdate(true);
-            } else {
-              this.$refs.ecrent.forceUpdate(false);
-            }
-            if (callback)
-              callback();
-          });
-        }
-      },
-      getMyDataSale(loading = false, callback) {
-        this.filters.trade='sale'
-        let params = Utils.getEffectiveAttrsByObj(this.filters);
-        if (loading) {
-          this.filters.page = 1;
-          UserService.getAgentInfoHouses(this.id,params, res => {
-            this.dataListSale = res.data;
-            this.$refs.ecsale.scrollTo(0, 0, 300);
-            if (this.dataListSale.length < res.meta.pagination.total) {
-              this.$refs.ecsale.forceUpdate(true);
-            } else {
-              this.$refs.ecsale.forceUpdate(false);
-            }
-            if (callback)
-              callback();
-          });
-        } else {
-          this.filters.page += 1;
-          UserService.getAgentInfoHouses(this.id,params, res => {
-            this.filters.page = res.meta.pagination.current_page;
-            this.dataListSale = this.dataListSale.concat(res.data);
-            if (this.dataListSale.length < res.meta.pagination.total) {
-              this.$refs.ecsale.forceUpdate(true);
-            } else {
-              this.$refs.ecsale.forceUpdate(false);
-            }
-            if (callback)
-              callback();
-          });
-        }
-      },
+      doFollow(item) {},
+      doShare() {}
     }
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-.economic{
-  .ec-title{
-    position: relative;
-    height: 1.2rem;
-    line-height: 1.2rem;
-    text-align: center;
-    font-size: 0.32rem;
-    color: #333333;
-    .reback{
-      position: absolute;
-      top: 50%;
-      left: 0.28rem;
-      transform: translate3d(0,-50%,0);
-      width: 0.42rem;
-      height: 0.32rem;
-      background: url("../../assets/images/return-icon.png") no-repeat;
-      background-size: 100%;
+<style lang="scss" scoped>
+  .agent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .header {
+      position: relative;
+      display: flex;
+      padding: 0 .28rem;
+      height: 1.2rem;
+      justify-content: center;
+      align-items: center;
     }
-  }
-  .item{
-    position: relative;
-    height: 2.1rem;
-    margin-bottom: 0.4rem;
-    &:last-child{
-      margin-bottom: 0.8rem;
-    }
-    .item-cont{
-      box-sizing: border-box;
-      padding: 0 0.28rem;
+    .back {
       position: absolute;
+      top: 0;
+      left: .28rem;
+      width: .9rem;
+      height: 100%;
+      background: url('../../assets/images/return-icon.png') no-repeat left center;
+      background-size: .42rem .32rem;
+    }
+    .app-body {
+      flex: 1;
+      overflow: hidden;
+    }
+    .user-info {
+      padding: 0 .28rem;
+    }
+    .agent-base {
+      margin: .4rem 0 .26rem;
+      display: flex;
       width: 100%;
-    }
-    .top{
-      margin-bottom: 0.2rem;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-    }
-    .top-l{
-      display: flex;
-      align-items: center;
-      .cli{
-        margin-right: 0.2rem;
+      .portrait {
+        margin-right: .2rem;
         width: 1rem;
         height: 1rem;
-        background-color: #DFDFDF;
         border-radius: 50%;
+        background: #dfdfdf center center no-repeat;
         background-size: cover;
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
       }
-      .det{
-        display: flex;
-        flex-direction:column;
+      .agent-info {
+        flex: 1;
+        .agent-name {
+          font-size: .32rem;
+          color: #333;
+          line-height: 1;
+        }
+        .agent-desc {
+          margin-top: .18rem;
+          font-size: 0;
+          color: #b3b3b3;
+          line-height: 1;
+          span {
+            font-size: .24rem;
+          }
+          .type {
+            margin-right: .35rem;
+          }
+        }
       }
-      .name{
-        margin-bottom: 0.18rem;
-        font-size: 0.32rem;
-        color: #333;
-      }
-      .skill{
-        font-size: 0.24rem;
-        color: #B3B3B3;
-      }
-    }
-    .top-r{
-      display: flex;
-      flex-direction:column ;
-      align-items: center;
       .focus-btn {
         position: relative;
         padding-left: .48rem;
-        width: 1.28rem;
-        height: .6rem;
-        line-height: 0.6rem;
+        width: 1.2rem;
+        height: .54rem;
+        line-height: .5rem;
         border: .02rem solid #0f9183;
         border-radius: .1rem;
         font-size: .28rem;
@@ -433,7 +236,7 @@
         box-sizing: border-box;
         &::before {
           position: absolute;
-          top: .16rem;
+          top: .13rem;
           left: .15rem;
           content: "";
           width: .24rem;
@@ -451,234 +254,145 @@
           }
         }
       }
-      .follow-btn{
-        font-size: 0.28rem;
-        color: #B3B3B3;
-        position: relative;
-        padding: 0 .22rem;
-        min-width: 1.2rem;
-        max-width: 1.6rem;
-        height: .6rem;
-        line-height: .6rem;
-        text-align: center;
-        box-sizing: border-box;
-        border-radius: .1rem;
-        &.active {
-          color: #fff;
-          background-color: #0f9183;
-          &::after {
-            display: none;
-          }
-        }
-        &::after {
-          position: absolute;
-          content: "";
-          top: 0;
-          left: 0;
-          border: 1px solid #b2b2b2;
-          border-radius: .2rem;
-          box-sizing: border-box;
-          width: 200%;
-          height: 200%;
-          transform: scale(.5);
-          transform-origin: left top;
-        }
-      }
-      .follow-num{
-        margin-top: 0.08rem;
-        font-size: 0.24rem;
-        color: #B3B3B3;
-      }
     }
-    .text1{
-      font-size: 0.24rem;
+    .deal-info {
+      font-size: .24rem;
       color: #999;
-      .sp{
-        font-size: 0.28rem;
+      .hl {
+        margin: 0 .05rem;
+        font-weight: bold;
         color: #333;
       }
     }
-    .text2{
-      font-weight: lighter;
-      font-size: 0.24rem;
-      line-height: 0.3rem;
-      color: #B3B3B3;
-      overflow : hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    .agent-sign {
+      font-size: .24rem;
+      color: #b3b3b3;
+      line-height: .36rem;
     }
-    .collect-wrap{
-      position: absolute;
-      top: 0px;
-      right: 0px;
+    .agent-sec {
+      margin-top: .28rem;
       display: flex;
-      .collect-l{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 1.2rem;
-        height: 2.15rem;
-        background: #e2ebe2;
-        .icon{
-          width: 0.3rem;
-          height: 0.3rem;
-        }
-      }
-      .collect-r{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 0.8rem;
-        height: 2.15rem;
-        background: #f9f5ed;
-        .icon{
-          width: 0.38rem;
-          height: 0.38rem;
-        }
-      }
     }
-  }
-  .summary-warp{
-    .summary{
-      margin-left: 0.28rem;
-      margin-right: 0.28rem;
-      padding-bottom: 0.4rem;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      /*border-bottom: 1px solid #F2F2F2;*/
-    }
-    .one{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      .top{
-margin-bottom: 0.18rem;
-        font-size: 0.32rem;
+    .agent-cell {
+      padding: .4rem 0;
+      flex: 1;
+      text-align: center;
+      .main {
+        font-size: .32rem;
+        font-weight: bold;
         color: #0F9183;
       }
-      .bottom{
-        font-size: 0.24rem;
-        color: #B3B3B3;
+      .sub {
+        margin-top: .18rem;
+        font-size: .24rem;
+        color: #b3b3b3;
       }
     }
-  }
-  .star-wrap{
-    margin-left: 0.28rem;
-    margin-right: 0.28rem;
-    height: 1.06rem;
-    display: flex;
-    align-items: center;
-    .evaluate{
-      color: #222222;
-      font-size: 0.28rem;
-    }
-  }
-  .his-resour{
-    margin: 0.42rem 0.28rem 0.54rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .resour-l{
-      color: #333333;
-      font-size: 0.46rem;
-    }
-  }
-  .search-item {
-    display: flex;
-    width: 100%;
-    height: 1.74rem;
-    align-items: center;
-    margin-bottom: 0.4rem;
-    .move-wrap {
-      position: absolute;
-      top: 0rem;
-      left: 0rem;
-      z-index: 1;
+    .resources {
+      margin-top: .3rem;
       display: flex;
-      background: #fff;
-      transition: left 0.5s;
-    }
-    .item-img {
-      margin-left: 0.28rem;
-      flex-shrink: 0;
-      width: 2.7rem;
-      height: 1.74rem;
-      border-radius: 0.1rem;
-      background-color: #e8e8ea;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-    .msg-wrap {
-      display: flex;
-      flex-direction: column;
       justify-content: space-between;
-      padding: .08rem 0;
-      flex-shrink: 0;
-      width: 3.96rem;
-      margin-left: 0.28rem;
-      margin-right: 0.28rem;
+      align-items: center;
+      .left {
+        font-size: .46rem;
+        color: #333;
+        font-weight: bold;
+      }
+      .right {
+        display: flex;
+        font-size: 0.28rem;
+        color: #999999;
+      }
     }
-    .title {
-      word-break: break-all;
-      margin-bottom: 0.1rem;
-      height: 0.64rem;
-      line-height: .32rem;
-      font-size: 0.28rem;
-      color: #333333;
-      font-weight: bold;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    .house-info {
+      margin-top: .3rem;
     }
-    .type-wrap {
+    .search-item {
       display: flex;
-      margin-bottom: 0.1rem;
-    }
-    .type {
-      margin-right: 0.1rem;
-      padding: 0.08rem;
-      background: #fbf8f3;
-      color: #d5be88;
-      font-size: 0.24rem;
-      border-radius: 0.1rem;
-      line-height: 1;
-    }
-    .type-str {
-      word-break: break-all;
-      color: #808080;
-      font-size: 0.24rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .rent {
-      display: flex;
-      align-items: flex-end;
-      font-size: 0.28rem;
-      color: #0f9183;
-    }
-    .price {
-      font-weight: bold;
-    }
-    .price-msg {
-      margin-left: 0.1rem;
-      font-size: 0.24rem;
-    }
-    .room-size {
-      margin-left: 0.25rem;
-      font-size: 0.22rem;
-      color: #cccccc;
-    }
-  }
-  .collect-wrap {
-    display: flex;
-    &:last-of-type {
-      margin-bottom: 1rem;
+      width: 100%;
+      height: 1.74rem;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      .move-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        background: #fff;
+        transition: left 0.5s;
+      }
+      .item-img {
+        margin-left: 0.28rem;
+        width: 2.7rem;
+        height: 1.74rem;
+        border-radius: 0.1rem;
+        background: #e8e8ea no-repeat;
+        background-size: cover;
+      }
+      .msg-wrap {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: .08rem 0;
+        flex-shrink: 0;
+        width: 3.96rem;
+        margin-left: 0.28rem;
+        margin-right: 0.28rem;
+      }
+      .title {
+        word-break: break-all;
+        margin-bottom: 0.1rem;
+        height: 0.64rem;
+        line-height: .32rem;
+        font-size: 0.28rem;
+        color: #333333;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .type-wrap {
+        display: flex;
+        margin-bottom: 0.1rem;
+      }
+      .type {
+        margin-right: 0.1rem;
+        padding: 0.08rem;
+        background: #fbf8f3;
+        color: #d5be88;
+        font-size: 0.24rem;
+        border-radius: 0.1rem;
+        line-height: 1;
+      }
+      .type-str {
+        word-break: break-all;
+        color: #808080;
+        font-size: 0.24rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rent {
+        display: flex;
+        align-items: flex-end;
+        font-size: 0.28rem;
+        color: #0f9183;
+      }
+      .price {
+        font-weight: bold;
+      }
+      .price-msg {
+        margin-left: 0.1rem;
+        font-size: 0.24rem;
+      }
+      .room-size {
+        margin-left: 0.25rem;
+        font-size: 0.22rem;
+        color: #cccccc;
+      }
     }
     .collect {
       display: flex;
@@ -691,14 +405,14 @@ margin-bottom: 0.18rem;
       background-color: #e7f4f2;
     }
     .heart {
-      &.on{
-        background: url("../../assets/images/heart-on.png") no-repeat;
-        background-size: 100% 100%;
-      }
       width: 0.36rem;
       height: 0.32rem;
       background: url("../../assets/images/heart.png") no-repeat;
       background-size: 100% 100%;
+      &.on {
+        background: url("../../assets/images/heart-on.png") no-repeat;
+        background-size: 100% 100%;
+      }
     }
     .share {
       width: 0.3rem;
@@ -706,61 +420,38 @@ margin-bottom: 0.18rem;
       background: url("../../assets/images/share.png") no-repeat;
       background-size: 100% 100%;
     }
-    .collect-del {
+    .control-bar {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 0.8rem;
-      height: 1.74rem;
-      background:rgba(249,245,237,1);
-      .call-icon{
-        width: 0.38rem;
-        height: 0.38rem;
-        background: url("../../assets/images/s-call.png") no-repeat;
-        background-size: 100% 100%;
+      background-color: #fff;
+      font-size: .28rem;
+      text-align: center;
+      box-shadow: 0 -1px 5px 0 rgba(234,234,234,1);
+      .controls {
+        padding: 0 .25rem;
+        display: flex;
+        justify-content: space-around;
+        flex: 1;
+        align-items: center;
+        .share {
+          width: .38rem;
+          height: .38rem;
+          background: url("../../assets/images/share.png") no-repeat;
+          background-size: 100% 100%;
+        }
+      }
+      .control-btn {
+        display: block;
+        width: 2.4rem;
+        height: 1rem;
+        line-height: 1rem;
+        color: #fff;
+        &.primary {
+          background-color: #0F9183;
+        }
+        &.info {
+          background-color: #f99c91;
+        }
       }
     }
   }
-  .foot-end{
-    position: fixed;
-    left: 0rem;
-    right: 0rem;
-    bottom: 0rem;
-    display: flex;
-    z-index: 2;
-    .end-item{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      height: 1rem;
-      background: #fff;
-      .share-icon{
-        width: 0.38rem;
-        height: 0.38rem;
-      }
-    }
-    .center{
-      font-size: 0.28rem;
-      color: #fff;
-      background: #F99C91;
-    }
-    .last{
-      font-size: 0.28rem;
-      color: #fff;
-      background: #0F9183;
-    }
-  }
-  .app-body {
-    position: relative;
-    flex: 1;
-    overflow: hidden;
-  }
-  .container-item {
-    height: 100%;
-  }
-  .scroll-body {
-    height:4.8rem;
-  }
-}
 </style>

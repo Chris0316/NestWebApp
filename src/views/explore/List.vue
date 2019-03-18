@@ -91,7 +91,7 @@
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
-                <div class="title">{{ item.building_name }}</div>
+                <div class="title">{{ pageType === 'land' ? item.address : item.building_name }}</div>
                 <div class="type-wrap" v-if="pageType === 'new'">
                   <div class="type-str">{{ item.address }}</div>
                 </div>
