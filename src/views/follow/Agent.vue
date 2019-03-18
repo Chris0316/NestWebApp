@@ -15,7 +15,7 @@
               <span>语言：{{ getSelecteds(DICT.languages, agent.languages).join('/') }}</span>
             </div>
           </div>
-          <div class="focus-btn" :class="{ disabled: agent.favored }">{{ agent.favored ? '已关注' : '关注' }}</div>
+          <div class="focus-btn" :class="{ disabled: agent.favored }" @click="doFollow(agent, 'user')">{{ agent.favored ? '已关注' : '关注' }}</div>
         </div>
         <div class="deal-info">近一个月: 出租<span class="hl">{{ agent.monthly_rent_amount }}</span>套 售卖<span class="hl">{{ agent.monthly_sold_amount }}</span>套</div>
         <div class="agent-sign">{{ agent.introduction }}</div>
@@ -49,48 +49,54 @@
       </div>
       <nest-tab-container class="house-info" v-model="tabSelected">
         <nest-tab-container-item id="rent">
-          <nest-swipe-cell v-for="item in rentList" :key="item.id">
-            <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id }})">
-              <div class="move-wrap">
-                <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
-                <div class="msg-wrap">
-                  <div class="title">{{ item.building_name }}</div>
-                  <div class="type-wrap" v-if="matchCustomType(item) === 'new'">
-                    <div class="type-str">{{ item.address }}</div>
-                  </div>
-                  <div class="type-wrap" v-else>
-                    <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
-                  </div>
-                  <div class="rent">
-                    <div class="price" v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</div>
-                    <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
-                    <div class="price-msg" v-if="matchCustomType(item) === 'new'">P/㎡</div>
-                    <div class="price-msg" v-else-if="matchCustomType(item) === 'rent'">P/月</div>
-                    <div class="price-msg" v-else>万</div>
-                    <div class="room-size" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</div>
-                    <div class="room-size" v-else-if="matchCustomType(item) === 'second'">{{ item.price }} P/㎡</div>
-                  </div>
+          <div class="search-item" v-for="item in rentList" :key="item.id" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id }})">
+            <div class="move-wrap">
+              <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
+              <div class="msg-wrap">
+                <div class="title">{{ item.building_name }}</div>
+                <div class="type-wrap" v-if="matchCustomType(item) === 'new'">
+                  <div class="type-str">{{ item.address }}</div>
+                </div>
+                <div class="type-wrap" v-else>
+                  <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
+                </div>
+                <div class="rent">
+                  <div class="price" v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</div>
+                  <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
+                  <div class="price-msg" v-if="matchCustomType(item) === 'new'">P/㎡</div>
+                  <div class="price-msg" v-else-if="matchCustomType(item) === 'rent'">P/月</div>
+                  <div class="price-msg" v-else>万</div>
+                  <div class="room-size" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</div>
+                  <div class="room-size" v-else-if="matchCustomType(item) === 'second'">{{ item.price }} P/㎡</div>
                 </div>
               </div>
             </div>
-            <div class="collect" slot="controls">
-              <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
-              <div class="share" @click="doShare"></div>
-            </div>
-            <!--<div slot="controls" class="collect-wrap" v-if="filters.status === 1">-->
-              <!--<div class="share"></div>-->
-              <!--<div class="cancel" @click="updateStatus(item.id, 0)"></div>-->
-            <!--</div>-->
-            <!--<div slot="controls" class="collect-wrap" v-else>-->
-              <!--<div class="publish" @click="updateStatus(item.id, 1)"></div>-->
-              <!--<div class="delete"></div>-->
-            <!--</div>-->
-          </nest-swipe-cell>
+          </div>
         </nest-tab-container-item>
         <nest-tab-container-item id="sale">
-          <nest-swipe-cell v-for="item in saleList" :key="item.id">
-
-          </nest-swipe-cell>
+          <div class="search-item" v-for="item in saleList" :key="item.id">
+            <div class="move-wrap">
+              <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
+              <div class="msg-wrap">
+                <div class="title">{{ item.building_name }}</div>
+                <div class="type-wrap" v-if="matchCustomType(item) === 'new'">
+                  <div class="type-str">{{ item.address }}</div>
+                </div>
+                <div class="type-wrap" v-else>
+                  <div class="type" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</div>
+                </div>
+                <div class="rent">
+                  <div class="price" v-if="matchCustomType(item) === 'new' || matchCustomType(item) === 'rent'">{{ item.price }}</div>
+                  <div class="price" v-else>{{ item.total_amount / 10000 }}</div>
+                  <div class="price-msg" v-if="matchCustomType(item) === 'new'">P/㎡</div>
+                  <div class="price-msg" v-else-if="matchCustomType(item) === 'rent'">P/月</div>
+                  <div class="price-msg" v-else>万</div>
+                  <div class="room-size" v-if="matchCustomType(item) === 'new'">{{ item.centiare }} ㎡</div>
+                  <div class="room-size" v-else-if="matchCustomType(item) === 'second'">{{ item.price }} P/㎡</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </nest-tab-container-item>
       </nest-tab-container>
     </nest-scroll>
@@ -110,6 +116,7 @@
   import Utils from '../../utils/Utils';
   import UserService from '../../services/UserService';
   import HouseService from "../../services/HouseService";
+  import FollowService from '../../services/FollowService';
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
 
   export default {
@@ -155,8 +162,26 @@
           this.rentList = res.data;
         })
       },
-      doFollow(item) {},
-      doShare() {}
+      getSaleData() {
+
+      },
+      doFollow(item, type) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: type,
+            target_id: item.id
+          }, res => {
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: type,
+            target_id: item.id
+          }, res => {
+            item.favored = true;
+          });
+        }
+      }
     }
   }
 </script>
@@ -188,10 +213,10 @@
       overflow: hidden;
     }
     .user-info {
-      padding: 0 .28rem;
+      padding: .4rem .28rem 0;
     }
     .agent-base {
-      margin: .4rem 0 .26rem;
+      margin-bottom: .26rem;
       display: flex;
       width: 100%;
       align-items: center;
@@ -306,27 +331,26 @@
     }
     .house-info {
       margin-top: .3rem;
+      padding-bottom: .4rem;
     }
     .search-item {
       display: flex;
       width: 100%;
       height: 1.74rem;
       align-items: center;
-      margin-bottom: 0.4rem;
+      margin-bottom: .4rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
       .move-wrap {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
         display: flex;
         background: #fff;
-        transition: left 0.5s;
       }
       .item-img {
-        margin-left: 0.28rem;
+        margin-left: .28rem;
         width: 2.7rem;
         height: 1.74rem;
-        border-radius: 0.1rem;
+        border-radius: .1rem;
         background: #e8e8ea no-repeat;
         background-size: cover;
       }
@@ -337,8 +361,8 @@
         padding: .08rem 0;
         flex-shrink: 0;
         width: 3.96rem;
-        margin-left: 0.28rem;
-        margin-right: 0.28rem;
+        margin-left: .28rem;
+        margin-right: .28rem;
       }
       .title {
         word-break: break-all;
@@ -393,32 +417,6 @@
         font-size: 0.22rem;
         color: #cccccc;
       }
-    }
-    .collect {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-      flex-shrink: 0;
-      width: 1.2rem;
-      height: 1.74rem;
-      background-color: #e7f4f2;
-    }
-    .heart {
-      width: 0.36rem;
-      height: 0.32rem;
-      background: url("../../assets/images/heart.png") no-repeat;
-      background-size: 100% 100%;
-      &.on {
-        background: url("../../assets/images/heart-on.png") no-repeat;
-        background-size: 100% 100%;
-      }
-    }
-    .share {
-      width: 0.3rem;
-      height: 0.3rem;
-      background: url("../../assets/images/share.png") no-repeat;
-      background-size: 100% 100%;
     }
     .control-bar {
       display: flex;
