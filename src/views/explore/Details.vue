@@ -351,6 +351,15 @@
     mounted() {
       this.getData();
     },
+    watch: {
+      '$route' () {
+        let params = this.$route.params;
+        if (params) {
+          this.houseId = params.id;
+        }
+        this.getData();
+      }
+    },
     methods: {
       initConsts() {
         let params = this.$route.params;

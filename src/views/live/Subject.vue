@@ -1,6 +1,9 @@
 <template>
   <div class="subject">
-    <nest-scroll class="app-body">
+    <nest-scroll ref="scroll"
+                 :pullUpLoad="pullUpLoadObj"
+                 @pullingUp="getData"
+                 class="app-body">
       <div class="live-body">
         <div class="banner" :class="bannerClass">
           <div class="head-bar">
@@ -54,6 +57,7 @@
         <div class="category-list">
           <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3">
             <div class="title">{{ item.title }}</div>
+            <div class="info">{{ item.created_at }}</div>
           </div>
         </div>
       </div>
@@ -72,6 +76,17 @@
         bannerClass: '',
         name: '',
         description: '',
+        filters: {
+          page: 0,
+          per_page: 10
+        },
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        },
         dataList: []
       }
     },
@@ -80,7 +95,7 @@
       this.initConsts();
     },
     mounted() {
-      this.getArticleList();
+      this.getData(true);
     },
     methods: {
       initConsts() {
@@ -95,14 +110,33 @@
           index = Math.round(ran);
         this.bannerClass = bannerArr[index];
       },
-      getArticleList() {
-        ArticleService.getArticleList({
-          category: this.type
-        }, res => {
-          this.name = res.meta.category.name;
-          this.description = res.meta.category.description;
-          this.dataList = res.data;
-        })
+      getData(loading) {
+        if (loading) {
+          this.filters.page = 1;
+          this.filters.category = this.type;
+          ArticleService.getArticleList(this.filters, res => {
+            this.name = res.meta.category.name;
+            this.description = res.meta.category.description;
+            this.dataList = res.data;
+            this.$refs.scroll.scrollTo(0, 0, 300);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
+          }, true);
+        } else {
+          this.filters.page += 1;
+          ArticleService.getArticleList(this.filters, res => {
+            this.filters.page = res.meta.pagination.current_page;
+            this.dataList = this.dataList.concat(res.data);
+            if (this.dataList.length < res.meta.pagination.total) {
+              this.$refs.scroll.forceUpdate(true);
+            } else {
+              this.$refs.scroll.forceUpdate(false);
+            }
+          }, false);
+        }
       }
     }
   }
@@ -117,9 +151,6 @@
     .app-body {
       flex: 1;
       overflow: hidden;
-    }
-    .live-body {
-      padding-bottom: 1.5rem;
     }
     .banner {
       position: relative;
@@ -243,6 +274,11 @@
       .title {
         font-size: .32rem;
         color: #333;
+      }
+      .info {
+        margin-top: .25rem;
+        font-size: .24rem;
+        color: #b2b2b2;
       }
     }
   }
