@@ -5,7 +5,9 @@
       经纪人详情
     </div>
     <nest-scroll ref="scroll"
-                 class="app-body">
+                 class="app-body"
+                 :pullUpLoad="pullUpLoadObj"
+                 @pullingUp="getData">
       <div class="user-info">
         <div class="agent-base">
           <div class="portrait" :style="{ backgroundImage: 'url(' + agent.avatar + ')'}"></div>
@@ -124,10 +126,28 @@
     data() {
       return {
         tabSelected: 'rent',
+        saleFirstLoad: false,
         shareShow: false,
         agent: {},
         rentList: [],
-        saleList: []
+        rentScroll: true,
+        saleList: [],
+        saleScroll: true,
+        filters: {
+          page: 0,
+          per_page: 10
+        },
+        filters2: {
+          page: 0,
+          per_page: 10
+        },
+        pullUpLoadObj: {
+          threshold: 0,
+          txt: {
+            more: '加载更多',
+            noMore: '没有更多数据了'
+          }
+        }
       }
     },
     created() {
@@ -135,7 +155,16 @@
     },
     mounted() {
       this.getAgentInfo();
-      this.getRentData();
+      this.getData(true);
+    },
+    watch: {
+      tabSelected(val) {
+        if (val === 'sale' && !this.saleFirstLoad) {
+          this.getData(true);
+          this.saleFirstLoad = true;
+        }
+        this.updateScroller();
+      }
     },
     methods: {
       initConsts() {
@@ -155,29 +184,67 @@
       imageUrl(item) {
         return item.cover ? item.cover : PreviewDefaultImg;
       },
-      getRentData() {
-        HouseService.getHousesByUserId(this.agentId, {
-          trade: 'rent'
-        }, res => {
-          this.rentList = res.data;
-        })
+      getData(isInit = false) {
+        this.tabSelected === 'rent' ? this.getRentData(isInit) : this.getSaleData(isInit);
       },
-      getSaleData() {
-
+      getRentData(isInit) {
+        this.filters.page = isInit ? 1 : this.filters.page + 1;
+        this.filters.trade = 'rent';
+        HouseService.getHousesByUserId(this.agentId, this.filters, res => {
+          if (isInit) {
+            this.rentList = res.data;
+          } else {
+            this.rentList = this.rentList.concat(res.data);
+          }
+          if (this.rentList.length >= res.meta.pagination.total) {
+            this.rentScroll = false;
+          }
+          this.updateScroller();
+        }, isInit);
+      },
+      getSaleData(isInit) {
+        this.filters2.page = isInit ? 1 : this.filters2.page + 1;
+        this.filters2.trade = 'sale';
+        HouseService.getHousesByUserId(this.agentId, this.filters2, res => {
+          if (isInit) {
+            this.saleList = res.data;
+          } else {
+            this.saleList = this.saleList.concat(res.data);
+          }
+          if (this.saleList.length >= res.meta.pagination.total) {
+            this.saleScroll = false;
+          }
+          this.updateScroller();
+        }, isInit);
+      },
+      updateScroller() {
+        if (this.tabSelected === 'rent') {
+          if (this.rentScroll) {
+            this.$refs.scroll.forceUpdate(true);
+          } else {
+            this.$refs.scroll.forceUpdate(false);
+          }
+        } else {
+          if (this.saleScroll) {
+            this.$refs.scroll.forceUpdate(true);
+          } else {
+            this.$refs.scroll.forceUpdate(false);
+          }
+        }
       },
       doFollow(item, type) {
         if (item.favored) {
           FollowService.unFollow({
             target_type: type,
             target_id: item.id
-          }, res => {
+          }, () => {
             item.favored = false;
           })
         } else {
           FollowService.doFollow({
             target_type: type,
             target_id: item.id
-          }, res => {
+          }, () => {
             item.favored = true;
           });
         }

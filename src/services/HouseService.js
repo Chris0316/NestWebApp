@@ -75,14 +75,15 @@ let HouseService = {
       callback(res);
     })
   },
-  getHousesByUserId(userId, params, callback) {
+  getHousesByUserId(userId, params, callback, loading) {
     let keyValueArray = [{
       key: 'user_id',
       value: userId
     }];
     let this_api = Utils.replaceApiPlaceholder(api.his_houses, keyValueArray);
     axios.get(this_api, {
-      params: params
+      params: params,
+      loading: loading
     }).then(res => {
       callback(res);
     })

@@ -1,59 +1,83 @@
 <template>
-  <div class="msg-detail">
-    <div class="title border-bottom">
-      <div class="re-img" @click="$router.go(-1)"></div>
-      我的消息
+  <div class="msg-detail" v-if="details">
+    <div class="header border-bottom">
+      <div class="back" @click="$router.go(-1);"></div>
+      {{ details.data.title }}
     </div>
-    <div class="date">2018-08-19  14:30</div>
-    <div class="paragraph">
-      欢迎加入阿萨德哈所大所大所大所大所大所所大所大所
-      啊大所大所大所大所大所所大所大所大所大所大所大所
-      大所大所大所大所大所所大所大所大所大所大所大所大
-      所所大所大所大所所大所大所
-    </div>
-    <div class="paragraph">
-      欢迎加入阿萨德哈所大所大所大所大所大所所大所大所
-      啊大所大所大所大所大所所大所大所大所大所大所大所
-      大所大所大所大所大所所大所大所大所大所大所大所大
-      所所大所大所大所所大所大所
+    <div class="app-body">
+      <div class="date">{{ details.created_at }}</div>
+      <div v-html="details.data.content"></div>
     </div>
   </div>
 </template>
 
 <script>
+  import NotificationService from "../../services/NotificationService";
+
   export default {
-    name: "MyMsgDetail"
+    name: "MyMsgDetail",
+    data() {
+      return {
+        details: null
+      }
+    },
+    created() {
+      this.initConsts();
+    },
+    mounted() {
+      this.getDetails();
+    },
+    methods: {
+      initConsts() {
+        let params = this.$route.params;
+        if (params) {
+          this.notifyId = params.id;
+        }
+      },
+      getDetails() {
+        NotificationService.getNotificationDetails(this.notifyId, res => {
+          this.details = res.data;
+        })
+      }
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-  .msg-detail{
-    .title{
+  .msg-detail {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .header {
       position: relative;
+      display: flex;
+      padding: 0 .28rem;
       height: 1.2rem;
-      text-align: center;
-      line-height: 1.2rem;
-      font-size: 0.32rem;
-      color: #333333;
-      .re-img{
-        position: absolute;
-        left: 0.28rem;
-        top: 50%;
-        transform: translate3d(0,-50%,0);
-        width: 0.42rem;
-        height: 0.32rem;
-        background: url("../../assets/images/return-icon.png") no-repeat;
-        background-size: 100%;
-      }
+      justify-content: center;
+      align-items: center;
     }
-    .date{
+    .back {
+      position: absolute;
+      top: 0;
+      left: .28rem;
+      width: .9rem;
+      height: 100%;
+      background: url('../../assets/images/return-icon.png') no-repeat left center;
+      background-size: .42rem .32rem;
+    }
+    .app-body {
+      padding: 0 .28rem;
+      flex: 1;
+      overflow: hidden;
+    }
+    .date {
       margin-top: 0.4rem;
       margin-bottom: 0.6rem;
       text-align: center;
       font-size: 0.24rem;
       color: #B3B3B3;
     }
-    .paragraph{
+    .paragraph {
       margin: 0px 0.28rem 0.4rem;
       color: #333333;
       font-size: 0.28rem;
