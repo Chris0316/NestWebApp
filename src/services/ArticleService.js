@@ -11,6 +11,11 @@ let ArticleService = {
     }).then(res => {
       callback(res);
     })
+  },
+  getArticleDetails(articleId, callback) {
+    axios.get(api.articles + '/' + articleId).then(res => {
+      callback(res);
+    })
   }
 };
 

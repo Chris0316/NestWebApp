@@ -13,7 +13,7 @@
           <div class="desc">{{ description }}</div>
         </div>
         <div class="category-container" v-if="dataList.length !== 0">
-          <div class="category banner1">
+          <div class="category banner1" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[0].id } })">
             <span class="favorite"></span>
             <div class="category-tag" v-if="dataList[0].content">
               <span>{{ dataList[0].content }}</span>
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="category-container" v-if="dataList.length === 2 || dataList.length === 4 || dataList.length > 4">
-          <div class="category banner2">
+          <div class="category banner2" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[1].id } })">
             <span class="favorite"></span>
             <div class="category-tag" v-if="dataList[1].content">
               <span>{{ dataList[1].content }}</span>
@@ -55,7 +55,8 @@
           </div>
         </div>
         <div class="category-list">
-          <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3">
+          <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3"
+               @click="$router.push({ name: 'ArticleDetails', params: { id: item.id } })">
             <div class="title">{{ item.title }}</div>
             <div class="info"><span class="read"></span><span>{{ item.created_at }}</span></div>
           </div>
@@ -70,7 +71,7 @@
   import ArticleService from "../../services/ArticleService";
 
   export default {
-    name: "LiveSubject",
+    name: "ArticleSubject",
     data() {
       return {
         bannerClass: '',

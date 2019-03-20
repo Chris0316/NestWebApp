@@ -10,7 +10,7 @@
               <div class="desc">给我您的需求<br>帮您淘满意的房源</div>
             </div>
             <div class="module icon2" v-for="item in categoryList" :key="item.id"
-                 @click="$router.push({ name: 'LiveSubject', params: { type: item.alias } })">
+                 @click="$router.push({ name: 'ArticleSubject', params: { type: item.alias } })">
               <div class="title">{{ item.name }}</div>
               <div class="desc">{{ item.description }}</div>
             </div>
