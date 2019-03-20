@@ -24,7 +24,7 @@ let UserService = {
     })
   },
   updateUserInfo(userInfo, callback) {
-    axios.patch(api.userInfo, userInfo).then(res => {
+    axios.patch(api.user, userInfo).then(res => {
       callback(res);
     })
   }
