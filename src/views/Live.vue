@@ -16,7 +16,7 @@
             </div>
           </div>
         </nest-scroll>
-        <div class="category-container">
+        <div class="category-container" @click="$router.push({ name: 'ArticleDetails', params: { id: advList[0].id } })">
           <div class="category" :style="{ backgroundImage: 'url(' + advList[0].cover + ')'}" v-if="advList[0]">
             <span class="favorite" :class="{ 'on': advList[0].favored }" @click="doFollow(advList[0])"></span>
             <div class="category-tag" v-if="advList[0].title">
@@ -27,7 +27,7 @@
             </div>
           </div>
         </div>
-        <div class="category-container">
+        <div class="category-container" @click="$router.push({ name: 'ArticleDetails', params: { id: advList[1].id } })">
           <div class="category" :style="{ backgroundImage: 'url(' + advList[1].cover + ')'}" v-if="advList[1]">
             <span class="favorite" :class="{ 'on': advList[1].favored }" @click="doFollow(advList[1])"></span>
             <div class="category-tag" v-if="advList[1].title">
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div class="category-container">
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}" v-if="advList[2]">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[2].cover + ')'}" v-if="advList[2]" @click="$router.push({ name: 'ArticleDetails', params: { id: advList[2].id } })">
             <span class="favorite" :class="{ 'on': advList[2].favored }" @click="doFollow(advList[2])"></span>
             <div class="category-tag" v-if="advList[2].title">
               <span>{{ advList[2].content }}</span>
@@ -48,7 +48,7 @@
               {{ advList[2].title }}
             </div>
           </div>
-          <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}" v-if="advList[3]">
+          <div class="category" :style="{ backgroundImage: 'url(' + advList[3].cover + ')'}" v-if="advList[3]" @click="$router.push({ name: 'ArticleDetails', params: { id: advList[3].id } })">
             <span class="favorite" :class="{ 'on': advList[3].favored }" @click="doFollow(advList[3])"></span>
             <div class="category-tag" v-if="advList[3].title">
               <span>{{ advList[3].content }}</span>

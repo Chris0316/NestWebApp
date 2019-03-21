@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="category-container" v-if="dataList.length === 3 || dataList.length === 4 || dataList.length > 4">
-          <div class="category banner3">
+          <div class="category banner3" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[1].id : dataList[2].id } })">
             <span class="favorite"></span>
             <div class="category-tag" v-if="(dataList.length === 3 && dataList[1].content) || (dataList.length === 4 && dataList[2].content)">
               <span>{{ dataList.length === 3 ? dataList[1].content : dataList[2].content }}</span>
@@ -44,7 +44,7 @@
               {{ dataList.length === 3 ? dataList[1].title : dataList[2].title }}
             </div>
           </div>
-          <div class="category banner4">
+          <div class="category banner4" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[2].id : dataList[3].id } })">
             <span class="favorite"></span>
             <div class="category-tag" v-if="(dataList.length === 3 && dataList[2].content) || (dataList.length === 4 && dataList[3].content)">
               <span>{{ dataList.length === 3 ? dataList[2].content : dataList[3].content }}</span>
