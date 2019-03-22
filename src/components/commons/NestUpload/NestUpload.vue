@@ -63,8 +63,93 @@
         }
         Object.keys(files).forEach((key) => {
           let file = files[key];
-          this.compressImg(file);
+          // this.compressImg(file);
+          this.compressImg2(file);
         })
+      },
+      compressImg2(file) {
+        let reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          let img = new Image(),
+            size = file.size,
+            canvas = document.createElement('canvas'),
+            context = canvas.getContext('2d');
+          img.src = reader.result;
+          img.onload = () => {
+            // 图片原始尺寸
+            let originWidth = img.width;
+            let originHeight = img.height;
+            // 最大尺寸限制
+            let maxWidth = 1080, maxHeight = 1080;
+            // 目标尺寸
+            let targetWidth = originWidth, targetHeight = originHeight, quality = 1;
+
+            if (originWidth <= maxWidth && originHeight <= maxHeight) {
+              // 高宽均小于等于最大尺寸限制
+              if (size / 1024 > 500) {
+                quality = 0.3;
+              }
+            } else if (originWidth > maxWidth && originHeight > maxHeight) {
+              // 高宽均大于最大尺寸限制
+              if (originWidth / originHeight <= 2 || originHeight / originWidth <= 2) {
+                // 取大的一边等比压缩至最大尺寸限制
+                if (originWidth - originHeight > 0) {
+                  targetWidth = maxWidth;
+                  targetHeight = Math.round(maxWidth * (originHeight / originWidth));
+                } else {
+                  targetHeight = maxHeight;
+                  targetWidth = Math.round(maxHeight * (originWidth / originHeight));
+                }
+              } else if (originWidth / originHeight > 2 || originHeight / originWidth > 2) {
+                // 取小的一边等比压缩至最大尺寸限制
+                if (originWidth - originHeight > 0) {
+                  targetHeight = maxHeight;
+                  targetWidth = Math.round(maxHeight * (originWidth / originHeight));
+                } else {
+                  targetWidth = maxWidth;
+                  targetHeight = Math.round(maxWidth * (originHeight / originWidth));
+                }
+              }
+              if (size / 1024 > 500) {
+                quality = 0.3;
+              }
+            } else {
+              // 高宽其中之一大于尺寸限制
+              if (originWidth / originHeight > 2 || originHeight / originWidth > 2) {
+                if (size / 1024 > 500) {
+                  quality = 0.3;
+                }
+              }
+            }
+
+            // if (originWidth > maxWidth || originHeight > maxHeight) {
+            //   if (originWidth / originHeight > maxWidth / maxHeight) {
+            //     // 更宽，按照宽度限定尺寸
+            //     targetWidth = maxWidth;
+            //     targetHeight = Math.round(maxWidth * (originHeight / originWidth));
+            //   } else {
+            //     targetHeight = maxHeight;
+            //     targetWidth = Math.round(maxHeight * (originWidth / originHeight));
+            //   }
+            // }
+            // canvas对图片进行缩放
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            // 清除画布
+            context.clearRect(0, 0, targetWidth, targetHeight);
+            // 图片压缩
+            context.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+            canvas.toBlob(blob => {
+              UploadService.uploadImage(blob, 'default', res => {
+                this.currentVal.push(res.data.path);
+                this.$emit('input', this.currentVal);
+              });
+            }, file.type || 'image/png', quality);
+          }
+        };
       },
       compressImg(file) {
         lrz(file).then(rst => {
