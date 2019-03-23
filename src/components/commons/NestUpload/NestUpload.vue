@@ -63,8 +63,8 @@
         }
         Object.keys(files).forEach((key) => {
           let file = files[key];
-          // this.compressImg(file);
-          this.compressImg2(file);
+          this.compressImg(file);
+          // this.compressImg2(file);
         })
       },
       compressImg2(file) {
@@ -89,7 +89,7 @@
             if (originWidth <= maxWidth && originHeight <= maxHeight) {
               // 高宽均小于等于最大尺寸限制
               if (size / 1024 > 500) {
-                quality = 0.3;
+                quality = 0.7;
               }
             } else if (originWidth > maxWidth && originHeight > maxHeight) {
               // 高宽均大于最大尺寸限制
@@ -113,30 +113,20 @@
                 }
               }
               if (size / 1024 > 500) {
-                quality = 0.3;
+                quality = 0.7;
               }
             } else {
               // 高宽其中之一大于尺寸限制
               if (originWidth / originHeight > 2 || originHeight / originWidth > 2) {
                 if (size / 1024 > 500) {
-                  quality = 0.3;
+                  quality = 0.7;
                 }
               }
             }
-
-            // if (originWidth > maxWidth || originHeight > maxHeight) {
-            //   if (originWidth / originHeight > maxWidth / maxHeight) {
-            //     // 更宽，按照宽度限定尺寸
-            //     targetWidth = maxWidth;
-            //     targetHeight = Math.round(maxWidth * (originHeight / originWidth));
-            //   } else {
-            //     targetHeight = maxHeight;
-            //     targetWidth = Math.round(maxHeight * (originWidth / originHeight));
-            //   }
-            // }
             // canvas对图片进行缩放
             canvas.width = targetWidth;
             canvas.height = targetHeight;
+            context.fillStyle = '#fff';
             // 清除画布
             context.clearRect(0, 0, targetWidth, targetHeight);
             // 图片压缩
@@ -147,24 +137,50 @@
                 this.currentVal.push(res.data.path);
                 this.$emit('input', this.currentVal);
               });
-            }, file.type || 'image/png', quality);
+            }, 'image/jpeg', quality);
           }
         };
       },
       compressImg(file) {
-        lrz(file).then(rst => {
-          // 上传
-          let image = rst.file;
-          UploadService.uploadImage(image, 'default', res => {
-            this.currentVal.push(res.data.path);
-            this.$emit('input', this.currentVal);
-          });
-          return rst;
-        }).catch(err => {
-          console.log(err);
-        }).always(() => {
+        let reader = new FileReader(),
+          imageWidth, imageHeight, imageSize;
+        reader.onload = () => {
+          let image = new Image();
+          imageSize = file.size;
+          image.src = reader.result;
+          image.onload = () => {
+            imageWidth = image.width;
+            imageHeight = image.height;
+            let compressParams = {
+              quality: 1
+            };
+            if (imageWidth > 1080 && imageHeight > 1080) {
+              // 没有纠正照片方向，所以高宽大小有误，还需改进
+              if (imageWidth > imageHeight) {
+                compressParams.height = 1080;
+              } else {
+                compressParams.width = 1080;
+              }
+            }
+            if (imageSize / 1024 > 500) {
+              compressParams.quality = 0.7;
+            }
+            lrz(file, compressParams).then(rst => {
+              // 上传
+              let image = rst.file;
+              UploadService.uploadImage(image, 'default', res => {
+                this.currentVal.push(res.data.path);
+                this.$emit('input', this.currentVal);
+              });
+              return rst;
+            }).catch(err => {
+              console.log(err);
+            }).always(() => {
 
-        });
+            });
+          }
+        };
+        reader.readAsDataURL(file);
       }
     }
   }
