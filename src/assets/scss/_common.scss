@@ -1,10 +1,6 @@
 body {
   font-family: Helvetica;
   font-size: .32rem;
-  padding-top: constant(safe-area-inset-bottom);
-  padding-top: env(safe-area-inset-bottom);
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
   margin: 0;
   //min-height: 100%;
   position: absolute;

@@ -24,7 +24,7 @@
             <div class="item-label">我的资讯</div>
           </div>
         </div>
-        <div class="live-ground" v-if="isAgent">
+        <div class="live-ground" v-if="isLogin && isAgent">
           <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->

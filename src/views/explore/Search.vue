@@ -2,11 +2,11 @@
   <div class="search">
     <div class="search-wrap">
       <div class="search-box">
-        <div class="input" :class="{ 'explore': searchType === 'explore' }">
-          <input class="search-msg" type="text" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
+        <div class="input-wrap">
+          <input class="search-inp" type="text" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
           <div class="delete" v-show="deleteShow" @click="clearSearch"></div>
         </div>
-        <nest-select v-model="selectType" :options="selectOpts" v-if="searchType === 'explore'"/>
+        <nest-select v-model="selectType" :options="selectOpts" />
       </div>
       <div class="cancel" @click="cleanAll">取消</div>
     </div>
@@ -33,7 +33,7 @@
       <div class="search-pre">
         <div class="left">历史搜索</div>
         <div class="right" @click="cleanList">
-          <img class="dele-img" src="../assets/images/dele.png" alt="">
+          <img class="dele-img" src="../../assets/images/dele.png" alt="">
           <div class="dele">删除历史</div>
         </div>
       </div>
@@ -47,17 +47,12 @@
 </template>
 
 <script>
-  import DICT from '../configs/DICT';
-  import storageUtil from '../utils/Storage';
+  import DICT from '../../configs/DICT';
+  import storageUtil from '../../utils/Storage';
 
   export default {
     name: "search",
     created() {
-      let params = this.$route.params;
-      if (params) {
-        this.searchType = params.type;
-      }
-
       // 读取本地数据
       this.listData = storageUtil.fetch('storageKey');
       console.log(this.listData);
@@ -65,9 +60,8 @@
     },
     data() {
       return {
-        searchType: '',
         selectType: '',
-        selectOpts: DICT.filter.select,
+        selectOpts: DICT.filters.select,
         listData: [],
         listShow: true,
         searchkey: '',
@@ -155,24 +149,21 @@
         left: .24rem;
         width: .32rem;
         height: .32rem;
-        background: url('../assets/images/search-img.png') no-repeat;
+        background: url('../../assets/images/search-img.png') no-repeat;
         background-size: 100% 100%;
+        z-index: 1;
       }
-      .input {
+      .input-wrap {
         position: relative;
-        padding-left: .64rem;
-        width: 100%;
-        box-sizing: border-box;
-        &.explore {
-          width: 3.65rem;
-        }
-        .search-msg {
+        width: 3.65rem;
+        .search-inp {
+          padding: 0 .7rem 0 .78rem;
           box-sizing: border-box;
           width: 100%;
           height: 100%;
           font-size: .28rem;
           border: none;
-          border-radius: 0 .1rem .1rem 0;
+          border-radius: .1rem 0 0 .1rem;
         }
         .delete {
           position: absolute;
@@ -181,7 +172,7 @@
           margin-top: -0.16rem;
           width: 0.32rem;
           height: 0.32rem;
-          background: url("../assets/images/delete.png") no-repeat;
+          background: url("../../assets/images/delete.png") no-repeat;
           background-size: 100% 100%;
         }
       }

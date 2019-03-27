@@ -3,7 +3,7 @@
     <div class="nest-header">
       <div class="search-wrap">
         <div class="search-box">
-          <div class="input" @click="$router.push({ name: 'Search', params: { type: 'explore' } })"></div>
+          <div class="input-wrap" @click="$router.push({ name: 'ExploreSearch' })"></div>
           <nest-select v-model="selectType" :options="DICT.filters.select"/>
         </div>
         <div class="location">马尼拉</div>
@@ -259,11 +259,7 @@
         this.returnTopShow = false;
       },
       bodyScroll(obj) {
-        if (obj.y < -500) {
-          this.returnTopShow = true;
-        } else {
-          this.returnTopShow = false;
-        }
+        this.returnTopShow = obj.y < -500;
       }
     }
   }
@@ -315,7 +311,7 @@
             z-index: -1;
           }
         }
-        .input {
+        .input-wrap {
           width: 3.65rem;
         }
       }
