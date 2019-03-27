@@ -104,9 +104,7 @@
       getData() {
         let userId = Storage.getLocalStorage('nest_user_id');
         WantsService.getDetailsById(this.liveId, res => {
-          if (userId == res.data.user.id) {
-            this.isMine = true;
-          }
+          this.isMine = userId == res.data.user.id;
           this.live = res.data;
         });
       }

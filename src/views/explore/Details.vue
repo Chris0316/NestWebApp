@@ -417,9 +417,7 @@
           HouseService.getDetailsById(this.houseId, res => {
             this.house = res.data;
             let userId = Storage.getLocalStorage('nest_user_id');
-            if (userId == res.data.user.id) {
-              this.isMine = true;
-            }
+            this.isMine = userId == res.data.user.id;
           });
           let trade = this.matchCustomType(this.house) === 'rent' ? 'rent' : 'sale';
           HouseService.getSameHouse({
