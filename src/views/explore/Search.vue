@@ -3,7 +3,7 @@
     <div class="search-wrap">
       <div class="search-box">
         <div class="input-wrap">
-          <input class="search-inp" type="text" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
+          <input class="search-inp" type="search" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
           <div class="delete" v-show="deleteShow" @click="clearSearch"></div>
         </div>
         <nest-select v-model="selectType" :options="selectOpts" />

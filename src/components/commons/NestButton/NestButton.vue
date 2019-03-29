@@ -37,7 +37,6 @@
     border-radius: .1rem;
     text-align: center;
     min-width: 1.2rem;
-    max-width: 1.6rem;
     height: .6rem;
     line-height: .6rem;
     font-size: .28rem;

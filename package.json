@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "better-scroll": "^1.13.2",
+    "better-scroll": "^1.15.1",
     "exif-js": "^2.3.0",
     "lrz": "^4.9.40",
     "swiper": "^4.4.1",

@@ -12,14 +12,12 @@
       <div class="back" @click="$router.go(-1);"></div>
       <div class="share"></div>
     </div>
-    <nest-scroll class="app-body">
-      <div>
-        <div class="details">
-          <div class="title">{{ article.title }}</div>
-          <div class="content" v-html="article.content"></div>
-        </div>
-        <div class="banner"></div>
+    <nest-scroll class="app-body" v-if="article">
+      <div class="details">
+        <div class="title">{{ article.title }}</div>
+        <div class="content" v-html="article.content"></div>
       </div>
+      <div class="banner"></div>
     </nest-scroll>
   </div>
 </template>
@@ -31,7 +29,7 @@
     name: "ArticleDetails",
     data() {
       return {
-        article: {}
+        article: null
       }
     },
     created() {
@@ -99,6 +97,9 @@
       padding: .3rem 0;
       font-size: .46rem;
       color: #333;
+    }
+    .content {
+      padding-bottom: .9rem;
     }
     .banner {
       height: 2rem;

@@ -10,12 +10,12 @@
       <nest-tab-item id="agents">经纪人</nest-tab-item>
     </nest-tab-bar>
     <div class="control-wrap" v-if="tabSelected === 'resources'">
-      <nest-button class="mr28" @click="tradeShow = true">类型</nest-button>
-      <nest-button class="mr28" @click="typeShow = true">分类</nest-button>
-      <nest-button class="mr28" @click="followDateShow = true">关注时间</nest-button>
+      <nest-button :type="tradeBtn" class="mr28" @click="tradeShow = true">{{ tradeBtnTxt }}</nest-button>
+      <nest-button :type="typeBtn" class="mr28" @click="typeShow = true">{{ typeBtnTxt }}</nest-button>
+      <nest-button :type="dateBtn" class="mr28" @click="dateShow = true">{{ dateBtnTxt }}</nest-button>
     </div>
     <div class="control-wrap" v-else>
-      <nest-button @click="followDateShow2 = true">关注时间</nest-button>
+      <nest-button :type="dateBtn2" @click="dateShow2 = true">{{ dateBtnTxt2 }}</nest-button>
     </div>
     <nest-tab-container class="app-body" v-model="tabSelected">
       <nest-tab-container-item class="container-item" id="resources">
@@ -111,13 +111,13 @@
       </nest-tab-container-item>
     </nest-tab-container>
     <nest-nav page="follow"></nest-nav>
-    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followDateShow = false"
-                :status="followDateShow">
-      <nest-radio v-model="followDate" :count-in-row="1" :options="followDateOpts"></nest-radio>
+    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="dateShow = false"
+                :status="dateShow">
+      <nest-radio v-model="date" :count-in-row="1" :options="dateOpts"></nest-radio>
     </nest-modal>
-    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="followDateShow2 = false"
-                :status="followDateShow2">
-      <nest-radio v-model="followDate2" :count-in-row="1" :options="followDateOpts2"></nest-radio>
+    <nest-modal title="关注时间" :has-clear="false" :has-footer="false" @close="dateShow2 = false"
+                :status="dateShow2">
+      <nest-radio v-model="date2" :count-in-row="1" :options="dateOpts2"></nest-radio>
     </nest-modal>
     <nest-modal title="分类" :has-clear="false" :has-footer="false" @close="typeShow = false" :status="typeShow">
       <nest-radio v-model="type" :count-in-row="1" :options="typeOpts"></nest-radio>
@@ -150,12 +150,20 @@
         agentFirstLoad: false,
         tradeShow: false,
         trade: '-1',
+        tradeBtn: 'default',
+        tradeBtnTxt: '类型',
         typeShow: false,
         type: '-1',
-        followDateShow: false,
-        followDate: '-1',
-        followDateShow2: false,
-        followDate2: '-1',
+        typeBtn: 'default',
+        typeBtnTxt: '分类',
+        dateShow: false,
+        date: '-1',
+        dateBtn: 'default',
+        dateBtnTxt: '关注时间',
+        dateShow2: false,
+        date2: '-1',
+        dateBtn2: 'default',
+        dateBtnTxt2: '关注时间',
         shareShow: false,
         dataList: [],
         dataList2: [],
@@ -189,6 +197,62 @@
           this.onPullingUpAgents(true);
           this.agentFirstLoad = true;
         }
+      },
+      type(val) {
+        this.typeShow = false;
+        let selectedLabel = getSelecteds(this.typeOpts, val)[0].label;
+        if (val === '-1') {
+          this.typeBtn = 'default';
+          this.typeBtnTxt = '类型';
+          delete this.filters['type'];
+        } else {
+          this.typeBtn = 'primary';
+          this.typeBtnTxt = selectedLabel;
+          this.filters.type = val;
+        }
+        this.onPullingUpResources(true);
+      },
+      trade(val) {
+        this.tradeShow = false;
+        let selectedLabel = getSelecteds(this.tradeOpts, val)[0].label;
+        if (val === '-1') {
+          this.tradeBtn = 'default';
+          this.tradeBtnTxt = '分类';
+          delete this.filters['trade'];
+        } else {
+          this.tradeBtn = 'primary';
+          this.tradeBtnTxt = selectedLabel;
+          this.filters.trade = val;
+        }
+        this.onPullingUpResources(true);
+      },
+      date(val) {
+        this.dateShow = false;
+        let selectedLabel = getSelecteds(this.dateOpts, val)[0].label;
+        if (val === '-1') {
+          this.dateBtn = 'default';
+          this.dateBtnTxt = '关注时间';
+          delete this.filters['filter_time'];
+        } else {
+          this.dateBtn = 'primary';
+          this.dateBtnTxt = selectedLabel;
+          this.filters.filter_time = val;
+        }
+        this.onPullingUpResources(true);
+      },
+      date2(val) {
+        this.dateShow2 = false;
+        let selectedLabel = getSelecteds(this.dateOpts2, val)[0].label;
+        if (val === '-1') {
+          this.dateBtn2 = 'default';
+          this.dateBtnTxt2 = '关注时间';
+          delete this.filters2['filter_time'];
+        } else {
+          this.dateBtn2 = 'primary';
+          this.dateBtnTxt2 = selectedLabel;
+          this.filters2.filter_time = val;
+        }
+        this.onPullingUpAgents(true);
       }
     },
     created() {
@@ -206,21 +270,21 @@
         this.tradeOpts.unshift({'label': '默认', 'value': '-1'});
         this.typeOpts = [].concat(DICT.house.type);
         this.typeOpts.unshift({'label': '默认', 'value': '-1'});
-        this.followDateOpts = this.followDateOpts2 = [{
+        this.dateOpts = this.dateOpts2 = [{
           label: '默认',
           value: '-1'
         }, {
           label: '今天',
-          value: '1'
+          value: 'today'
         }, {
           label: '近三天',
-          value: '2'
+          value: '3days'
         }, {
           label: '近两周',
-          value: '3'
+          value: '2weeks'
         }, {
           label: '近一个月',
-          value: '4'
+          value: '1month'
         }];
       },
       imageUrl(item) {

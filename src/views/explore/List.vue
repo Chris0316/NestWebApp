@@ -11,7 +11,7 @@
       <div class="control-wrap">
         <nest-button :type="regionBtn" class="mr28" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
         <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow"
-                     v-if="pageType !== 'carport' || pageType !== 'land'">{{ bedroomBtnTxt }}
+                     v-if="pageType !== 'carport'">{{ bedroomBtnTxt }}
         </nest-button>
         <nest-button class="mr28" @click="filtersShow = !filtersShow">筛选</nest-button>
         <div class="sort-btn" @click="sortShow = !sortShow"></div>
@@ -21,7 +21,7 @@
         <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
       <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
-                  v-if="pageType !== 'carport' || pageType !== 'land'"
+                  v-if="pageType !== 'carport'"
                   @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
