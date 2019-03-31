@@ -266,7 +266,7 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
-        this.tradeOpts = [].concat(DICT.house.trade2);
+        this.tradeOpts = [].concat(DICT.house.trade);
         this.tradeOpts.unshift({'label': '默认', 'value': '-1'});
         this.typeOpts = [].concat(DICT.house.type);
         this.typeOpts.unshift({'label': '默认', 'value': '-1'});

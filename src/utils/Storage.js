@@ -49,18 +49,5 @@ export default {
    */
   removeSessionStorage(key) {
     window.sessionStorage.removeItem(key);
-  },
-
-  /**
-   * 搜索界面输入的历史值
-   * 往LocalStorage中保存值
-   * @param storageKey
-   * @param searchWorld
-   */
-  fetch(storageKey){
-    return JSON.parse(localStorage.getItem(storageKey) || '[]')
-  },
-  save(storageKey,searchWorld){
-    localStorage.setItem(storageKey,JSON.stringify(searchWorld))
   }
 }

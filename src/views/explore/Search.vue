@@ -3,12 +3,12 @@
     <div class="search-wrap">
       <div class="search-box">
         <div class="input-wrap">
-          <input class="search-inp" type="search" v-model="searchkey" @input="inputFun" @focus="focusFun" @blur="blurFun">
-          <div class="delete" v-show="deleteShow" @click="clearSearch"></div>
+          <input class="search-inp" type="text" v-model="keywords" @input="doSearch">
+          <div class="clear" v-show="clearShow" @click="clearInput"></div>
         </div>
         <nest-select v-model="selectType" :options="selectOpts" />
       </div>
-      <div class="cancel" @click="cleanAll">取消</div>
+      <div class="cancel" @click="$router.go(-1)">取消</div>
     </div>
     <div class="no-act" v-if="listShow">
 
@@ -48,79 +48,47 @@
 
 <script>
   import DICT from '../../configs/DICT';
-  import storageUtil from '../../utils/Storage';
+  import Storage from '../../utils/Storage';
+  import SearchService from '../../services/SearchService';
 
   export default {
-    name: "search",
+    name: "ExploreSearch",
     created() {
-      // 读取本地数据
-      this.listData = storageUtil.fetch('storageKey');
-      console.log(this.listData);
-      // this.listData = ['马尼拉', 'jazz', '马尼拉', 'jazz'];
+
     },
     data() {
       return {
         selectType: '',
         selectOpts: DICT.filters.select,
-        listData: [],
-        listShow: true,
-        searchkey: '',
-        keyValue: '',
-        deleteShow: false
+        clearShow: false,
+        keywords: ''
+      }
+    },
+    watch: {
+      keywords(val) {
+        if (val === '') {
+          this.clearShow = false;
+        } else {
+          this.clearShow = true;
+        }
       }
     },
     methods: {
-      saveKey() {
-        var Keyname = this.searchkey.trim();
-        if (!Keyname) {
-          this.searchkey = '';
-          return;
-        }
-        this.listData.push(Keyname);
-        storageUtil.save('storageKey', this.listData);
-        this.searchkey = '';
+      doSearch() {
+        // SearchService.getSuggestList({
+        //   keywords: this.keywords
+        // }, res => {
+        //   console.log(res);
+        // })
       },
-      changekey(keymsg) {
-        this.keyValue = keymsg;
-      },
-      inputFun(ev) {
-        // 模糊搜索
-        // 模糊列表出现
-        this.listShow = false;
-        // 列表恢复
-        if (!this.searchkey) {
-          this.listShow = true;
-        }
-      },
-      cleanList() {
-        this.listData = [];
-        localStorage.clear();
-      },
-      cleanAll() {
-        this.listShow = true;
-        this.searchkey = '';
-        this.$router.go(-1);
-      },
-      blurFun() {
-        this.deleteShow = false;
-      },
-      focusFun() {
-        this.deleteShow = true
-      },
-      clearSearch() {
-        this.searchkey = '';
+      clearInput() {
+        this.keywords = '';
       }
-    },
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-  @mixin rowcenter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .search {
     box-sizing: border-box;
     width: 100%;
@@ -165,7 +133,7 @@
           border: none;
           border-radius: .1rem 0 0 .1rem;
         }
-        .delete {
+        .clear {
           position: absolute;
           top: 50%;
           right: 0.25rem;
