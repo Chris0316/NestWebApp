@@ -3,45 +3,26 @@
     <div class="search-wrap">
       <div class="search-box">
         <div class="input-wrap">
-          <input class="search-inp" type="text" v-model="keywords" @input="doSearch">
+          <input class="search-inp" type="text" v-model="keywords" @input="handleInput">
           <div class="clear" v-show="clearShow" @click="clearInput"></div>
         </div>
         <nest-select v-model="selectType" :options="selectOpts" />
       </div>
       <div class="cancel" @click="$router.go(-1)">取消</div>
     </div>
-    <div class="no-act" v-if="listShow">
 
-      <!--首页搜索-->
-      <!--<div class="near">我的附近</div>-->
-      <!--<div class="near-place">-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--<div class="one-place">jazz</div>-->
-      <!--</div>-->
-
-
-      <div class="search-pre">
-        <div class="left">历史搜索</div>
-        <div class="right" @click="cleanList">
-          <img class="dele-img" src="../../assets/images/dele.png" alt="">
-          <div class="dele">删除历史</div>
+    <div class="result-list" v-show="keywords && resultList.length">
+      <div class="search-item border-bottom">{{ keywords }}</div>
+      <div class="search-item border-bottom" v-for="item in resultList">{{ item.keyword }}</div>
+    </div>
+    <div class="result-list" v-show="!keywords">
+      <div class="search-item border-bottom">
+        <div class="title">历史搜索</div>
+        <div class="title">
+          <div class="del-icon"></div>
+          <div>删除历史</div>
         </div>
       </div>
-      <div class="search-item" v-for="(searitem,i) in listData" :key="i">{{searitem}}</div>
-    </div>
-    <div class="act" v-else="!listShow">
-      <div class="search-item" @click="$router.push({ name: 'Details', params: { type: 'rent',id:456 }})">马尼拉</div>
-      <div class="search-item">jazz</div>
     </div>
   </div>
 </template>
@@ -61,28 +42,39 @@
         selectType: '',
         selectOpts: DICT.filters.select,
         clearShow: false,
-        keywords: ''
+        keywords: '',
+        resultList: []
       }
     },
     watch: {
       keywords(val) {
-        if (val === '') {
-          this.clearShow = false;
-        } else {
-          this.clearShow = true;
-        }
+        this.clearShow = val !== '';
       }
     },
     methods: {
+      handleInput() {
+        this.throttle(this.doSearch);
+      },
+      throttle(fn, context) {
+        clearTimeout(fn.tId);
+        fn.tId = setTimeout(function () {
+          fn.call(context);
+        }, 300);
+      },
       doSearch() {
-        // SearchService.getSuggestList({
-        //   keywords: this.keywords
-        // }, res => {
-        //   console.log(res);
-        // })
+        if (this.keywords) {
+          SearchService.getSuggestList({
+            keywords: this.keywords
+          }, res => {
+            this.resultList = res.data;
+          });
+        } else {
+          this.resultList = [];
+        }
       },
       clearInput() {
         this.keywords = '';
+        this.resultList = [];
       }
     }
   }
@@ -96,7 +88,7 @@
     padding: .2rem .28rem 0;
     background-color: #fff;
     .search-wrap {
-      margin-bottom: .6rem;
+      margin-bottom: .3rem;
       display: flex;
       align-items: center;
     }
@@ -155,62 +147,26 @@
       color: #333;
       box-sizing: border-box;
     }
-    .near {
-      color: #b2b2b2;
-      font-size: 0.28rem;
-    }
-    .near-place {
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 0.8rem;
-      margin-bottom: 0.8rem;
-      /*word-break:break-all;*/
-    }
-    .one-place {
-      /*flex: 1;*/
-      /*flex-shrink: 0;*/
-      padding: 0.06rem 0.12rem;
-      line-height: 1;
-    }
-    .search-pre {
+    .search-item {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 0.36rem;
-      border-bottom: 1px solid #e6e6e6;
-      .left {
-        color: #b2b2b2;
-        font-size: 0.28rem;
-      }
-      .right {
+      align-items: center;
+      height: 1rem;
+      font-size: .28rem;
+      color: #333;
+      .title {
         display: flex;
         align-items: center;
-        .dele-img {
-          width: 0.3rem;
-          height: 0.3rem;
-        }
-        .dele {
-          margin-left: 0.1rem;
-          color: #b2b2b2;
-          font-size: 0.24rem;
-        }
+        font-size: .24rem;
+        color: #b2b2b2;
+      }
+      .del-icon {
+        margin-right: .1rem;
+        width: 0.3rem;
+        height: 0.3rem;
+        background: url("../../assets/images/dele.png") no-repeat;
+        background-size: 100% 100%;
       }
     }
-    .search-item {
-      box-sizing: border-box;
-      font-size: 0.28rem;
-      color: #333333;
-      line-height: 1rem;
-      height: 1rem;
-      border-bottom: 1px solid #e6e6e6;
-    }
-    .act {
-
-    }
   }
-
-  .nest-select.sear-sel {
-    top: 0rem;
-  }
-
 </style>
