@@ -14,7 +14,7 @@
         </div>
         <div class="category-container" v-if="dataList.length !== 0">
           <div class="category banner1" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[0].id } })">
-            <span class="favorite"></span>
+            <span class="favorite" :class="dataList[0].favored ? 'on' : ''" @click.stop="doFollow(dataList[0])"></span>
             <div class="category-tag" v-if="dataList[0].content">
               <span>{{ dataList[0].content }}</span>
             </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="category-container" v-if="dataList.length === 2 || dataList.length === 4 || dataList.length > 4">
           <div class="category banner2" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[1].id } })">
-            <span class="favorite"></span>
+            <span class="favorite" :class="dataList[1].favored ? 'on' : ''" @click.stop="doFollow(dataList[1])"></span>
             <div class="category-tag" v-if="dataList[1].content">
               <span>{{ dataList[1].content }}</span>
             </div>
@@ -36,7 +36,8 @@
         </div>
         <div class="category-container" v-if="dataList.length === 3 || dataList.length === 4 || dataList.length > 4">
           <div class="category banner3" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[1].id : dataList[2].id } })">
-            <span class="favorite"></span>
+            <span class="favorite" :class="dataList[1].favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[1])"></span>
+            <span class="favorite" :class="dataList[2].favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[2])"></span>
             <div class="category-tag" v-if="(dataList.length === 3 && dataList[1].content) || (dataList.length === 4 && dataList[2].content)">
               <span>{{ dataList.length === 3 ? dataList[1].content : dataList[2].content }}</span>
             </div>
@@ -45,7 +46,8 @@
             </div>
           </div>
           <div class="category banner4" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[2].id : dataList[3].id } })">
-            <span class="favorite"></span>
+            <span class="favorite" :class="dataList[2].favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[2])"></span>
+            <span class="favorite" :class="dataList[3].favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[3])"></span>
             <div class="category-tag" v-if="(dataList.length === 3 && dataList[2].content) || (dataList.length === 4 && dataList[3].content)">
               <span>{{ dataList.length === 3 ? dataList[2].content : dataList[3].content }}</span>
             </div>
@@ -55,11 +57,17 @@
           </div>
         </div>
         <div class="category-list">
-          <div class="category-item border-bottom" v-for="(item, index) in dataList" v-if="index > 3"
-               @click="$router.push({ name: 'ArticleDetails', params: { id: item.id } })">
-            <div class="title">{{ item.title }}</div>
-            <div class="info"><span class="read"></span><span>{{ item.created_at }}</span></div>
-          </div>
+          <nest-swipe-cell v-for="(item, index) in dataList" v-if="index > 3" :key="item.id">
+            <div class="category-item border-bottom gap" slot="content"
+                 @click="$router.push({ name: 'ArticleDetails', params: { id: item.id } })">
+              <div class="title">{{ item.title }}</div>
+              <div class="info"><span class="read"></span><span class="read-num">{{ item.views }}</span><span>{{ item.created_at }}</span></div>
+            </div>
+            <div class="controls" slot="controls">
+              <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
+              <div class="share"></div>
+            </div>
+          </nest-swipe-cell>
         </div>
       </div>
     </nest-scroll>
@@ -69,6 +77,7 @@
 
 <script>
   import ArticleService from "../../services/ArticleService";
+  import FollowService from "../../services/FollowService";
 
   export default {
     name: "ArticleSubject",
@@ -137,6 +146,25 @@
               this.$refs.scroll.forceUpdate(false);
             }
           }, false);
+        }
+      },
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'news',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('取消成功');
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'news',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('关注成功');
+            item.favored = true;
+          });
         }
       }
     }
@@ -232,8 +260,11 @@
         right: .2rem;
         width: .36rem;
         height: .32rem;
-        background: url('../../assets/images/favorite-w.png') no-repeat;
+        background: url('../../assets/images/heart_white.png') no-repeat;
         background-size: 100% 100%;
+        &.on {
+          background-image: url('../../assets/images/heart_white_on.png');
+        }
       }
       .category-text {
         font-size: .36rem;
@@ -268,10 +299,27 @@
       }
     }
     .category-list {
-      padding: 0 .28rem;
+      margin-top: .2rem;
+    }
+    .controls {
+      display: flex;
+      height: 100%;
+      .heart {
+        width: .8rem;
+        background: #e7f4f2 url("../../assets/images/heart.png") no-repeat center center;
+        background-size: .36rem .32rem;
+        &.on {
+          background-image: url("../../assets/images/heart-on.png");
+        }
+      }
+      .share {
+        width: .8rem;
+        background: #e7f4f2 url("../../assets/images/share.png") no-repeat center center;
+        background-size: .3rem .3rem;
+      }
     }
     .category-item {
-      padding: .3rem 0;
+      padding: .3rem .28rem;
       .title {
         font-size: .32rem;
         color: #333;
@@ -290,6 +338,9 @@
         height: .16rem;
         background: url('../../assets/images/read.png') no-repeat;
         background-size: 100% 100%;
+      }
+      .read-num {
+        margin-right: .25rem;
       }
     }
   }

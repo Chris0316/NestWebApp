@@ -3,7 +3,7 @@
     <div class="search-wrap">
       <div class="search-box">
         <div class="input-wrap">
-          <input class="search-inp" type="text" v-model="keywords" @input="handleInput">
+          <input class="search-inp" type="text" v-model="keywords">
           <div class="clear" v-show="clearShow" @click="clearInput"></div>
         </div>
         <nest-select v-model="selectType" :options="selectOpts" />
@@ -39,39 +39,35 @@
     },
     data() {
       return {
-        selectType: '',
+        selectType: 'new',
         selectOpts: DICT.filters.select,
         clearShow: false,
         keywords: '',
+        timeId: null,
         resultList: []
       }
     },
     watch: {
+      selectType(val) {
+        console.log(val);
+      },
       keywords(val) {
         this.clearShow = val !== '';
-      }
-    },
-    methods: {
-      handleInput() {
-        this.throttle(this.doSearch);
-      },
-      throttle(fn, context) {
-        clearTimeout(fn.tId);
-        fn.tId = setTimeout(function () {
-          fn.call(context);
-        }, 300);
-      },
-      doSearch() {
-        if (this.keywords) {
-          SearchService.getSuggestList({
-            keywords: this.keywords
-          }, res => {
-            this.resultList = res.data;
-          });
+        if (val) {
+          clearTimeout(this.timeId);
+          this.timeId = setTimeout(() => {
+            SearchService.getSuggestList({
+              keywords: val
+            }, res => {
+              this.resultList = res.data;
+            });
+          }, 300);
         } else {
           this.resultList = [];
         }
-      },
+      }
+    },
+    methods: {
       clearInput() {
         this.keywords = '';
         this.resultList = [];

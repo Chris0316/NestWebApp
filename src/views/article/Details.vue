@@ -8,8 +8,9 @@
       </div>
       <div class="download-btn">立即打开</div>
     </div>
-    <div class="header border-bottom">
+    <div class="header border-bottom" v-if="article">
       <div class="back" @click="$router.go(-1);"></div>
+      <div class="heart" :class="article.favored ? 'on' : ''" @click="doFollow(article)"></div>
       <div class="share"></div>
     </div>
     <nest-scroll class="app-body" v-if="article">
@@ -24,6 +25,7 @@
 
 <script>
   import ArticleService from "../../services/ArticleService";
+  import FollowService from "../../services/FollowService";
 
   export default {
     name: "ArticleDetails",
@@ -49,6 +51,25 @@
         ArticleService.getArticleDetails(this.articleId, res => {
           this.article = res.data;
         });
+      },
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'news',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('取消成功');
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'news',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('关注成功');
+            item.favored = true;
+          });
+        }
       }
     }
   }
@@ -77,11 +98,23 @@
       background: url('../../assets/images/return-icon.png') no-repeat left center;
       background-size: .42rem .32rem;
     }
+    .heart {
+      position: absolute;
+      top: 0;
+      right: .88rem;
+      width: .36rem;
+      height: 100%;
+      background: url('../../assets/images/heart_dark.png') no-repeat right center;
+      background-size: .36rem .32rem;
+      &.on {
+        background-image: url("../../assets/images/heart-on.png");
+      }
+    }
     .share {
       position: absolute;
       top: 0;
       right: .28rem;
-      width: .9rem;
+      width: .3rem;
       height: 100%;
       background: url('../../assets/images/icon_share_black.png') no-repeat right center;
       background-size: .3rem .3rem;

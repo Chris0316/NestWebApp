@@ -51,10 +51,16 @@ body {
     content: '';
     position: absolute;
     left: 0;
+    right: 0;
     bottom: 0;
-    width: 100%;
     border-bottom: 1px solid #e6e6e6;
     transform-origin: 0 100%;
     transform: scaleY(0.5);
+  }
+  &.gap {
+    &::after {
+      left: .28rem;
+      right: .28rem;
+    }
   }
 }

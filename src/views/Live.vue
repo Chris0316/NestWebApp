@@ -250,10 +250,10 @@
         right: .2rem;
         width: .36rem;
         height: .32rem;
-        background: url('../assets/images/favorite-w.png') no-repeat;
+        background: url('../assets/images/heart_white.png') no-repeat;
         background-size: 100% 100%;
         &.on {
-          background: #fff;
+          background-image: url('../assets/images/heart_white_on.png');
         }
       }
       .category-text {

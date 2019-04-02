@@ -110,10 +110,10 @@
               </div>
             </div>
           </div>
-          <div class="collect" slot="controls" v-if="userId == item.user_id">
+          <div class="controls" slot="controls" v-if="userId == item.user_id">
             <div class="share" @click="doShare"></div>
           </div>
-          <div class="collect" slot="controls" v-else>
+          <div class="controls" slot="controls" v-else>
             <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
             <div class="share" @click="doShare"></div>
           </div>
@@ -356,7 +356,7 @@
             target_type: 'house',
             target_id: item.id
           }, res => {
-            this.$toast.info('收藏成功');
+            this.$toast.info('关注成功');
             item.favored = true;
           });
         }
@@ -572,7 +572,7 @@
         color: #cccccc;
       }
     }
-    .collect {
+    .controls {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
