@@ -37,7 +37,7 @@
             <div class="cancel"></div>
           </div>
           <template slot="controls" v-else>
-            <div class="follow"></div>
+            <div class="follow" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
             <div class="share"></div>
           </template>
         </nest-swipe-cell>
@@ -59,6 +59,7 @@
   import Utils from '../../utils/Utils';
   import Storage from '../../utils/Storage'
   import WantsService from '../../services/WantsService';
+  import FollowService from "../../services/FollowService";
 
   export default {
     name: "MyGround",
@@ -169,6 +170,25 @@
               this.$refs.scroll.forceUpdate(false);
             }
           }, false);
+        }
+      },
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'want',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('取消成功');
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'want',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('关注成功');
+            item.favored = true;
+          });
         }
       }
     }
@@ -358,6 +378,9 @@
       height: .87rem;
       background: rgba(15,145,131,.1) url('../../assets/images/heart.png') no-repeat center center;
       background-size: .36rem .32rem;
+      &.on {
+        background-image: url("../../assets/images/heart-on.png");
+      }
     }
     .share {
       width: 1.2rem;

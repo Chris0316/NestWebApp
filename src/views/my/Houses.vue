@@ -6,9 +6,9 @@
     </div>
     <div class="control-wrap">
       <nest-button :type="publishBtn.type" class="mr28" @click="switchPublishStatus">{{ publishBtn.txt }}</nest-button>
-      <nest-button class="mr28" @click="tradeShow = true">类型</nest-button>
-      <nest-button class="mr28" @click="typeShow = true">分类</nest-button>
-      <nest-button class="mr28" @click="publishDateShow = true">发布时间</nest-button>
+      <nest-button :type="tradeBtn.type" class="mr28" @click="tradeShow = true">{{ tradeBtn.txt }}</nest-button>
+      <nest-button :type="typeBtn.type" class="mr28" @click="typeShow = true">{{ typeBtn.txt }}</nest-button>
+      <nest-button :type="publishDateBtn.type" class="mr28" @click="publishDateShow = true">{{ publishDateBtn.txt }}</nest-button>
     </div>
     <nest-scroll class="app-body" :pullUpLoad="pullUpLoadObj"
                  @pullingUp="getMyData"
@@ -83,7 +83,9 @@
           txt: '已发布'
         },
         filters: {
-          status: 1
+          status: 1,
+          page: 0,
+          per_page: 10
         },
         pullUpLoadObj: {
           threshold: 0,
@@ -95,10 +97,22 @@
         dataList: [],
         tradeShow: false,
         trade: '-1',
+        tradeBtn: {
+          type: 'default',
+          txt: '类型'
+        },
         typeShow: false,
         type: '-1',
+        typeBtn: {
+          type: 'default',
+          txt: '分类'
+        },
         publishDateShow: false,
-        publishDate: '-1'
+        publishDate: '-1',
+        publishDateBtn: {
+          type: 'default',
+          txt: '发布时间'
+        },
       }
     },
     created() {
@@ -106,6 +120,50 @@
     },
     mounted() {
       this.getMyData(true);
+    },
+    watch: {
+      trade(val) {
+        this.tradeShow = false;
+        let selectedLabel = getSelecteds(this.tradeOpts, val)[0].label;
+        if (val === '-1') {
+          this.tradeBtn.type = 'default';
+          this.tradeBtn.txt = '分类';
+          delete this.filters['trade'];
+        } else {
+          this.tradeBtn.type = 'primary';
+          this.tradeBtn.txt = selectedLabel;
+          this.filters.trade = val;
+        }
+        this.getMyData(true);
+      },
+      type(val) {
+        this.typeShow = false;
+        let selectedLabel = getSelecteds(this.typeOpts, val)[0].label;
+        if (val === '-1') {
+          this.typeBtn.type = 'default';
+          this.typeBtn.txt = '类型';
+          delete this.filters['type'];
+        } else {
+          this.typeBtn.type = 'primary';
+          this.typeBtn.txt = selectedLabel;
+          this.filters.type = val;
+        }
+        this.getMyData(true);
+      },
+      publishDate(val) {
+        this.publishDateShow = false;
+        let selectedLabel = getSelecteds(this.publishDateOpts, val)[0].label;
+        if (val === '-1') {
+          this.publishDateBtn.type = 'default';
+          this.publishDateBtn.txt = '发布时间';
+          delete this.filters['filter_time'];
+        } else {
+          this.publishDateBtn.type = 'primary';
+          this.publishDateBtn.txt = selectedLabel;
+          this.filters.filter_time = val;
+        }
+        this.getMyData(true);
+      }
     },
     methods: {
       initConsts() {

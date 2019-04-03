@@ -52,20 +52,20 @@
                      ref="favoriteScroll">
           <div class="list">
             <nest-swipe-cell v-for="item in dataList2" :key="item.id" class="list-item" v-if="dataList2.length !== 0">
-              <div class="item" slot="content" :class="item.trade"
-                   @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
-                <div class="item-img" :class="[item.type[0]]"></div>
+              <div class="item" slot="content" :class="item.target.trade"
+                   @click="$router.push({ name: 'LiveDetails', params: { id: item.target.id } })">
+                <div class="item-img" :class="[item.target.type[0]]"></div>
                 <div class="item-content">
                   <div class="title">
-                    <span class="tag">{{ getSelecteds(DICT.house.trade2, item.trade)[0].label }}</span>
-                    <span class="txt">{{ getListTitle(item) }}</span>
+                    <span class="tag">{{ getSelecteds(DICT.house.trade2, item.target.trade)[0].label }}</span>
+                    <span class="txt">{{ getListTitle(item.target) }}</span>
                   </div>
                   <div class="desc">
-                    <div v-if="item.trade === 'rent'">预算：{{ item.budget_min }}-{{ item.budget_max }}Peso</div>
-                    <div v-else>预算：{{ item.budget_min/10000 }}-{{ item.budget_max/10000 }}万Peso</div>
-                    <div>地区：{{ getSelecteds(DICT.region, item.region_ids).map(item2 => item2.label).join(' ') }}</div>
+                    <div v-if="item.target.trade === 'rent'">预算：{{ item.target.budget_min }}-{{ item.target.budget_max }}Peso</div>
+                    <div v-else>预算：{{ item.target.budget_min/10000 }}-{{ item.target.budget_max/10000 }}万Peso</div>
+                    <div>地区：{{ getSelecteds(DICT.region, item.target.region_ids).map(item2 => item2.label).join(' ') }}</div>
                   </div>
-                  <div class="date">{{ item.date }}</div>
+                  <div class="date">{{ item.target.date }}</div>
                 </div>
               </div>
               <template slot="controls">
@@ -85,18 +85,22 @@
   import Utils from '../../utils/Utils';
   import WantsService from '../../services/WantsService';
   import Storage from "../../utils/Storage";
+  import FollowService from "../../services/FollowService";
 
   export default {
     name: "MyLives",
     data() {
       return {
         tabSelected: 'my',
+        favoredFirstLoad: false,
         publishBtn: {
           type: 'primary',
           txt: '已发布'
         },
         filters: {
-          status: 1
+          status: 1,
+          page: 0,
+          per_page: 10
         },
         pullUpLoadObj: {
           threshold: 0,
@@ -104,6 +108,10 @@
             more: '加载更多',
             noMore: '没有更多数据了'
           }
+        },
+        filters2: {
+          page: 0,
+          per_page: 10
         },
         pullUpLoadObj2: {
           threshold: 0,
@@ -121,6 +129,14 @@
     },
     mounted() {
       this.getMyData(true);
+    },
+    watch: {
+      tabSelected(val) {
+        if (val === 'favorite' && !this.favoredFirstLoad) {
+          this.getFavoriteData(true);
+          this.favoredFirstLoad = true;
+        }
+      }
     },
     methods: {
       initConsts() {
@@ -185,8 +201,32 @@
           }, false);
         }
       },
-      getFavoriteData() {
-
+      getFavoriteData(loading = false) {
+        this.filters2.target_type = 'want';
+        let params = Utils.getEffectiveAttrsByObj(this.filters2);
+        if (loading) {
+          this.filters2.page = 1;
+          FollowService.getFollowList(params, res => {
+            this.dataList2 = res.data;
+            this.$refs.favoriteScroll.scrollTo(0, 0, 300);
+            if (this.dataList2.length < res.meta.pagination.total) {
+              this.$refs.favoriteScroll.forceUpdate(true);
+            } else {
+              this.$refs.favoriteScroll.forceUpdate(false);
+            }
+          }, true);
+        } else {
+          this.filters2.page += 1;
+          FollowService.getFollowList(params, res => {
+            this.filters2.page = res.meta.pagination.current_page;
+            this.dataList2 = this.dataList2.concat(res.data);
+            if (this.dataList2.length < res.meta.pagination.total) {
+              this.$refs.favoriteScroll.forceUpdate(true);
+            } else {
+              this.$refs.favoriteScroll.forceUpdate(false);
+            }
+          }, false);
+        }
       }
     }
   }

@@ -10,12 +10,12 @@
       <nest-tab-item id="agents">经纪人</nest-tab-item>
     </nest-tab-bar>
     <div class="control-wrap" v-if="tabSelected === 'resources'">
-      <nest-button :type="tradeBtn" class="mr28" @click="tradeShow = true">{{ tradeBtnTxt }}</nest-button>
-      <nest-button :type="typeBtn" class="mr28" @click="typeShow = true">{{ typeBtnTxt }}</nest-button>
-      <nest-button :type="dateBtn" class="mr28" @click="dateShow = true">{{ dateBtnTxt }}</nest-button>
+      <nest-button :type="tradeBtn.type" class="mr28" @click="tradeShow = true">{{ tradeBtn.txt }}</nest-button>
+      <nest-button :type="typeBtn.type" class="mr28" @click="typeShow = true">{{ typeBtn.txt }}</nest-button>
+      <nest-button :type="dateBtn.type" class="mr28" @click="dateShow = true">{{ dateBtn.txt }}</nest-button>
     </div>
     <div class="control-wrap" v-else>
-      <nest-button :type="dateBtn2" @click="dateShow2 = true">{{ dateBtnTxt2 }}</nest-button>
+      <nest-button :type="dateBtn2.type" @click="dateShow2 = true">{{ dateBtn2.txt }}</nest-button>
     </div>
     <nest-tab-container class="app-body" v-model="tabSelected">
       <nest-tab-container-item class="container-item" id="resources">
@@ -150,20 +150,28 @@
         agentFirstLoad: false,
         tradeShow: false,
         trade: '-1',
-        tradeBtn: 'default',
-        tradeBtnTxt: '类型',
+        tradeBtn: {
+          type: 'default',
+          txt: '类型'
+        },
         typeShow: false,
         type: '-1',
-        typeBtn: 'default',
-        typeBtnTxt: '分类',
+        typeBtn: {
+          type: 'default',
+          txt: '分类'
+        },
         dateShow: false,
         date: '-1',
-        dateBtn: 'default',
-        dateBtnTxt: '关注时间',
+        dateBtn: {
+          type: 'default',
+          txt: '关注时间'
+        },
         dateShow2: false,
         date2: '-1',
-        dateBtn2: 'default',
-        dateBtnTxt2: '关注时间',
+        dateBtn2: {
+          type: 'default',
+          txt: '关注时间'
+        },
         shareShow: false,
         dataList: [],
         dataList2: [],
@@ -202,12 +210,12 @@
         this.typeShow = false;
         let selectedLabel = getSelecteds(this.typeOpts, val)[0].label;
         if (val === '-1') {
-          this.typeBtn = 'default';
-          this.typeBtnTxt = '类型';
+          this.typeBtn.type = 'default';
+          this.typeBtn.txt = '类型';
           delete this.filters['type'];
         } else {
-          this.typeBtn = 'primary';
-          this.typeBtnTxt = selectedLabel;
+          this.typeBtn.type = 'primary';
+          this.typeBtn.txt = selectedLabel;
           this.filters.type = val;
         }
         this.onPullingUpResources(true);
@@ -216,12 +224,12 @@
         this.tradeShow = false;
         let selectedLabel = getSelecteds(this.tradeOpts, val)[0].label;
         if (val === '-1') {
-          this.tradeBtn = 'default';
-          this.tradeBtnTxt = '分类';
+          this.tradeBtn.type = 'default';
+          this.tradeBtn.txt = '分类';
           delete this.filters['trade'];
         } else {
-          this.tradeBtn = 'primary';
-          this.tradeBtnTxt = selectedLabel;
+          this.tradeBtn.type = 'primary';
+          this.tradeBtn.txt = selectedLabel;
           this.filters.trade = val;
         }
         this.onPullingUpResources(true);
@@ -230,12 +238,12 @@
         this.dateShow = false;
         let selectedLabel = getSelecteds(this.dateOpts, val)[0].label;
         if (val === '-1') {
-          this.dateBtn = 'default';
-          this.dateBtnTxt = '关注时间';
+          this.dateBtn.type = 'default';
+          this.dateBtn.txt = '关注时间';
           delete this.filters['filter_time'];
         } else {
-          this.dateBtn = 'primary';
-          this.dateBtnTxt = selectedLabel;
+          this.dateBtn.type = 'primary';
+          this.dateBtn.txt = selectedLabel;
           this.filters.filter_time = val;
         }
         this.onPullingUpResources(true);
@@ -244,12 +252,12 @@
         this.dateShow2 = false;
         let selectedLabel = getSelecteds(this.dateOpts2, val)[0].label;
         if (val === '-1') {
-          this.dateBtn2 = 'default';
-          this.dateBtnTxt2 = '关注时间';
+          this.dateBtn2.type = 'default';
+          this.dateBtn2.txt = '关注时间';
           delete this.filters2['filter_time'];
         } else {
-          this.dateBtn2 = 'primary';
-          this.dateBtnTxt2 = selectedLabel;
+          this.dateBtn2.type = 'primary';
+          this.dateBtn2.txt = selectedLabel;
           this.filters2.filter_time = val;
         }
         this.onPullingUpAgents(true);

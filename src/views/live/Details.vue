@@ -55,7 +55,7 @@
     </div>
     <div class="control-bar" v-else>
       <div class="controls">
-        <a href="javascript:;" class="favorite"></a>
+        <a href="javascript:;" class="favorite" :class="live.favored ? 'on' : ''" @click="doFollow(live)"></a>
         <a href="javascript:;" class="share"></a>
       </div>
       <a href="javascript:;" class="msg-btn">短信咨询</a>
@@ -68,6 +68,7 @@
   import DICT, {getSelecteds} from "../../configs/DICT";
   import WantsService from '../../services/WantsService';
   import Storage from "../../utils/Storage";
+  import FollowService from "../../services/FollowService";
 
   export default {
     name: "MyDetails",
@@ -107,6 +108,25 @@
           this.isMine = userId == res.data.user.id;
           this.live = res.data;
         });
+      },
+      doFollow(item) {
+        if (item.favored) {
+          FollowService.unFollow({
+            target_type: 'want',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('取消成功');
+            item.favored = false;
+          })
+        } else {
+          FollowService.doFollow({
+            target_type: 'want',
+            target_id: item.id
+          }, res => {
+            this.$toast.info('关注成功');
+            item.favored = true;
+          });
+        }
       }
     }
   }
@@ -274,6 +294,9 @@
           height: .38rem;
           background: url("../../assets/images/favorite.png") no-repeat;
           background-size: 100% 100%;
+          &.on {
+            background-image: url("../../assets/images/favorite-on.png");
+          }
         }
         .share {
           display: inline-block;
