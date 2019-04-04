@@ -5,8 +5,8 @@
       帮住广场
     </div>
     <div class="control-bar">
-      <nest-button :type="tradeBtn" class="mr28" @click="tradeShow = !tradeShow">{{ tradeBtnTxt }}</nest-button>
-      <nest-button :type="regionBtn" @click="regionShow = !regionShow">{{ regionBtnTxt }}</nest-button>
+      <nest-button :type="tradeBtn.type" class="mr28" @click="tradeShow = !tradeShow">{{ tradeBtn.txt }}</nest-button>
+      <nest-button :type="regionBtn.type" @click="regionShow = !regionShow">{{ regionBtn.txt }}</nest-button>
     </div>
     <nest-scroll class="app-body"
                  ref="scroll"
@@ -43,9 +43,8 @@
         </nest-swipe-cell>
       </div>
     </nest-scroll>
-    <nest-modal title="类型" modal-confirm-txt="确定" :status="tradeShow"
-                @close="tradeShow = false" @clear="trade = []" @confirm="tradeConfirm">
-      <nest-check v-model="trade" :options="DICT.house.trade2"></nest-check>
+    <nest-modal title="类型" :has-clear="false" :has-footer="false" @close="tradeShow = false" :status="tradeShow">
+      <nest-radio v-model="trade" :count-in-row="1" :options="tradeOpts"></nest-radio>
     </nest-modal>
     <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
                 @close="regionShow = false" @clear="region_ids = []" @confirm="regionConfirm">
@@ -65,14 +64,18 @@
     name: "MyGround",
     data() {
       return {
-        tradeBtn: 'default',
-        regionBtn: 'default',
-        tradeBtnTxt: '类型',
-        regionBtnTxt: '区域',
+        tradeBtn: {
+          type: 'default',
+          txt: '类型'
+        },
+        regionBtn: {
+          type: 'default',
+          txt: '区域'
+        },
         regionShow: false,
         tradeShow: false,
         region_ids: [],
-        trade: [],
+        trade: '-1',
         dataList: [],
         filters: {
           page: 0,
@@ -89,30 +92,30 @@
     },
     watch: {
       trade(val) {
-        if (val.length === 0) {
-          this.tradeBtn = 'default';
-          this.tradeBtnTxt = '类型';
+        this.tradeShow = false;
+        let selectedLabel = getSelecteds(this.tradeOpts, val)[0].label;
+        if (val === '-1') {
+          this.tradeBtn.type = 'default';
+          this.tradeBtn.txt = '分类';
+          delete this.filters['trade'];
         } else {
-          this.tradeBtn = 'primary';
-          if (val.length === 1) {
-            let label = getSelecteds(DICT.house.trade2, val[0])[0].label;
-            this.tradeBtnTxt = label;
-          } else {
-            this.tradeBtnTxt = '类型(' + val.length + ')';
-          }
+          this.tradeBtn.type = 'primary';
+          this.tradeBtn.txt = selectedLabel;
+          this.filters.trade = val;
         }
+        this.getData(true);
       },
       region_ids(val) {
         if (val.length === 0) {
-          this.regionBtn = 'default';
-          this.regionBtnTxt = '区域';
+          this.regionBtn.type = 'default';
+          this.regionBtn.txt = '区域';
         } else {
-          this.regionBtn = 'primary';
+          this.regionBtn.type = 'primary';
           if (val.length === 1) {
             let label = getSelecteds(DICT.region, val[0])[0].label;
-            this.regionBtnTxt = label.split('(')[0];
+            this.regionBtn.txt = label.split('(')[0];
           } else {
-            this.regionBtnTxt = '区域(' + val.length + ')';
+            this.regionBtn.txt = '区域(' + val.length + ')';
           }
         }
       }
@@ -128,6 +131,8 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.userId = Storage.getLocalStorage('nest_user_id');
+        this.tradeOpts = [].concat(DICT.house.trade2);
+        this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
       },
       getListTitle(item) {
         let title = getSelecteds(DICT.house.type, item.type).map(item2 => item2.label).join('·');
@@ -135,11 +140,6 @@
           return title.substring(0, 8);
         }
         return title;
-      },
-      tradeConfirm() {
-        this.tradeShow = false;
-        this.filters.trade = this.trade;
-        this.getData(true);
       },
       regionConfirm() {
         this.regionShow = false;

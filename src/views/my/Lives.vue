@@ -34,7 +34,7 @@
                   <div class="date">{{ item.date }}</div>
                 </div>
               </div>
-              <div slot="controls" class="item-control" v-if="filters.status === 1">
+              <div slot="controls" class="item-control" v-if="item.status === 1">
                 <div class="share"></div>
                 <div class="cancel" @click="updateStatus(item.id, 0)"></div>
               </div>

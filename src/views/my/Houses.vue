@@ -40,7 +40,7 @@
                 </div>
               </div>
             </div>
-            <div slot="controls" class="collect-wrap" v-if="filters.status === 1">
+            <div slot="controls" class="collect-wrap" v-if="item.status === 1">
               <div class="share"></div>
               <div class="cancel" @click="updateStatus(item.id, 0)"></div>
             </div>
@@ -170,7 +170,7 @@
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
-        this.tradeOpts = [].concat(DICT.house.trade2);
+        this.tradeOpts = [].concat(DICT.house.trade);
         this.tradeOpts.unshift({ 'label': '默认', 'value': '-1' });
         this.typeOpts = [].concat(DICT.house.type);
         this.typeOpts.unshift({ 'label': '默认', 'value': '-1' });
@@ -179,16 +179,16 @@
           value: '-1'
         }, {
           label: '今天',
-          value: '1'
+          value: 'today'
         }, {
           label: '近三天',
-          value: '2'
+          value: '3days'
         }, {
           label: '近两周',
-          value: '3'
+          value: '2weeks'
         }, {
           label: '近一个月',
-          value: '4'
+          value: '1month'
         }];
       },
       imageUrl(item) {
@@ -208,7 +208,6 @@
             this.publishBtn.type = 'primary';
           });
         }
-
       },
       updateStatus(houseId, status) {
         HouseService.updateMyHouseStatus(houseId, status, res => {
