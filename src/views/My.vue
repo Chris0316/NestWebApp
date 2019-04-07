@@ -48,11 +48,11 @@
           <!--<nest-switch v-model="joinSwitch"></nest-switch>-->
         <!--</div>-->
         <div class="footer-links">
-          <div class="links-item">
+          <div class="links-item" @click="$router.push({ name: 'Feedback' })">
             <div class="link-icon icon4"></div>
             <div class="link-label">给我反馈</div>
           </div>
-          <div class="links-item">
+          <div class="links-item" @click="$router.push({ name: 'ContactUs' })">
             <div class="link-icon icon5"></div>
             <div class="link-label">联系我们</div>
           </div>

@@ -39,6 +39,11 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
+if (window.app.safe_top_height) {
+  document.body.style.paddingTop = window.app.safe_top_height + 'px';
+  document.body.style.paddingBottom = window.app.safe_bottom_height + 'px';
+}
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
