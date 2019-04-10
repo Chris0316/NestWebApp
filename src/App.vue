@@ -17,6 +17,14 @@
         includes: this.$keepAlives
       }
     },
+    created() {
+      let ua = navigator.userAgent,
+        pt, pb;
+      if (ua.indexOf('OhMyNest') > -1) {
+        pt = ua.match(/\/t(\d+)\.0/)[1];
+        pb = ua.match(/\/b(\d+)\.0/)[1];
+      }
+    },
     watch: {
       $route(to, from) {
 

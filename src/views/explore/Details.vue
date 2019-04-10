@@ -7,7 +7,11 @@
             <div class="back" @click="$router.go(-1)"></div>
           </div>
           <swiper class="swiper" :options="swiperOption" ref="swiper" v-if="house.galleries.data.length > 1">
-            <swiper-slide v-for="(item, index) in house.galleries.data" class="swiper-slide" :style="{ backgroundImage: 'url(' + item.url + ')' }" :key="index"></swiper-slide>
+            <swiper-slide v-for="(item, index) in house.galleries.data" class="swiper-slide" :key="index">
+              <div class="swiper-zoom-container">
+                <img :src="item.url" />
+              </div>
+            </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
           <div v-else-if="house.galleries.data.length === 1" class="swiper-slide" :style="{ backgroundImage: 'url(' + house.galleries.data[0].url + ')' }"></div>
@@ -317,7 +321,6 @@
 </template>
 
 <script>
-  import 'swiper/dist/css/swiper.css'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
   import DICT, {getSelecteds} from "../../configs/DICT";
@@ -336,6 +339,7 @@
         deleteShow: false,
         swiperOption: {
           loop: true,
+          zoom: true,
           pagination: {
             el: '.swiper-pagination',
             type: 'fraction'

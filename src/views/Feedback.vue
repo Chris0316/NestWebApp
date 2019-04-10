@@ -23,6 +23,7 @@
         <div class="form-label">反馈内容</div>
         <nest-field type="textarea" v-model="content" placeholder="您的建议会使我们更加优秀"/>
       </div>
+      <nest-upload v-model="uploadPics" />
     </div>
   </div>
 </template>
@@ -45,7 +46,8 @@
         type: '1',
         email: '',
         phone: '',
-        content: ''
+        content: '',
+        uploadPics: []
       }
     }
   }

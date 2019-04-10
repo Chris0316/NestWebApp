@@ -10,6 +10,7 @@ import VueCookie from 'vue-cookie';
 import Storage from './utils/Storage';
 // import HistoryCache from './utils/HistoryCache';
 
+import 'swiper/dist/css/swiper.min.css'
 Vue.use(components)
 Vue.use(VueCookie)
 

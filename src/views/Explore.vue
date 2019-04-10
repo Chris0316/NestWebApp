@@ -213,6 +213,8 @@
     },
     created() {
       this.initOpts();
+    },
+    mounted() {
       this.getRecommends();
       this.getTopAdvertisements();
       this.getMiddleAdvertisements();

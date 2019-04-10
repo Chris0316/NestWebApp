@@ -1,6 +1,7 @@
 import NestModal from './commons/NestModal'
 import NestCheck from './commons/NestCheck'
 import NestRadio from './commons/NestRadio'
+import NestPreview from './commons/NestPreview'
 import NestRange from './commons/NestRange'
 import NestSelect from './commons/NestSelect'
 import NestUpload from './commons/NestUpload'
@@ -26,6 +27,7 @@ let components = {
   NestModal,
   NestCheck,
   NestRadio,
+  NestPreview,
   NestRange,
   NestSelect,
   NestUpload,
