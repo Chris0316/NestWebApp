@@ -56,7 +56,7 @@
             <div class="link-icon icon5"></div>
             <div class="link-label">联系我们</div>
           </div>
-          <div class="links-item">
+          <div class="links-item" @click="business">
             <div class="link-icon icon6"></div>
             <div class="link-label">商业合作</div>
           </div>
@@ -87,7 +87,7 @@
     computed: {
       isLogin() {
         let token = Storage.getLocalStorage('nest_access_token');
-        return token ? true : false;
+        return !!token;
       }
     },
     mounted() {
@@ -108,6 +108,9 @@
         } else {
           this.$router.push({ name: 'MyProfile' });
         }
+      },
+      business() {
+        location.href = 'mailto: businesspartner@ohmynest.com';
       }
     }
   }

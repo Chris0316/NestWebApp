@@ -269,7 +269,7 @@
       },
       regionConfirm() {
         this.regionShow = false;
-        this.filters.region_id = this.region;
+        this.filters.region_ids = this.region;
         this.getData(true);
       },
       bedroomConfirm() {

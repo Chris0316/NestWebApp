@@ -20,7 +20,7 @@
       <nest-button class="mt60" type="primary" size="full" @click="getSms">获取短信验证码</nest-button>
       <div class="login-tip">其他登录方式</div>
       <div class="third-login">
-        <div class="third wechat" @click="thirdLogin('wechat')"></div>
+        <div class="third wechat" @click="thirdLogin('weixin')"></div>
         <div class="third fb" @click="thirdLogin('facebook')"></div>
         <div class="third line" @click="thirdLogin('line')"></div>
       </div>

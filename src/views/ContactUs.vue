@@ -108,6 +108,7 @@
     }
     .form-value {
       color: #b2b2b2;
+      user-select: text;
       &.link {
         color: #0f9183;
       }
