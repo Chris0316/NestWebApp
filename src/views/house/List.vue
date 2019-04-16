@@ -87,7 +87,7 @@
                  @pullingUp="getData">
       <div class="list-container">
         <nest-swipe-cell v-for="(item, index) in dataList" :key="index">
-          <div class="search-item" slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
+          <div class="search-item" slot="content" @click="$router.push({ name: 'HouseDetails', params: { id: item.id } })">
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
@@ -132,7 +132,7 @@
   import Storage from '../../utils/Storage';
 
   export default {
-    name: 'ExploreList',
+    name: 'HouseList',
     data() {
       return {
         dataList: [],

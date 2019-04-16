@@ -16,7 +16,7 @@
       <!--房租搜索结果-->
       <div class="search-list" v-if="deleteShow">
         <nest-swipe-cell  v-for="(recommend,index) in dataList" :key="index">
-          <div class="search-item"  slot="content" @click="$router.push({ name: 'ExploreDetails', params: { id: recommend.id } })">
+          <div class="search-item"  slot="content" @click="$router.push({ name: 'HouseDetails', params: { id: recommend.id } })">
             <div class="move-wrap">
               <div class="item-img" v-if="recommend.galleries instanceof Object"  :style="{backgroundImage:'url('+ imageUrl(recommend) +')'}"></div>
               <div class="msg-wrap">
@@ -98,7 +98,7 @@
   import UserService from '../../services/UserService'
   import Utils from '../../utils/Utils';
   export default {
-    name: "FollowList",
+    name: "FollowSearch",
     props:{
 
     },

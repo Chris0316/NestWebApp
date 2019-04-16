@@ -19,7 +19,7 @@
           <div class="list">
             <nest-swipe-cell v-for="item in dataList" :key="item.id" class="list-item">
               <div class="item" slot="content" :class="item.trade"
-                   @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
+                   @click="$router.push({ name: 'WantDetails', params: { id: item.id } })">
                 <div class="item-img" :class="[item.type[0]]"></div>
                 <div class="item-content">
                   <div class="title">
@@ -53,7 +53,7 @@
           <div class="list">
             <nest-swipe-cell v-for="item in dataList2" :key="item.id" class="list-item" v-if="dataList2.length !== 0">
               <div class="item" slot="content" :class="item.target.trade"
-                   @click="$router.push({ name: 'LiveDetails', params: { id: item.target.id } })">
+                   @click="$router.push({ name: 'WantDetails', params: { id: item.target.id } })">
                 <div class="item-img" :class="[item.target.type[0]]"></div>
                 <div class="item-content">
                   <div class="title">

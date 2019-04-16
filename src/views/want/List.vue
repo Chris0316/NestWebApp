@@ -17,7 +17,7 @@
           <div class="item"
                slot="content"
                :class="item.trade"
-               @click="$router.push({ name: 'LiveDetails', params: { id: item.id } })">
+               @click="$router.push({ name: 'WantDetails', params: { id: item.id } })">
             <div class="item-img" :class="[item.type[0]]"></div>
             <div class="item-content">
               <div class="title">
@@ -61,7 +61,7 @@
   import FollowService from "../../services/FollowService";
 
   export default {
-    name: "MyGround",
+    name: "WantList",
     data() {
       return {
         tradeBtn: {

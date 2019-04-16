@@ -237,7 +237,7 @@
           <div class="module-title" v-else>同小区在售</div>
           <nest-scroll direction="horizontal" class="similar">
             <div class="similar-wrap">
-              <div class="item" v-for="item in dataList" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id } })">
+              <div class="item" v-for="item in dataList" @click="$router.push({ name: 'HouseDetails', params: { id: item.id } })">
                 <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
                 <div class="item-title">{{ item.building_name }}</div>
                 <div class="item-title mt0" v-if="['apartment', 'villa', 'homestay'].indexOf(item.type) > -1">{{ item.bedroom }}室{{ item.hall }}厅</div>
@@ -293,8 +293,8 @@
         </div>
         <div class="publish">
           <div class="tips">{{ matchCustomType(house) === 'rent' ? '我也要出租？' : '我也要出售？' }}</div>
-          <a href="javascript:;" class="publish-btn" v-if="matchCustomType(house) === 'rent'" @click="$router.push({ name: 'ExplorePublish', params: { trade: 'rent', id: 'new' } })">立即发布</a>
-          <a href="javascript:;" class="publish-btn" v-else @click="$router.push({ name: 'ExplorePublish', params: { trade: 'sale', id: 'new' } })">立即发布</a>
+          <a href="javascript:;" class="publish-btn" v-if="matchCustomType(house) === 'rent'" @click="$router.push({ name: 'HousePublish', params: { trade: 'rent', id: 'new' } })">立即发布</a>
+          <a href="javascript:;" class="publish-btn" v-else @click="$router.push({ name: 'HousePublish', params: { trade: 'sale', id: 'new' } })">立即发布</a>
         </div>
       </div>
     </nest-scroll>
@@ -304,7 +304,7 @@
         <a href="javascript:;" class="share" @click="shareShow = !shareShow"></a>
       </div>
       <template v-if="isMine">
-        <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'ExplorePublish', params: { trade: house.trade, id: house.id } })">编辑</a>
+        <a href="javascript:;" class="control-btn primary" @click="$router.push({ name: 'HousePublish', params: { trade: house.trade, id: house.id } })">编辑</a>
         <a href="javascript:;" class="control-btn danger" @click="deleteShow = true">删除</a>
       </template>
       <template v-else>
@@ -331,7 +331,7 @@
   import Share from '../../utils/Share';
 
   export default {
-    name: 'ExploreDetails',
+    name: 'HouseDetails',
     data() {
       return {
         house: null,

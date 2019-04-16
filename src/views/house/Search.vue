@@ -33,7 +33,7 @@
   import SearchService from '../../services/SearchService';
 
   export default {
-    name: "ExploreSearch",
+    name: "HouseSearch",
     created() {
 
     },

@@ -3,7 +3,7 @@
     <div class="nest-header">
       <div class="search-wrap">
         <div class="search-box">
-          <div class="input-wrap" @click="$router.push({ name: 'ExploreSearch' })"></div>
+          <div class="input-wrap" @click="$router.push({ name: 'HouseSearch' })"></div>
           <nest-select v-model="selectType" :options="DICT.filters.select"/>
         </div>
         <div class="location">马尼拉</div>
@@ -30,23 +30,23 @@
               <div class="menu-icon icon1"></div>
               <div class="name">发布房源</div>
             </div>
-            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'rent' } })">
+            <div class="menu-item" @click="$router.push({ name: 'HouseList', params: { type: 'rent' } })">
               <div class="menu-icon icon2"></div>
               <div class="name">租房</div>
             </div>
-            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'second' } })">
+            <div class="menu-item" @click="$router.push({ name: 'HouseList', params: { type: 'second' } })">
               <div class="menu-icon icon3"></div>
               <div class="name">二手房</div>
             </div>
-            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'new' } })">
+            <div class="menu-item" @click="$router.push({ name: 'HouseList', params: { type: 'new' } })">
               <div class="menu-icon icon4"></div>
               <div class="name">新房</div>
             </div>
-            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'carport' } })">
+            <div class="menu-item" @click="$router.push({ name: 'HouseList', params: { type: 'carport' } })">
               <div class="menu-icon icon5"></div>
               <div class="name">车位</div>
             </div>
-            <div class="menu-item" @click="$router.push({ name: 'ExploreList', params: { type: 'land' } })">
+            <div class="menu-item" @click="$router.push({ name: 'HouseList', params: { type: 'land' } })">
               <div class="menu-icon icon6"></div>
               <div class="name">土地</div>
             </div>
@@ -84,7 +84,7 @@
         <nest-tab-container class="app-body" v-model="tabSelected">
           <nest-tab-container-item class="container-item list-wrap" id="rent">
             <div class="unit" v-for="(house, index) in rentList"
-                 @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
+                 @click="$router.push({ name: 'HouseDetails', params: { id: house.id } })">
               <div class="unit-img" :style="{ backgroundImage: 'url(' + imageUrl(house) + ')' }"></div>
               <div class="unit-place">{{house.building_name}}</div>
               <div class="unit-size" v-if="typeof house.tags === 'object'">
@@ -111,7 +111,7 @@
           </nest-tab-container-item>
           <nest-tab-container-item class="container-item list-wrap" id="sale">
             <div class="unit" v-for="(house, index) in saleList"
-                 @click="$router.push({ name: 'ExploreDetails', params: { id: house.id } })">
+                 @click="$router.push({ name: 'HouseDetails', params: { id: house.id } })">
               <div class="unit-img" :style="{ backgroundImage: 'url(' + imageUrl(house) + ')' }"></div>
               <div class="unit-place">{{house.building_name}}</div>
               <div class="unit-size" v-if="typeof house.tags === 'object'">
@@ -179,7 +179,7 @@
       trade(val) {
         this.tradeShow = false;
         setTimeout(() => {
-          this.$router.push({name: 'ExplorePublish', params: {trade: val, id: 'new'}});
+          this.$router.push({name: 'HousePublish', params: {trade: val, id: 'new'}});
         }, 500);
       },
       region(val) {

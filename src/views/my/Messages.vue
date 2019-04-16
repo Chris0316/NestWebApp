@@ -28,7 +28,7 @@
   import NotificationService from '../../services/NotificationService'
 
   export default {
-    name: "MyMessage",
+    name: "MyMessages",
     data() {
       return {
         filters: {

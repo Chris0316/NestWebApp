@@ -192,7 +192,7 @@
   import HouseAdaptor from '../../adaptor/HouseAdaptor';
 
   export default {
-    name: "ExplorePublish",
+    name: "HousePublish",
     data() {
       return {
         detailShow: false,

@@ -51,7 +51,7 @@
       </div>
       <nest-tab-container class="house-info" v-model="tabSelected">
         <nest-tab-container-item id="rent">
-          <div class="search-item" v-for="item in rentList" :key="item.id" @click="$router.push({ name: 'ExploreDetails', params: { id: item.id }})">
+          <div class="search-item" v-for="item in rentList" :key="item.id" @click="$router.push({ name: 'HouseDetails', params: { id: item.id }})">
             <div class="move-wrap">
               <div class="item-img" :style="{ backgroundImage: 'url(' + imageUrl(item) + ')'}"></div>
               <div class="msg-wrap">
@@ -122,7 +122,7 @@
   import PreviewDefaultImg from '../../assets/images/preview-default.png';
 
   export default {
-    name: "FollowAgent",
+    name: "UserDetails",
     data() {
       return {
         tabSelected: 'rent',

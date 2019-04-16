@@ -16,7 +16,7 @@
             <div class="item-label">我的发布</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon2" @click="$router.push({ name: 'MyLives' })"></div>
+            <div class="item-icon icon2" @click="$router.push({ name: 'MyWants' })"></div>
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">
@@ -25,13 +25,13 @@
           </div>
         </div>
         <div class="live-ground" v-if="isLogin && isAgent">
-          <div class="banner" @click="$router.push({ name: 'LiveGround' })">帮住广场</div>
+          <div class="banner" @click="$router.push({ name: 'WantList' })">帮住广场</div>
         </div>
         <!--<div class="form-group border-bottom arrow-right">-->
           <!--<div class="label">我的信息</div>-->
         <!--</div>-->
         <div class="border-top mt80">
-          <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessage' })">
+          <div class="form-group border-bottom arrow-right" @click="$router.push({ name: 'MyMessages' })">
             <div class="label">我的消息</div>
           </div>
         </div>

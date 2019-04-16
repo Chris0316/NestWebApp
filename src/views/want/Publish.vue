@@ -78,7 +78,7 @@
   import WantsService from '../../services/WantsService';
 
   export default {
-    name: "LivePublish",
+    name: "WantPublish",
     data() {
       return {
         detailShow: false,

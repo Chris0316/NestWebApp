@@ -5,7 +5,7 @@
         <div class="live-title">帮住</div>
         <nest-scroll direction="horizontal" class="live-modules" v-if="categoryList.length">
           <div class="modules-wrap">
-            <div class="module icon1" @click="$router.push({ name: 'LivePublish' })">
+            <div class="module icon1" @click="$router.push({ name: 'WantPublish' })">
               <div class="title">帮住</div>
               <div class="desc">给我您的需求<br>帮您淘满意的房源</div>
             </div>

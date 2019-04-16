@@ -51,7 +51,7 @@
       </div>
     </div>
     <div class="btn-wrapper" v-if="isMine">
-      <nest-button type="primary" size="full" @click="$router.push({ name: 'LivePublish' })">发布新的帮住</nest-button>
+      <nest-button type="primary" size="full" @click="$router.push({ name: 'WantPublish' })">发布新的帮住</nest-button>
     </div>
     <div class="control-bar" v-else>
       <div class="controls">
@@ -71,7 +71,7 @@
   import FollowService from "../../services/FollowService";
 
   export default {
-    name: "MyDetails",
+    name: "WantDetails",
     data() {
       return {
         isMine: false,

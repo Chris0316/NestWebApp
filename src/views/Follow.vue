@@ -1,7 +1,7 @@
 <template>
   <div class="follow">
     <div class="search-wrap">
-      <div class="search-box" @click="$router.push({ name: 'FollowList' })">
+      <div class="search-box" @click="$router.push({ name: 'FollowSearch' })">
         搜索经纪人或房源编号
       </div>
     </div>
@@ -25,7 +25,7 @@
                      @pullingUp="onPullingUpResources">
           <nest-swipe-cell v-for="(item, index) in dataList" :key="item.id">
             <div class="search-item" slot="content"
-                 @click="$router.push({ name: 'ExploreDetails', params: { id: item.target.id } })">
+                 @click="$router.push({ name: 'HouseDetails', params: { id: item.target.id } })">
               <div class="move-wrap">
                 <div class="item-img" :style="{ backgroundImage:'url(' + imageUrl(item.target) + ')' }"></div>
                 <div class="msg-wrap">
@@ -73,7 +73,7 @@
                      @pullingUp="onPullingUpAgents">
           <nest-swipe-cell v-for="(item, index) in dataList2" :key="item.target.id">
             <div class="item" slot="content"
-                 @click="$router.push({ name: 'FollowAgent', params: { id: item.target.id } }) ">
+                 @click="$router.push({ name: 'UserDetails', params: { id: item.target.id } }) ">
               <div class="item-cont">
                 <div class="top">
                   <div class="top-l">
