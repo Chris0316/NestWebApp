@@ -29,26 +29,18 @@
 
   export default {
     name: "ArticleDetails",
+    props: ['id'],
     data() {
       return {
         article: null
       }
     },
-    created() {
-      this.initConsts();
-    },
     mounted() {
       this.getArticleDetails();
     },
     methods: {
-      initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.articleId = params.id;
-        }
-      },
       getArticleDetails() {
-        ArticleService.getArticleDetails(this.articleId, res => {
+        ArticleService.getArticleDetails(this.id, res => {
           this.article = res.data;
         });
       },

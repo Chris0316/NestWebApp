@@ -332,6 +332,7 @@
 
   export default {
     name: 'HouseDetails',
+    props: ['id'],
     data() {
       return {
         house: null,
@@ -357,19 +358,11 @@
     },
     watch: {
       '$route' () {
-        let params = this.$route.params;
-        if (params) {
-          this.houseId = params.id;
-        }
         this.getData();
       }
     },
     methods: {
       initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.houseId = params.id;
-        }
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
@@ -417,27 +410,23 @@
         return icon;
       },
       getData() {
-        if (this.houseId) {
-          HouseService.getDetailsById(this.houseId, res => {
-            this.house = res.data;
-            let userId = Storage.getLocalStorage('nest_user_id');
-            this.isMine = userId == res.data.user.id;
-          });
-          let trade = this.matchCustomType(this.house) === 'rent' ? 'rent' : 'sale';
-          HouseService.getSameHouse({
-            trade: trade,
-            house_id: this.houseId
-          }, res => {
-            this.dataList = res.data;
-          })
-        }
+        HouseService.getDetailsById(this.id, res => {
+          this.house = res.data;
+          let userId = Storage.getLocalStorage('nest_user_id');
+          this.isMine = userId == res.data.user.id;
+        });
+        let trade = this.matchCustomType(this.house) === 'rent' ? 'rent' : 'sale';
+        HouseService.getSameHouse({
+          trade: trade,
+          house_id: this.id
+        }, res => {
+          this.dataList = res.data;
+        })
       },
       deleteHouseInfo() {
-        if (this.houseId) {
-          HouseService.deleteById(this.houseId, res => {
-            this.$router.go(-1);
-          });
-        }
+        HouseService.deleteById(this.id, res => {
+          this.$router.go(-1);
+        });
       },
       doFollow(item, type) {
         if (item.favored) {

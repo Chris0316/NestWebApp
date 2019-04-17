@@ -151,6 +151,7 @@
   import AdvertisementService from '../services/AdvertisementService';
   import HouseService from '../services/HouseService';
   import PreviewDefaultImg from '../assets/images/preview-default.png';
+  import Storage from "../utils/Storage";
 
   export default {
     name: 'Explore',
@@ -222,14 +223,18 @@
     methods: {
       initOpts() {
         this.DICT = DICT;
+        let bedroomStr = Storage.getLocalStorage('nest_search_conditions_bedroom');
+        let regionStr = Storage.getLocalStorage('nest_search_conditions_region');
+        this.region = regionStr ? JSON.parse(regionStr) : [];
+        this.bedroom = bedroomStr ? JSON.parse(bedroomStr) : [];
       },
       regionConfirm() {
         this.regionShow = false;
-        // todo 筛选发请求
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(this.region));
       },
       bedroomConfirm() {
         this.bedroomShow = false;
-        // todo 筛选发请求
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(this.bedroom));
       },
       imageUrl(item) {
         return item.cover ? item.cover : PreviewDefaultImg;

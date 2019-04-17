@@ -16,26 +16,18 @@
 
   export default {
     name: "MyMsgDetail",
+    props: ['id'],
     data() {
       return {
         details: null
       }
     },
-    created() {
-      this.initConsts();
-    },
     mounted() {
       this.getDetails();
     },
     methods: {
-      initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.notifyId = params.id;
-        }
-      },
       getDetails() {
-        NotificationService.getNotificationDetails(this.notifyId, res => {
+        NotificationService.getNotificationDetails(this.id, res => {
           this.details = res.data;
         })
       }

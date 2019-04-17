@@ -72,6 +72,7 @@
 
   export default {
     name: "WantDetails",
+    props: ['id'],
     data() {
       return {
         isMine: false,
@@ -86,10 +87,6 @@
     },
     methods: {
       initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.liveId = params.id;
-        }
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
       },
@@ -104,7 +101,7 @@
       },
       getData() {
         let userId = Storage.getLocalStorage('nest_user_id');
-        WantsService.getDetailsById(this.liveId, res => {
+        WantsService.getDetailsById(this.id, res => {
           this.isMine = userId == res.data.user.id;
           this.live = res.data;
         });

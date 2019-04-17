@@ -123,6 +123,7 @@
 
   export default {
     name: "UserDetails",
+    props: ['id'],
     data() {
       return {
         tabSelected: 'rent',
@@ -168,16 +169,12 @@
     },
     methods: {
       initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.agentId = params.id;
-        }
         this.DICT = DICT;
         this.getSelecteds = getSelecteds;
         this.matchCustomType = Utils.matchCustomType;
       },
       getAgentInfo() {
-        UserService.getAgentInfo(this.agentId, res => {
+        UserService.getAgentInfo(this.id, res => {
           this.agent = res.data;
         });
       },
@@ -190,7 +187,7 @@
       getRentData(isInit) {
         this.filters.page = isInit ? 1 : this.filters.page + 1;
         this.filters.trade = 'rent';
-        HouseService.getHousesByUserId(this.agentId, this.filters, res => {
+        HouseService.getHousesByUserId(this.id, this.filters, res => {
           if (isInit) {
             this.rentList = res.data;
           } else {
@@ -205,7 +202,7 @@
       getSaleData(isInit) {
         this.filters2.page = isInit ? 1 : this.filters2.page + 1;
         this.filters2.trade = 'sale';
-        HouseService.getHousesByUserId(this.agentId, this.filters2, res => {
+        HouseService.getHousesByUserId(this.id, this.filters2, res => {
           if (isInit) {
             this.saleList = res.data;
           } else {

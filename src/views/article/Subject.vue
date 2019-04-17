@@ -81,6 +81,7 @@
 
   export default {
     name: "ArticleSubject",
+    props: ['type'],
     data() {
       return {
         bannerClass: '',
@@ -102,18 +103,11 @@
     },
     created() {
       this.randomBanner();
-      this.initConsts();
     },
     mounted() {
       this.getData(true);
     },
     methods: {
-      initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          this.type = params.type;
-        }
-      },
       randomBanner() {
         let ran = Math.random(),
           bannerArr = ['banner5', 'banner6'],

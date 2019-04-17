@@ -133,6 +133,7 @@
 
   export default {
     name: 'HouseList',
+    props: ['keywords', 'pageType'],
     data() {
       return {
         dataList: [],
@@ -228,7 +229,7 @@
       initConsts() {
         let params = this.$route.params;
         if (params) {
-          this.pageType = params.type;
+          // this.pageType = params.type;
           if (this.pageType === 'rent' || this.pageType === 'new' || this.pageType === 'second') {
             this.type = '';
           } else if (this.pageType === 'carport') {
