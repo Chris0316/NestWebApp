@@ -14,11 +14,11 @@
         </nest-button>
       </div>
       <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
-                  @close="regionShow = false" @confirm="regionConfirm" @clear="region = []">
+                  @close="regionShow = false" @confirm="regionShow = false" @clear="region = []">
         <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
-      <nest-modal title="户型" modal-confirm-txt="立即发现惊喜房源" :status="bedroomShow"
-                  @close="bedroomShow = false" @confirm="bedroomConfirm" @clear="bedroom = []">
+      <nest-modal title="户型" modal-confirm-txt="确定" :status="bedroomShow"
+                  @close="bedroomShow = false" @confirm="bedroomShow = false" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
     </div>
@@ -183,6 +183,9 @@
           this.$router.push({name: 'HousePublish', params: {trade: val, id: 'new'}});
         }, 500);
       },
+      selectType(val) {
+        Storage.setLocalStorage('nest_search_conditions_pagetype', val);
+      },
       region(val) {
         if (val.length === 0) {
           this.regionBtn = 'default';
@@ -196,6 +199,7 @@
             this.regionBtnTxt = '地点(' + val.length + ')';
           }
         }
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
       },
       bedroom(val) {
         if (val.length === 0) {
@@ -204,12 +208,12 @@
         } else {
           this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
-            this.bedroomBtnTxt = label;
+            this.bedroomBtnTxt = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
           } else {
             this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
       }
     },
     created() {
@@ -223,18 +227,11 @@
     methods: {
       initOpts() {
         this.DICT = DICT;
-        let bedroomStr = Storage.getLocalStorage('nest_search_conditions_bedroom');
         let regionStr = Storage.getLocalStorage('nest_search_conditions_region');
         this.region = regionStr ? JSON.parse(regionStr) : [];
+        let bedroomStr = Storage.getLocalStorage('nest_search_conditions_bedroom');
         this.bedroom = bedroomStr ? JSON.parse(bedroomStr) : [];
-      },
-      regionConfirm() {
-        this.regionShow = false;
-        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(this.region));
-      },
-      bedroomConfirm() {
-        this.bedroomShow = false;
-        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(this.bedroom));
+        this.selectType = Storage.getLocalStorage('nest_search_conditions_pagetype');
       },
       imageUrl(item) {
         return item.cover ? item.cover : PreviewDefaultImg;

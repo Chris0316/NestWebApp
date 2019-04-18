@@ -10,19 +10,19 @@
       </div>
       <div class="cancel" @click="$router.go(-1)">取消</div>
     </div>
-
     <div class="result-list" v-show="keywords && resultList.length">
-      <div class="search-item border-bottom">{{ keywords }}</div>
-      <div class="search-item border-bottom" v-for="item in resultList">{{ item.keyword }}</div>
+      <div class="search-item border-bottom" @click="doSearch(keywords)">{{ keywords }}</div>
+      <div class="search-item border-bottom" @click="doSearch(item.keyword)" v-for="item in resultList">{{ item.keyword }}</div>
     </div>
     <div class="result-list" v-show="!keywords">
       <div class="search-item border-bottom">
         <div class="title">历史搜索</div>
-        <div class="title">
+        <div class="title" @click="clearHistory">
           <div class="del-icon"></div>
           <div>删除历史</div>
         </div>
       </div>
+      <div class="search-item border-bottom" @click="doSearch(item)" v-for="item in historyList">{{ item }}</div>
     </div>
   </div>
 </template>
@@ -34,22 +34,20 @@
 
   export default {
     name: "HouseSearch",
-    created() {
-
-    },
     data() {
       return {
-        selectType: 'new',
+        selectType: '',
         selectOpts: DICT.filters.select,
         clearShow: false,
         keywords: '',
         timeId: null,
-        resultList: []
+        resultList: [],
+        historyList: []
       }
     },
     watch: {
       selectType(val) {
-        console.log(val);
+        Storage.setLocalStorage('nest_search_conditions_pagetype', val);
       },
       keywords(val) {
         this.clearShow = val !== '';
@@ -67,10 +65,36 @@
         }
       }
     },
+    created() {
+      this.initOpts();
+      this.initHistoryList();
+    },
     methods: {
+      initOpts() {
+        this.selectType = Storage.getLocalStorage('nest_search_conditions_pagetype');
+      },
+      initHistoryList() {
+        let keywordsStr = Storage.getLocalStorage('nest_search_house_keywords'),
+          keywordsArr = keywordsStr ? JSON.parse(keywordsStr) : [];
+        this.historyList = keywordsArr;
+      },
       clearInput() {
         this.keywords = '';
         this.resultList = [];
+      },
+      clearHistory() {
+        Storage.removeLocalStorage('nest_search_house_keywords');
+        this.historyList = [];
+      },
+      doSearch(keywords) {
+        let keywordsStr = Storage.getLocalStorage('nest_search_house_keywords'),
+          keywordsArr = keywordsStr ? JSON.parse(keywordsStr) : [],
+          newArr = keywordsArr.filter((item, index) => {
+            return item !== keywords;
+          });
+        newArr.unshift(keywords);
+        Storage.setLocalStorage('nest_search_house_keywords', JSON.stringify(newArr));
+        this.$router.push({ name: 'HouseList', params: { type: this.selectType }, query: { q: keywords }});
       }
     }
   }

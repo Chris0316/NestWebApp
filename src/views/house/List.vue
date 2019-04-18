@@ -4,7 +4,7 @@
       <div class="search-wrap">
         <div class="back" @click="$router.go(-1)"></div>
         <div class="search-box">
-          <div class="input" @click="$router.push({ name: 'Search', params: { type: 'list'}})"></div>
+          <div class="input" @click="$router.push({ name: 'HouseSearch', params: { type: 'list'}})">{{ keywords }}</div>
         </div>
         <div class="location">马尼拉</div>
       </div>
@@ -188,6 +188,7 @@
             this.regionBtnTxt = '地点(' + val.length + ')';
           }
         }
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
       },
       bedroom(val) {
         if (val.length === 0) {
@@ -196,12 +197,12 @@
         } else {
           this.bedroomBtn = 'primary';
           if (val.length === 1) {
-            let label = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
-            this.bedroomBtnTxt = label;
+            this.bedroomBtnTxt = getSelecteds(DICT.filters.bedroom, val[0])[0].label;
           } else {
             this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
+        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
       },
       sort(val) {
         this.sortShow = false;
@@ -223,20 +224,17 @@
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;
+      this.filters.keywords = this.keywords;
       this.getData(true);
     },
     methods: {
       initConsts() {
-        let params = this.$route.params;
-        if (params) {
-          // this.pageType = params.type;
-          if (this.pageType === 'rent' || this.pageType === 'new' || this.pageType === 'second') {
-            this.type = '';
-          } else if (this.pageType === 'carport') {
-            this.type = 'carport';
-          } else if (this.pageType === 'land') {
-            this.type = 'land';
-          }
+        if (this.pageType === 'rent' || this.pageType === 'new' || this.pageType === 'second') {
+          this.type = '';
+        } else if (this.pageType === 'carport') {
+          this.type = 'carport';
+        } else if (this.pageType === 'land') {
+          this.type = 'land';
         }
         this.userId = Storage.getLocalStorage('nest_user_id');
         this.DICT = DICT;
@@ -264,6 +262,10 @@
           this.rangeStep = 100000;
         }
         this.range = [0, this.rangeMax + this.rangeStep];
+        let regionStr = Storage.getLocalStorage('nest_search_conditions_region');
+        this.region = regionStr ? JSON.parse(regionStr) : [];
+        let bedroomStr = Storage.getLocalStorage('nest_search_conditions_bedroom');
+        this.bedroom = bedroomStr ? JSON.parse(bedroomStr) : [];
       },
       imageUrl(item) {
         return item.cover ? item.cover : PreviewDefaultImg;
@@ -422,7 +424,11 @@
           }
         }
         .input {
-          width: 3.65rem;
+          width: 100%;
+          line-height: .8rem;
+          padding-left: .78rem;
+          font-size: .28rem;
+          box-sizing: border-box;
         }
       }
       .location {
