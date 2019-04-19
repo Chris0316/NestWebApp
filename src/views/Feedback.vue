@@ -93,6 +93,7 @@
     background-color: #f2f2f2;
   }
   .feedback {
+    padding-bottom: .56rem;
     background-color: #fff;
     box-shadow:0 2px 4px 0 rgba(230,230,230,1);
     .header {
