@@ -36,6 +36,7 @@
 
 <script>
   import FeedbackService from '../services/FeedbackService';
+  import Utils from "../utils/Utils";
 
   export default {
     name: "Feedback",
@@ -77,6 +78,7 @@
           content: this.content,
           images: this.uploadPics.join(',')
         };
+        feedback = Utils.getEffectiveAttrsByObj(feedback);
         FeedbackService.doPost(feedback, res => {
           this.$toast.success('提交成功');
           this.$router.push({ name: 'My' })
