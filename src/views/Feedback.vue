@@ -25,7 +25,7 @@
           <nest-field type="textarea" v-model="content" placeholder="您的建议会使我们更加优秀"/>
         </div>
         <div class="upload-label">上传截图（最多3张）</div>
-        <nest-upload v-model="uploadPics" :limit="3" />
+        <nest-upload v-model="uploadPics" :limit="3" :mark-main="false" />
       </div>
     </div>
     <div class="btn-area">

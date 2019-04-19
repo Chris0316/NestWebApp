@@ -1,7 +1,7 @@
 <template>
   <div class="nest-upload" v-if="currentVal.length > 0">
     <div class="upload-row" v-for="(rowNum, rowIndex) in Math.ceil((currentVal.length + 1) / 4)">
-      <div class="upload-cell" :class="{ 'main': rowIndex === 0 && cellIndex === 0 }" v-for="(cellNum, cellIndex) in 4">
+      <div class="upload-cell" :class="{ 'main': rowIndex === 0 && cellIndex === 0 && markMain }" v-for="(cellNum, cellIndex) in 4">
         <div class="upload-item img"
              v-if="rowIndex * 4 + cellIndex < currentVal.length"
              :style="{ backgroundImage: 'url(' + mediaInCell(rowIndex, cellIndex) + ')' }">
@@ -37,6 +37,10 @@
       limit: {
         type: Number,
         default: 10
+      },
+      markMain: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
