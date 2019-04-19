@@ -13,11 +13,11 @@
         <nest-button :type="bedroomBtn" class="mr28" @click="bedroomShow = !bedroomShow">{{ bedroomBtnTxt }}
         </nest-button>
       </div>
-      <nest-modal title="地点" modal-confirm-txt="确定" :status="regionShow"
+      <nest-modal title="地点" modal-confirm-txt="设定" :status="regionShow"
                   @close="regionShow = false" @confirm="regionShow = false" @clear="region = []">
         <nest-check v-model="region" :options="DICT.region"></nest-check>
       </nest-modal>
-      <nest-modal title="户型" modal-confirm-txt="确定" :status="bedroomShow"
+      <nest-modal title="户型" modal-confirm-txt="设定" :status="bedroomShow"
                   @close="bedroomShow = false" @confirm="bedroomShow = false" @clear="bedroom = []">
         <nest-check v-model="bedroom" :options="DICT.filters.bedroom"></nest-check>
       </nest-modal>
@@ -213,7 +213,7 @@
             this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
-        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
+        Storage.setLocalStorage('nest_search_conditions_bedroom', JSON.stringify(val));
       }
     },
     created() {

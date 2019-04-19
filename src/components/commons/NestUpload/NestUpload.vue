@@ -33,6 +33,10 @@
         default: () => {
           return [];
         }
+      },
+      limit: {
+        type: Number,
+        default: 10
       }
     },
     data() {
@@ -57,8 +61,8 @@
       selectMedia(e) {
         let files = e.target.files || e.dataTransfer.files;
         if (!files.length) return;
-        if (this.currentVal.length + files.length > 10) {
-          this.$toast.info('您最多只能上传10张图片');
+        if (this.currentVal.length + files.length > this.limit) {
+          this.$toast.info('您最多只能上传' + this.limit + '张图片');
           return;
         }
         Object.keys(files).forEach((key) => {
@@ -69,7 +73,6 @@
       },
       compressImg2(file) {
         let reader = new FileReader();
-
         reader.readAsDataURL(file);
         reader.onloadend = () => {
           let img = new Image(),
@@ -243,8 +246,7 @@
     line-height: 1;
     box-sizing: border-box;
     &.img {
-      background-repeat: no-repeat;
-      background-position: center center;
+      background: no-repeat center center;
       background-size: cover;
     }
     &.add {

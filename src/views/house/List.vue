@@ -202,7 +202,7 @@
             this.bedroomBtnTxt = '户型(' + val.length + ')';
           }
         }
-        Storage.setLocalStorage('nest_search_conditions_region', JSON.stringify(val));
+        Storage.setLocalStorage('nest_search_conditions_bedroom', JSON.stringify(val));
       },
       sort(val) {
         this.sortShow = false;
@@ -221,6 +221,8 @@
       this.initConsts();
     },
     mounted() {
+      this.filters.region_ids = this.region;
+      this.filters.bedroom = this.bedroom;
       this.filters.trade = this.trade;
       this.filters.type = this.type;
       this.filters.is_new = this.is_new;

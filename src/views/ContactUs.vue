@@ -13,9 +13,9 @@
       </div>
     </div>
     <div class="form">
-      <div class="form-group border-bottom">
+      <div class="form-group border-bottom" @click="mail">
         <div class="form-title">E-mail</div>
-        <div class="form-value">kunkka@ohmynest.com</div>
+        <div class="form-value link">kunkka@ohmynest.com</div>
       </div>
       <div class="form-group border-bottom" @click="tel">
         <div class="form-title">Tel</div>
@@ -38,6 +38,9 @@
   export default {
     name: "ContactUs",
     methods: {
+      mail() {
+        location.href = 'mailto: kunkka@ohmynest.com';
+      },
       tel() {
         location.href='tel:00639154900090';
       }

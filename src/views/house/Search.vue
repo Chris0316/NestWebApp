@@ -74,9 +74,8 @@
         this.selectType = Storage.getLocalStorage('nest_search_conditions_pagetype');
       },
       initHistoryList() {
-        let keywordsStr = Storage.getLocalStorage('nest_search_house_keywords'),
-          keywordsArr = keywordsStr ? JSON.parse(keywordsStr) : [];
-        this.historyList = keywordsArr;
+        let keywordsStr = Storage.getLocalStorage('nest_search_house_keywords');
+        this.historyList = keywordsStr ? JSON.parse(keywordsStr) : [];
       },
       clearInput() {
         this.keywords = '';
