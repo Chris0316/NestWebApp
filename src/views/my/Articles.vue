@@ -1,58 +1,57 @@
 <template>
-  <div class="subject">
+  <div class="articles">
     <nest-scroll ref="scroll"
                  :pullUpLoad="pullUpLoadObj"
                  @pullingUp="getData"
                  class="app-body">
       <div class="live-body">
-        <div class="banner" :class="bannerClass">
+        <div class="banner">
           <div class="head-bar">
             <div class="back" @click="$router.go(-1)"></div>
           </div>
-          <div class="title">{{ name }}</div>
-          <div class="desc">{{ description }}</div>
+          <div class="title">我的资讯</div>
         </div>
         <div class="category-container" v-if="dataList.length !== 0">
-          <div class="category banner1" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[0].id } })">
-            <span class="favorite" :class="dataList[0].favored ? 'on' : ''" @click.stop="doFollow(dataList[0])"></span>
+          <div class="category banner1" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[0].target.id } })">
+            <span class="favorite" :class="dataList[0].target.favored ? 'on' : ''" @click.stop="doFollow(dataList[0].target)"></span>
             <div class="category-text">
-              {{ dataList[0].title }}
+              {{ dataList[0].target.title }}
             </div>
           </div>
         </div>
         <div class="category-container" v-if="dataList.length === 2 || dataList.length === 4 || dataList.length > 4">
-          <div class="category banner2" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[1].id } })">
-            <span class="favorite" :class="dataList[1].favored ? 'on' : ''" @click.stop="doFollow(dataList[1])"></span>
+          <div class="category banner2" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList[1].target.id } })">
+            <span class="favorite" :class="dataList[1].target.favored ? 'on' : ''" @click.stop="doFollow(dataList[1].target)"></span>
             <div class="category-text">
-              {{ dataList[1].title }}
+              {{ dataList[1].target.title }}
             </div>
           </div>
         </div>
         <div class="category-container" v-if="dataList.length === 3 || dataList.length === 4 || dataList.length > 4">
-          <div class="category banner3" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[1].id : dataList[2].id } })">
-            <span class="favorite" :class="dataList[1].favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[1])"></span>
-            <span class="favorite" :class="dataList[2].favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[2])"></span>
+          <div class="category banner3" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[1].target.id : dataList[2].target.id } })">
+            <span class="favorite" :class="dataList[1].target.favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[1].target)"></span>
+            <span class="favorite" :class="dataList[2].target.favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[2].target)"></span>
             <div class="category-text">
-              {{ dataList.length === 3 ? dataList[1].title : dataList[2].title }}
+              {{ dataList.length === 3 ? dataList[1].target.title : dataList[2].target.title }}
             </div>
           </div>
-          <div class="category banner4" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[2].id : dataList[3].id } })">
-            <span class="favorite" :class="dataList[2].favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[2])"></span>
-            <span class="favorite" :class="dataList[3].favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[3])"></span>
+          <div class="category banner4" @click="$router.push({ name: 'ArticleDetails', params: { id: dataList.length === 3 ? dataList[2].target.id : dataList[3].target.id } })">
+            <span class="favorite" :class="dataList[2].target.favored ? 'on' : ''" v-if="dataList.length === 3" @click.stop="doFollow(dataList[2].target)"></span>
+            <span class="favorite" :class="dataList[3].target.favored ? 'on' : ''" v-else @click.stop="doFollow(dataList[3].target)"></span>
             <div class="category-text">
-              {{ dataList.length === 3 ? dataList[2].title : dataList[3].title }}
+              {{ dataList.length === 3 ? dataList[2].target.title : dataList[3].target.title }}
             </div>
           </div>
         </div>
         <div class="category-list">
-          <nest-swipe-cell v-for="(item, index) in dataList" v-if="index > 3" :key="item.id">
+          <nest-swipe-cell v-for="(item, index) in dataList" v-if="index > 3" :key="item.target.id">
             <div class="category-item border-bottom gap" slot="content"
-                 @click="$router.push({ name: 'ArticleDetails', params: { id: item.id } })">
-              <div class="title">{{ item.title }}</div>
-              <div class="info"><span class="read"></span><span class="read-num">{{ item.views }}</span><span>{{ item.created_at }}</span></div>
+                 @click="$router.push({ name: 'ArticleDetails', params: { id: item.target.id } })">
+              <div class="title">{{ item.target.title }}</div>
+              <div class="info"><span class="read"></span><span class="read-num">{{ item.target.views }}</span><span>{{ item.target.created_at }}</span></div>
             </div>
             <div class="controls" slot="controls">
-              <div class="heart" :class="item.favored ? 'on' : ''" @click="doFollow(item)"></div>
+              <div class="heart" :class="item.target.favored ? 'on' : ''" @click="doFollow(item.target)"></div>
               <div class="share"></div>
             </div>
           </nest-swipe-cell>
@@ -64,17 +63,12 @@
 </template>
 
 <script>
-  import ArticleService from "../../services/ArticleService";
   import FollowService from "../../services/FollowService";
 
   export default {
-    name: "ArticleSubject",
-    props: ['type'],
+    name: "MyArticles",
     data() {
       return {
-        bannerClass: '',
-        name: '',
-        description: '',
         filters: {
           page: 0,
           per_page: 10
@@ -89,26 +83,15 @@
         dataList: []
       }
     },
-    created() {
-      this.randomBanner();
-    },
     mounted() {
       this.getData(true);
     },
     methods: {
-      randomBanner() {
-        let ran = Math.random(),
-          bannerArr = ['banner5', 'banner6'],
-          index = Math.round(ran);
-        this.bannerClass = bannerArr[index];
-      },
       getData(loading) {
+        this.filters.target_type = 'news';
         if (loading) {
           this.filters.page = 1;
-          this.filters.category = this.type;
-          ArticleService.getArticleList(this.filters, res => {
-            this.name = res.meta.category.name;
-            this.description = res.meta.category.description;
+          FollowService.getFollowList(this.filters, res => {
             this.dataList = res.data;
             this.$refs.scroll.scrollTo(0, 0, 300);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -119,7 +102,7 @@
           }, true);
         } else {
           this.filters.page += 1;
-          ArticleService.getArticleList(this.filters, res => {
+          FollowService.getFollowList(this.filters, res => {
             this.filters.page = res.meta.pagination.current_page;
             this.dataList = this.dataList.concat(res.data);
             if (this.dataList.length < res.meta.pagination.total) {
@@ -154,7 +137,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .subject {
+  .articles {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -168,6 +151,7 @@
       padding-top: .9rem;
       height: 2.6rem;
       box-sizing: border-box;
+      background-color: #0f9183;
       .head-bar {
         position: absolute;
         top: 0;
@@ -196,14 +180,6 @@
         color: #fff;
         line-height: 1;
         text-align: center;
-      }
-      &.banner5 {
-        background: url('../../assets/images/live/banner5.png') no-repeat;
-        background-size: 100% 100%;
-      }
-      &.banner6 {
-        background: url('../../assets/images/live/banner6.png') no-repeat;
-        background-size: 100% 100%;
       }
     }
     .category-container {

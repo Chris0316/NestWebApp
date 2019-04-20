@@ -3,7 +3,7 @@
     <div class="search-wrap">
       <div class="search-box">
         <div class="input-wrap">
-          <input class="search-inp" type="text" v-model="keywords">
+          <input class="search-inp" type="text" v-model="keywords" autofocus>
           <div class="clear" v-show="clearShow" @click="clearInput"></div>
         </div>
         <nest-select v-model="selectType" :options="selectOpts" />
@@ -54,7 +54,7 @@
         if (val) {
           clearTimeout(this.timeId);
           this.timeId = setTimeout(() => {
-            SearchService.getSuggestList({
+            SearchService.searchFromHouse({
               keywords: val
             }, res => {
               this.resultList = res.data;

@@ -20,7 +20,7 @@
             <div class="item-label">我的帮住</div>
           </div>
           <div class="menu-item">
-            <div class="item-icon icon3"></div>
+            <div class="item-icon icon3" @click="$router.push({ name: 'MyArticles' })"></div>
             <div class="item-label">我的资讯</div>
           </div>
         </div>

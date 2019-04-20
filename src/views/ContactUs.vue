@@ -42,7 +42,7 @@
         location.href = 'mailto: kunkka@ohmynest.com';
       },
       tel() {
-        location.href='tel:00639154900090';
+        location.href = 'tel:00639154900090';
       }
     }
   }

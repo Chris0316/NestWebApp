@@ -2,7 +2,7 @@
   <div class="follow">
     <div class="search-wrap">
       <div class="search-box" @click="$router.push({ name: 'FollowSearch' })">
-        搜索经纪人或房源编号
+        <div class="search-text">搜索经纪人或房源编号</div>
       </div>
     </div>
     <nest-tab-bar class="tabs" v-model="tabSelected">
@@ -379,17 +379,20 @@
     .search-wrap {
       padding: .2rem .28rem;
       .search-box {
-        padding-left: .8rem;
+        padding-left: .78rem;
         position: relative;
         height: .8rem;
-        line-height: .8rem;
-        font-size: 0.28rem;
-        color: #B2B2B2;
         border: 1px solid #E8E8EA;
         border-radius: 0.1rem;
         box-shadow: 0 0 0.2rem rgba(176, 183, 187, 0.4);
         box-sizing: border-box;
         z-index: 1;
+        .search-text {
+          height: 100%;
+          line-height: .76rem;
+          font-size: 0.28rem;
+          color: #B2B2B2;
+        }
         &::before {
           position: absolute;
           content: "";
