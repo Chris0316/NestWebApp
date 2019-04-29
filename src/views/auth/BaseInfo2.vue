@@ -61,11 +61,7 @@
     },
     methods: {
       lightenBtn() {
-        if (this.gender && this.languages.length > 0 && this.email) {
-          this.btnDisabled = false;
-        } else {
-          this.btnDisabled = true;
-        }
+        this.btnDisabled = !(this.gender && this.languages.length > 0 && this.email);
       },
       handleSave() {
         let userInfo = {

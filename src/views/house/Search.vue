@@ -10,7 +10,7 @@
       </div>
       <div class="cancel" @click="$router.go(-1)">取消</div>
     </div>
-    <div class="result-list" v-show="keywords && resultList.length">
+    <div class="result-list" v-show="keywords">
       <div class="search-item border-bottom" @click="doSearch(keywords)">{{ keywords }}</div>
       <div class="search-item border-bottom" @click="doSearch(item.keyword)" v-for="item in resultList">{{ item.keyword }}</div>
     </div>

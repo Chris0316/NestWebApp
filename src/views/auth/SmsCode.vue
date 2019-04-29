@@ -88,12 +88,13 @@
             let token = res.meta.access_token;
             Storage.setLocalStorage('nest_access_token', token);
             Storage.setLocalStorage('nest_user_id', res.data.id);
-            let user = res.data;
-            if ((user.is_agent !== 0 && user.is_agent !== 1) || !user.nation || !user.local_name || !user.name) {
-              this.$router.push({ name: 'AuthBaseInfo1' });
-            } else {
-              this.$router.push({ name: 'Explore' });
-            }
+            this.$router.push({ name: 'Explore' });
+            // let user = res.data;
+            // if ((user.is_agent !== 0 && user.is_agent !== 1) || !user.nation || !user.local_name || !user.name) {
+            //   this.$router.push({ name: 'AuthBaseInfo1' });
+            // } else {
+            //   this.$router.push({ name: 'Explore' });
+            // }
           })
         }
       },

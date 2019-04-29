@@ -15,7 +15,7 @@ function wxInit(shareData, config) {
   });
   wx.checkJsApi({
     jsApiList: [
-      'onMenuShareTimeline','onMenuShareAppMessage'
+      'onMenuShareTimeline', 'onMenuShareAppMessage'
     ]
   });
   wx.ready(function () {
@@ -30,20 +30,20 @@ let Share = {
    * 微信分享组件
    * */
   weixin(title, desc, url, cover, callback) {
-    title = title?title:"我的鸟窝，您在马尼拉的专业租售房APP!";
-    desc = desc?desc:"专注马尼拉市场，做贴心的管家式服务。";
-    url = url?url:window.location.href;
+    title = title ? title : "我的鸟窝，您在马尼拉的专业租售房APP!";
+    desc = desc ? desc : "专注马尼拉市场，做贴心的管家式服务。";
+    url = url ? url : window.location.href;
     url = url.split('#')[0];
-    cover = cover?cover:"//cdn.ohmynest.com/static/images/logo.png";
+    cover = cover ? cover : "//cdn.ohmynest.com/static/images/logo.png";
     let shareData = {
       "title": title,  // 分享标题
       "desc": desc,    // 分享描述
       "imgUrl": cover, // 分享显示的缩略图地址 ,根据自己情况而定
       "link": url,     // 分享地址
     };
-    axios.get('https://api.dev.ohmynest.com/api/shares/token' + '?url='+ encodeURIComponent(url))
+    axios.get('https://api.dev.ohmynest.com/api/shares/token' + '?url=' + encodeURIComponent(url))
       .then(res => {
-        if(res && res.data){
+        if (res && res.data) {
           wxInit(shareData, res);
         }
         callback && callback(res);

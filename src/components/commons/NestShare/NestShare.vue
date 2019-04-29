@@ -21,9 +21,9 @@
           </div>
         </div>
         <div class="share-line mt50">
-          <div class="share-item facebook">
+          <div class="share-item facebook" @click="facebook()">
             <div class="icon"></div>
-            <div class="text" @click="facebook()">Facebook</div>
+            <div class="text">Facebook</div>
           </div>
           <div class="share-item messanger">
             <div class="icon"></div>
@@ -54,20 +54,23 @@
         default: false
       }
     },
-    created(){
-      window.fbAsyncInit = function() {
+    created() {
+      window.fbAsyncInit = function () {
         FB.init({
-          appId      : '2238721389736235',
-          xfbml      : true,
-          version    : 'v3.2'
+          appId: '2238721389736235',
+          xfbml: true,
+          version: 'v3.2'
         });
         FB.AppEvents.logPageView();
       };
 
-      (function(d, s, id){
+      (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
+        if (d.getElementById(id)) {
+          return;
+        }
+        js = d.createElement(s);
+        js.id = id;
         js.src = "https://connect.facebook.net/en_US/sdk.js";
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
@@ -78,7 +81,8 @@
           method: 'share',
           mobile_iframe: true,
           href: window.location.href,
-        }, function(response){});
+        }, function (response) {
+        });
       },
     }
   }
@@ -93,12 +97,12 @@
       opacity: 0;
     }
     .dialog-enter-active, .dialog-leave-active {
-      transform: translate3d(0,0,0);
+      transform: translate3d(0, 0, 0);
       transition: .5s;
     }
     .dialog-enter, .dialog-leave-to {
       opacity: 0;
-      transform: translate3d(0,100%,0);
+      transform: translate3d(0, 100%, 0);
     }
     .modal-backdrop {
       position: fixed;
@@ -116,7 +120,7 @@
       right: 0;
       bottom: 0;
       z-index: 1002;
-      box-shadow: 1px 4px .2rem 0 rgba(182,185,186,0.8);
+      box-shadow: 1px 4px .2rem 0 rgba(182, 185, 186, 0.8);
       background-color: #fff;
       box-sizing: border-box;
       .share-line {
@@ -126,8 +130,7 @@
           width: 1.3rem;
           .icon {
             height: 1.02rem;
-            background-position: center center;
-            background-repeat: no-repeat;
+            background: no-repeat center center;
           }
           .text {
             font-size: .28rem;

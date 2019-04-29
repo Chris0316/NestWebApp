@@ -23,19 +23,28 @@ Object.keys(filters).forEach((key) => {
 });
 
 router.beforeEach((to, from, next) => {
+  // 设置登录token
   let accessToken = Storage.getLocalStorage('nest_access_token');
   if (!accessToken || accessToken.length === 0) {
     accessToken = Vue.prototype.$cookie.get('nest_access_token');
     Storage.setLocalStorage('nest_access_token', accessToken);
     Vue.prototype.$cookie.delete('nest_access_token');
   }
-  if (to.meta.requireAuth === true) {
-    if (!accessToken || accessToken.length === 0) {
-      next({
-        name: 'AuthLogin'
-      })
-    }
-    next();
+  // 设置个人信息是否完善状态
+  let completeProfile = Vue.prototype.$cookie.get('nest_complete_profile');
+  // 跳转登录
+  if (to.meta.requireAuth && (!accessToken || accessToken.length === 0)) {
+    next({
+      name: 'AuthLogin'
+    });
+  }
+  // 跳转完善个人信息页面
+  if (completeProfile) {
+    if (to.name !== 'AuthLogin')
+      Vue.prototype.$toast.info('请完善用户基本信息');
+    next({
+      name: 'AuthBaseInfo1'
+    });
   }
   next();
 });
