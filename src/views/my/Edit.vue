@@ -120,6 +120,7 @@
         obj.gender = this.gender;
         obj.languages = this.languages;
         obj.phones = this.contacts;
+        obj.email = this.email;
         UserService.updateUserInfo(obj, res => {
           this.$router.go(-1);
         });
