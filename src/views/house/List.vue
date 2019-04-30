@@ -133,7 +133,7 @@
 
   export default {
     name: 'HouseList',
-    props: ['keywords', 'pageType'],
+    props: ['keywords', 'bdr', 'pps', 'tp', 'prc', 'pageType'],
     data() {
       return {
         dataList: [],
@@ -219,8 +219,17 @@
     },
     created() {
       this.initConsts();
+      let query = this.$route.query;
+      if (query) {
+        this.bedroom = getSelecteds(DICT.filters.bedroom, query.bdr);
+        this.purpose = query.pps;
+        this.type = query.tp;
+        this.price = query.prc;
+      }
     },
     mounted() {
+      this.filters.price = this.price;
+      this.filters.purpose = this.purpose;
       this.filters.region_ids = this.region;
       this.filters.bedroom = this.bedroom;
       this.filters.trade = this.trade;
