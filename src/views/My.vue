@@ -86,7 +86,7 @@
     },
     computed: {
       isLogin() {
-        let token = Storage.getLocalStorage('nest_access_token');
+        let token = this.$cookie.get('nest_access_token');
         return !!token;
       }
     },

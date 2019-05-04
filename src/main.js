@@ -24,12 +24,7 @@ Object.keys(filters).forEach((key) => {
 
 router.beforeEach((to, from, next) => {
   // 设置登录token
-  let accessToken = Storage.getLocalStorage('nest_access_token');
-  if (!accessToken || accessToken.length === 0) {
-    accessToken = Vue.prototype.$cookie.get('nest_access_token');
-    Storage.setLocalStorage('nest_access_token', accessToken);
-    Vue.prototype.$cookie.delete('nest_access_token');
-  }
+  let accessToken = Vue.prototype.$cookie.get('nest_access_token');
   // 设置个人信息是否完善状态
   let completeProfile = Vue.prototype.$cookie.get('nest_complete_profile');
   // 跳转登录

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import axios from 'axios';
-import Storage from './Storage';
 import Router from '../router';
 
 let instance = axios.create({
@@ -12,7 +11,7 @@ instance.interceptors.request.use(
   config => {
     if (config.loading !== false)
       Vue.prototype.$toast.loading();
-    let accessToken = Storage.getLocalStorage('nest_access_token');
+    let accessToken = Vue.prototype.$cookie.get('nest_access_token');
     if (accessToken && accessToken.length !== 0) {
       config.headers['Authorization'] = 'Bearer ' + accessToken;
     }
@@ -44,9 +43,9 @@ instance.interceptors.response.use(
          *  1. 清空localstorage accessToken
          *  2. 跳转登录页
          */
-        let token = Storage.getLocalStorage('nest_access_token');
+        let token = Vue.prototype.$cookie.get('nest_access_token');
         if (token) {
-          Storage.removeLocalStorage('nest_access_token');
+          Vue.prototype.$cookie.delete('nest_access_token');
           Vue.prototype.$toast.fail('登录超时，请重新登录');
         }
         Router.replace({name: 'AuthLogin'});

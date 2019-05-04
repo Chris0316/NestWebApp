@@ -76,10 +76,10 @@
         this.name = res.data.local_name;
         this.account = res.data.name;
         this.portrait = res.data.avatar;
-        this.country = getSelecteds(DICT.country, res.data.nation)[0].icon2;
+        this.country = res.data.nation ? getSelecteds(DICT.country, res.data.nation)[0].icon2 : '';
         this.signature = res.data.introduction;
-        this.gender = getSelecteds(DICT.user.gender, res.data.gender)[0].label;
-        this.languages = getSelecteds(DICT.languages, res.data.languages);
+        this.gender = res.data.gender ? getSelecteds(DICT.user.gender, res.data.gender)[0].label : '';
+        this.languages = res.data.languages ? getSelecteds(DICT.languages, res.data.languages) : [];
         this.contacts = res.data.extra.phones;
         this.email = res.data.email;
         this.regDate = res.data.created_at;
@@ -89,7 +89,7 @@
       logout() {
         AuthService.logout(res => {
           this.logoutShow = false;
-          Storage.removeLocalStorage('nest_access_token');
+          this.$cookie.delete('nest_access_token');
           this.$router.push({ name: 'Explore' });
         });
       }
