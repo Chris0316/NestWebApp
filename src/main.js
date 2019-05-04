@@ -34,8 +34,6 @@ router.beforeEach((to, from, next) => {
   }
   // 跳转完善个人信息页面
   if (completeProfile === '1') {
-    if (from.name !== 'AuthSmsCode')
-      Vue.prototype.$toast.info('请完善用户基本信息');
     if (to.name !== 'AuthBaseInfo1') {
       next({
         name: 'AuthBaseInfo1'
