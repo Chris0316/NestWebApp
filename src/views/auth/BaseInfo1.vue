@@ -88,8 +88,8 @@
           is_agent: this.userType
         };
         UserService.updateUserInfo(userInfo, res => {
-          this.$cookie.delete('nest_complete_profile');
-          this.$router.push({ name: 'AuthBaseInfo2' });
+            this.$cookie.delete('nest_complete_profile', {domain: 'ohmynest.com'});
+            this.$router.push({ name: 'AuthBaseInfo2' });
         });
       }
     }
