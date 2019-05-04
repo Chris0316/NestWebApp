@@ -90,6 +90,7 @@
         AuthService.logout(res => {
           this.logoutShow = false;
           Storage.removeLocalStorage('nest_access_token');
+          Vue.prototype.$cookie.delete('nest_access_token');
           this.$router.push({ name: 'Explore' });
         });
       }
