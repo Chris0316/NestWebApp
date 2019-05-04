@@ -55,7 +55,7 @@
     },
     methods: {
       validate() {
-        if (this.phone.length === 11 && this.sms.length === 6)
+        if ((this.phone.length === 10 || this.phone.length === 11) && this.sms.length === 6)
           this.btnDisabled = false;
         else
           this.btnDisabled = true;
