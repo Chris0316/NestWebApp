@@ -85,16 +85,8 @@
       checkSms() {
         if (this.smsCode.length === 6) {
           AuthService.smsLogin(this.phone_prefix, this.phone, this.smsCode, this.key, res => {
-            let token = res.meta.access_token;
-            this.$cookie.set('nest_access_token', token);
             Storage.setLocalStorage('nest_user_id', res.data.id);
             this.$router.push({ name: 'Explore' });
-            // let user = res.data;
-            // if ((user.is_agent !== 0 && user.is_agent !== 1) || !user.nation || !user.local_name || !user.name) {
-            //   this.$router.push({ name: 'AuthBaseInfo1' });
-            // } else {
-            //   this.$router.push({ name: 'Explore' });
-            // }
           })
         }
       },

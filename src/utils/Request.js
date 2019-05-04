@@ -45,7 +45,7 @@ instance.interceptors.response.use(
          */
         let token = Vue.prototype.$cookie.get('nest_access_token');
         if (token) {
-          Vue.prototype.$cookie.delete('nest_access_token');
+          Vue.prototype.$cookie.delete('nest_access_token', {domain: 'ohmynest.com'});
           Vue.prototype.$toast.fail('登录超时，请重新登录');
         }
         Router.replace({name: 'AuthLogin'});

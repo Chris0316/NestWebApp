@@ -57,6 +57,7 @@
         this.account = res.data.name;
       });
     },
+
     watch: {
       userType() {
         this.lightenBtn();
