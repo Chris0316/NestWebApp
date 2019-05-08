@@ -26,21 +26,23 @@ router.beforeEach((to, from, next) => {
   let accessToken = Vue.prototype.$cookie.get('nest_access_token');
   // 获取个人信息是否完善状态
   let completeProfile = Vue.prototype.$cookie.get('nest_complete_profile');
-  // 跳转登录
   if (to.meta.requireAuth && (!accessToken || accessToken.length === 0)) {
+    // 跳转登录
     next({
       name: 'AuthLogin'
     });
-  }
-  // 跳转完善个人信息页面
-  if (completeProfile === '1') {
+  } else if (completeProfile === '1') {
+    // 跳转完善个人信息页面
     if (to.name !== 'AuthBaseInfo1') {
       next({
         name: 'AuthBaseInfo1'
       });
+    } else {
+      next();
     }
+  } else {
+    next();
   }
-  next();
 });
 
 if (window.app.safe_top_height) {
