@@ -12,7 +12,7 @@
     "build": "cross-env NODE_ENV=production ENV_CONFIG=prod node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "better-scroll": "^1.15.1",
     "exif-js": "^2.3.0",
     "lrz": "^4.9.40",
